@@ -5,7 +5,7 @@ import { useLocalStorage } from "react-use";
 import { SignInWithEmailOTP } from "./_components/sign-in-otp-form";
 import { SignInPasswordForm } from "./_components/sign-in-password-form";
 
-export const SignInCredentialsAndMagicLinkForm = (props: {
+export const SignInCredentialsAndEmailOTP = (props: {
   callbackUrl?: string;
 }) => {
   const [isUsingCredentials, setIsUsingCredentials] = useLocalStorage(

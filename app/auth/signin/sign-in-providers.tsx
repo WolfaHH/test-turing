@@ -5,7 +5,7 @@ import { Typography } from "@/components/nowts/typography";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ProviderButton } from "./provider-button";
-import { SignInCredentialsAndMagicLinkForm } from "./sign-in-credentials-and-magic-link-form";
+import { SignInCredentialsAndEmailOTP } from "./sign-in-credentials-and-email-otp";
 
 export const SignInProviders = ({
   providers,
@@ -21,7 +21,7 @@ export const SignInProviders = ({
 
   return (
     <div className="flex flex-col gap-4 lg:gap-6">
-      <SignInCredentialsAndMagicLinkForm callbackUrl={callbackUrl} />
+      <SignInCredentialsAndEmailOTP callbackUrl={callbackUrl} />
       {providers.length > 0 && <Divider>or</Divider>}
 
       <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 lg:gap-4">

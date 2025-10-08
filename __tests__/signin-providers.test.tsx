@@ -3,7 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { screen, waitFor } from "@testing-library/react";
 import { toast } from "sonner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { SignInCredentialsAndMagicLinkForm } from "../app/auth/signin/sign-in-credentials-and-magic-link-form";
+import { SignInCredentialsAndEmailOTP } from "../app/auth/signin/sign-in-credentials-and-magic-link-form";
 import { SignInProviders } from "../app/auth/signin/sign-in-providers";
 import { setup } from "../test/setup";
 
@@ -44,7 +44,7 @@ describe("SignInCredentialsAndMagicLinkForm", () => {
   it("should render email and password fields in credentials mode", async () => {
     window.localStorage.setItem("sign-in-with-credentials", "true");
 
-    setup(<SignInCredentialsAndMagicLinkForm />);
+    setup(<SignInCredentialsAndEmailOTP />);
 
     // Email field should always be present
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -64,7 +64,7 @@ describe("SignInCredentialsAndMagicLinkForm", () => {
   it("should switch to magic link mode when clicking the link", async () => {
     window.localStorage.setItem("sign-in-with-credentials", "true");
 
-    const { user } = setup(<SignInCredentialsAndMagicLinkForm />);
+    const { user } = setup(<SignInCredentialsAndEmailOTP />);
 
     // Initially in credentials mode
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
@@ -88,7 +88,7 @@ describe("SignInCredentialsAndMagicLinkForm", () => {
     window.localStorage.setItem("sign-in-with-credentials", "true");
 
     const { user } = setup(
-      <SignInCredentialsAndMagicLinkForm callbackUrl="/dashboard" />,
+      <SignInCredentialsAndEmailOTP callbackUrl="/dashboard" />,
     );
 
     // Fill in the form
@@ -112,7 +112,7 @@ describe("SignInCredentialsAndMagicLinkForm", () => {
   });
 
   it("should submit with magic link and redirect to verify page", async () => {
-    const { user } = setup(<SignInCredentialsAndMagicLinkForm />);
+    const { user } = setup(<SignInCredentialsAndEmailOTP />);
 
     // Fill in the form
     await user.type(screen.getByTestId("otp-email-input"), "test@example.com");
@@ -141,7 +141,7 @@ describe("SignInCredentialsAndMagicLinkForm", () => {
       error: new Error("Invalid credentials"),
     });
 
-    const { user } = setup(<SignInCredentialsAndMagicLinkForm />);
+    const { user } = setup(<SignInCredentialsAndEmailOTP />);
 
     // Fill in the form
     await user.type(screen.getByLabelText(/email/i), "test@example.com");
