@@ -46,7 +46,7 @@ export const validateSession = async (request: NextRequest) => {
     auth.api.getFullOrganization({ headers: request.headers }),
   ]);
 
-  if (!session?.session.userId) return null;
+  // if (session === null || session.session === null) return null;
 
   return { session, activeOrganisation };
 };
@@ -92,6 +92,7 @@ export const validateAdminAccess = async (request: NextRequest) => {
 
   const session = await auth.api.getSession({ headers: request.headers });
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!session?.user || session.user.role !== "admin") {
     return null;
   }

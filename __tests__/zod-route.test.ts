@@ -45,7 +45,8 @@ describe("zod-route", () => {
   });
 
   it("authRoute should return 401 if user is not authenticated", async () => {
-    vi.mocked(getUser).mockResolvedValue(null);
+    // @ts-expect-error - Testing the case where getUser returns undefined (no session)
+    vi.mocked(getUser).mockResolvedValue(undefined);
     const GET = authRoute.handler(() => {
       return {
         message: "test",

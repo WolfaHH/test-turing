@@ -12,6 +12,14 @@ type OrgParams = {
   permissions?: AuthPermission;
 };
 
+type MemberWithUser = {
+  userId: string;
+  role: string;
+  user: {
+    email: string;
+  };
+};
+
 const getOrg = async () => {
   const user = await getSession();
 
@@ -47,8 +55,8 @@ export const getCurrentOrg = async (params?: OrgParams) => {
   }
 
   const memberRoles = org.members
-    .filter((member) => member.userId === user.session.userId)
-    .map((member) => member.role) as AuthRole[];
+    .filter((member: MemberWithUser) => member.userId === user.session.userId)
+    .map((member: MemberWithUser) => member.role) as AuthRole[];
 
   if (memberRoles.length === 0 || !isInRoles(memberRoles, params?.roles)) {
     return null;
@@ -69,7 +77,7 @@ export const getCurrentOrg = async (params?: OrgParams) => {
 
   const currentSubscription = await getOrgActiveSubscription(org.id);
 
-  const OWNER = org.members.find((m) => m.role === "owner");
+  const OWNER = org.members.find((m: MemberWithUser) => m.role === "owner");
 
   return {
     ...org,

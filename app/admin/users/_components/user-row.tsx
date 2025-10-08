@@ -87,7 +87,7 @@ export const UserRow = ({ user }: UserRowProps) => {
       toast.success("Impersonation started");
       // Refresh the page to update the session
       void queryClient.invalidateQueries();
-      router.push("/orgs");
+      window.location.href = "/orgs";
     },
     onError: (error: Error) => {
       toast.error(`Failed to impersonate user: ${error.message}`);

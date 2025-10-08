@@ -7,13 +7,13 @@ export const getSession = async () => {
     headers: await headers(),
   });
 
-  return session;
+  return session as typeof session | undefined;
 };
 
 export const getUser = async () => {
   const session = await getSession();
 
-  if (!session?.user) {
+  if (!session) {
     return null;
   }
 

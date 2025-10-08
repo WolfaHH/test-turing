@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: "jsdom",
+    environment: "happy-dom",
     setupFiles: [path.resolve(__dirname, "test/vitest.setup.ts")],
     env: {
       NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_123",
