@@ -44,10 +44,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (!session) {
-    return redirectToOrgList(request);
-  }
-
   const org = await findUserOrganization(slug, session.session.userId);
 
   if (!org) {

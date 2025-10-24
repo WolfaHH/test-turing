@@ -17,5 +17,17 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "iconLibrary": "lucide"
+  "iconLibrary": "lucide",
+  "registries": {
+    "@nowts": "https://ui.nowts.app/r/{name}.json",
+    "@shadcnui-blocks": "https://www.shadcnui-blocks.com/r/{name}.json",
+    "@magicui": "https://magicui.design/{name}.json",
+    "@tailark": "https://tailark.com/r/{name}.json",
+    "@elevenlabs": "https://ui.elevenlabs.io/r/{name}.json",
+    "@reui": "https://reui.io/r/{name}.json",
+    "@diceui": "https://www.diceui.com/r/{name}.json",
+    "@ai-sdk": "https://registry.ai-sdk.dev/{name}.json",
+    "@shadcnblocks": "https://www.shadcnblocks.com/r/{name}.json",
+    "@shadcnstudio": "https://shadcnstudio.com/r/{name}.json"
+  }
 }

@@ -4,10 +4,8 @@
     "description": "Create the base of a next page",
     "scope": "typescriptreact",
     "body": [
-      "import type { PageParams } from \"@/types/next\";",
-      "",
-      "export default async function RoutePage(props: PageParams<{ $1 }>) {",
-      "  return $2",
+      "export default async function RoutePage(props: PageProps<\"${RELATIVE_FILEPATH/^app\\/(?:\\([^)]+\\)\\/)*(.*)\\/.+$/\\/$1/}\">) {",
+      "  return $1",
       "}",
     ],
   },

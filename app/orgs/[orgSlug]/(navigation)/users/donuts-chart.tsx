@@ -99,7 +99,7 @@ export function DonutChart() {
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={viewBox.cy + 24}
+                          y={(viewBox.cy as number) + 24}
                           className="fill-muted-foreground"
                         >
                           Visitors

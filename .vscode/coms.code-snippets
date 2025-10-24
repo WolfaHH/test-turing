@@ -4,7 +4,7 @@
     "description": "Create a Server Component.",
     "scope": "javascriptreact,typescriptreact",
     "body": [
-      "export const ${1:${TM_FILENAME_BASE/([\\w]+)([-_])([\\w])/${1:/capitalize}${3:/capitalize}/g}} = async () => {",
+      "export const ${1:${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/}} = async () => {",
       "  return $2",
       "}",
     ],

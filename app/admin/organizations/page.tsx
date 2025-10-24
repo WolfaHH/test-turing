@@ -22,11 +22,9 @@ const searchParamsCache = createSearchParamsCache({
   page: parseAsInteger.withDefault(1),
 });
 
-type PageProps = {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-};
-
-export default async function AdminOrganizationsPage(props: PageProps) {
+export default async function AdminOrganizationsPage(
+  props: PageProps<"/admin/organizations">,
+) {
   await getRequiredAdmin();
 
   const params = await searchParamsCache.parse(props.searchParams);

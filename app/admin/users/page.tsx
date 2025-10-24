@@ -12,11 +12,9 @@ import { searchParamsCache } from "./_actions/search-params";
 import { AdminFilters } from "./_components/admin-filters";
 import { UserTable } from "./_components/user-table";
 
-type PageProps = {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-};
-
-export default async function AdminUsersPage({ searchParams }: PageProps) {
+export default async function AdminUsersPage({
+  searchParams,
+}: PageProps<"/admin/users">) {
   await getRequiredAdmin();
 
   const params = await searchParamsCache.parse(searchParams);

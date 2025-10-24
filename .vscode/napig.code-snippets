@@ -1,16 +1,15 @@
 {
-  "nact": {
-    "prefix": "napi",
-    "description": "Create the base for a API Route.",
+  "API Route GET": {
+    "prefix": "napig",
+    "description": "Create a GET API Route with authentication.",
     "scope": "javascript,typescript",
     "body": [
-      "import { NextResponse } from \"next/server\";",
-      "import { authHandler } from \"../api/handlers\";",
+      "import { authRoute } from \"@/lib/zod-route\";",
       "",
-      "export const GET = authHandler({}, async ({ context }) => {",
+      "export const GET = authRoute.handler(async (req, { ctx }) => {",
       "  $1",
       "",
-      "  return NextResponse.json({ message: \"Hello, world!\" });",
+      "  return { message: \"Hello, world!\" };",
       "});",
     ],
   },

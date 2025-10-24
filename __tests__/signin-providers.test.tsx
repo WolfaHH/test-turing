@@ -3,7 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { screen, waitFor } from "@testing-library/react";
 import { toast } from "sonner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { SignInCredentialsAndEmailOTP } from "../app/auth/signin/sign-in-credentials-and-magic-link-form";
+import { SignInCredentialsAndEmailOTP } from "../app/auth/signin/sign-in-credentials-and-email-otp";
 import { SignInProviders } from "../app/auth/signin/sign-in-providers";
 import { setup } from "../test/setup";
 

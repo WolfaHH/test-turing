@@ -6,11 +6,11 @@
     "body": [
       "import type { PropsWithChildren } from \"react\";",
       "",
-      "export type ${1:${TM_FILENAME_BASE/([\\w]+)([-_])([\\w])/${1:/capitalize}${3:/capitalize}/g}}Props = PropsWithChildren<{",
+      "export type ${1:${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/}}Props = PropsWithChildren<{",
       "  $2",
       "}>",
       "",
-      "export const ${1:${TM_FILENAME_BASE/([\\w]+)([-_])([\\w])/${1:/capitalize}${3:/capitalize}/g}} = (props: ${1:${TM_FILENAME_BASE/([\\w]+)([-_])([\\w])/${1:/capitalize}${3:/capitalize}/g}}Props) => {",
+      "export const ${1:${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/}} = (props: ${1:${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/}}Props) => {",
       "  return $3",
       "}",
     ],

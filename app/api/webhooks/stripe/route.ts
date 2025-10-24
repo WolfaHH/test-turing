@@ -11,7 +11,7 @@ export const maxDuration = 300;
 
 // Utility function to get plan from subscription metadata
 const getPlanFromSubscription = (subscription: Stripe.Subscription) => {
-  const planName = subscription.metadata.plan;
+  const planName = subscription.items.data[0].price.metadata.plan;
   if (!planName) return null;
 
   return AUTH_PLANS.find((p) => p.name === planName);

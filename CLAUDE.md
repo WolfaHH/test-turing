@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI Agents.
 
 ## About the project <NAME>
 
@@ -85,6 +85,8 @@ If you read this, ask question about the project to fill this part. You need to 
 - Use `"use client"` only for Web API access in small components
 - Wrap client components in `Suspense` with fallback
 - Use dynamic loading for non-critical components
+- **ALWAYS use the global `PageProps<"/route/path">` type for page components** - NEVER create local `PageProps` type definitions
+  - Example: `export default async function MyPage(props: PageProps<"/admin/users">) {}`
 
 ### Styling
 
@@ -203,3 +205,8 @@ This is **NON-NEGOTIABLE**. Do not skip this step under any circumstances. Readi
 1. Read at least 3 relevant existing files (similar functionality + imported dependencies)
 2. Understand the patterns, conventions, and API usage
 3. Only then proceed with creating/editing files
+
+## UI / UX experiences
+
+- Never use emojis (prefer Lucide Icon for illustration)
+- Never use gradients unless explicitly asked by user
