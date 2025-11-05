@@ -14,7 +14,7 @@ import {
 import type { Organization, Subscription } from "@/generated/prisma";
 import { AUTH_PLANS } from "@/lib/auth/stripe/auth-plans";
 import { logger } from "@/lib/logger";
-import { format } from "date-fns";
+import { dayjs } from "@/lib/dayjs";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import {
@@ -176,7 +176,7 @@ export function OrganizationSubscription({
           {subscription?.periodEnd && (
             <Typography variant="muted">
               {subscription.cancelAtPeriodEnd ? "Cancels on" : "Renews on"}{" "}
-              {format(subscription.periodEnd, "MMM dd, yyyy")}
+              {dayjs(subscription.periodEnd).format("MMM DD, YYYY")}
             </Typography>
           )}
 

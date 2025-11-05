@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/promise-function-async */
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 "use client";
 
@@ -192,7 +193,7 @@ function FieldError({
 }: React.ComponentProps<"div"> & {
   errors?: ({ message?: string } | undefined)[];
 }) {
-  const content = useMemo(async () => {
+  const content = useMemo(() => {
     if (children) {
       return children;
     }

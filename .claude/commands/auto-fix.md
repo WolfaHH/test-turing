@@ -1,56 +1,83 @@
 ---
-description: Automatically fix TypeScript, Prettier, and ESLint warnings and errors across the codebase.
+description: Automated workflow to fix all ESLint and TypeScript errors with parallel processing
+allowed-tools: Bash(pnpm :*), Bash(tsc :*), Bash(npm :*), Read, Task, Grep
 ---
 
-Your objective is to remove all TypeScript and ESLint warnings and errors while formatting all files.
+You are an auto-fix specialist. Your mission is to automatically identify and fix all ESLint and TypeScript errors by breaking them into manageable areas and processing them in parallel using the @snipper agent.
 
-Follow this workflow:
+## Workflow
 
-1. Run the commands
+1. **DISCOVER COMMANDS**: Find the correct lint, type-check, and format commands
 
-- `pnpm format`: format files with Prettier
-- `pnpm lint`: auto-fix linter errors and get the remaining warnings/errors
-- `pnpm ts`: get all the TypeScript errors/warnings
+   - **CRITICAL**: Always check `package.json` for exact command names
+   - Look for: `lint`, `typecheck`, `type-check`, `tsc`, `eslint`, `prettier`, `format`
+   - `cat package.json` to verify available scripts
 
-2. Fix all the errors
+2. **RUN DIAGNOSTICS**: Execute linting and type-checking
 
-Carefully analyze and split the errors by "area" (defined by folder), then run the "Snipper" agent for each area. The "Snipper" agent should be run with a specific list of files to fix and the actions to perform, so they can all work in parallel.
+   - Run `pnpm run lint` (or discovered equivalent)
+   - Run `pnpm run typecheck` or `tsc --noEmit` (or discovered equivalent)
+   - **CAPTURE ALL OUTPUT**: Save complete error lists
 
-Ensure that each agent updates different files, with a maximum of 5 files per agent.
+3. **ANALYZE ERRORS**: Parse and categorize all errors
 
-In the description of each agent, put the following:
+   - Extract file paths from error messages
+   - Group errors by file location
+   - Count total errors and affected files
 
-<description-example>
+4. **CREATE ERROR AREAS**: Organize files into processing groups
 
-Auto-fix: file1.ts, file2.ts, file3.ts, etc...
+   - **CRITICAL**: Maximum 5 files per area
+   - Group related files together when possible (same directory/feature)
+   - Create areas like: `Area 1: [file1, file2, file3, file4, file5]`
 
-</description-example>
+5. **PARALLEL PROCESSING**: Launch @snipper agents for each area
 
-In the description, be sure to add the list of all the file names!
+   - **USE TASK TOOL**: Launch multiple snipper agents simultaneously
+   - Each agent processes exactly one area (max 5 files)
+   - Provide specific error details for each file to each agent
+   - **RUN IN PARALLEL**: All areas processed concurrently
 
-In the prompts of each agent, put the following:
+6. **VERIFICATION**: Re-run diagnostics after fixes
+   - Wait for all snipper agents to complete
+   - Re-run `pnpm run lint` and `pnpm run typecheck`
+   - Report remaining errors (if any)
 
-<prompt-example>
+7. **FORMAT CODE**: Apply Prettier formatting (if available)
+   - Check if `prettier` or `format` command exists in package.json
+   - Run `pnpm run prettier` or `pnpm run format` (or discovered equivalent)
+   - **FINAL STEP**: Ensure consistent code formatting across all fixed files
 
-complete/file/path/file1.ts:
+## Area Creation Rules
 
-- error ts 1
-- error lint 2
-- error ts 3
+- **MAX 5 FILES**: Never exceed 5 files per area
+- **LOGICAL GROUPING**: Group related files (components, utils, etc.)
+- **COMPLETE COVERAGE**: Every error-containing file must be in an area
+- **CLEAR NAMING**: `Area N: [file1.ts, file2.ts, ...]`
 
-complete/file/path/file2.ts:
+## Snipper Agent Instructions
 
-- error ts 4
-- error lint 5
+For each area, provide the snipper agent with:
 
-etc...
+```
+Fix all ESLint and TypeScript errors in these files:
+[list of files with their specific errors]
 
-</prompt-example>
+Focus only on these files. Make minimal changes to fix errors while preserving functionality.
+```
 
-3. Return to step 1
+## Execution Rules
 
-Run lint and ts commands again and verify that there are no remaining errors.
+- **NON-NEGOTIABLE**: Always check package.json first
+- **STAY FOCUSED**: Only fix linting and TypeScript errors
+- **NO FEATURE ADDITIONS**: Minimal fixes only
+- **PARALLEL ONLY**: Use Task tool for concurrent processing
+- **COMPLETE AREAS**: Every error must be assigned to an area
 
-## Important
+## Priority
 
-You SHOULD use the "Task" named `Snipper` to fix. As a main agent, you should not update any files manually.
+Speed through parallel processing while maintaining accuracy. Fix everything systematically.
+
+---
+
+User: $ARGUMENTS

@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Form, type FormProps } from "@/components/ui/form";
 import { useDebounceFn } from "@/hooks/use-debounce-fn";
 import { useWarnIfUnsavedChanges } from "@/hooks/use-warn-if-unsaved-changes";
 import { createContext, Fragment, use, useEffect, useRef } from "react";
-import type { FieldValues } from "react-hook-form";
 import { useHotkeys } from "react-hotkeys-hook";
+import type { useForm } from "./tanstack-form";
+import { Form } from "./tanstack-form";
 
 const FormAutoSaveContext = createContext<{
   isDirty: boolean;
@@ -24,20 +25,20 @@ export const useFormAutoSave = () => {
   return ctx;
 };
 
-export const FormAutoSave = <T extends FieldValues>({
+export const FormAutoSave = ({
   children,
-  autoSaveMs,
-  action,
-  ...props
-}: FormProps<T> & { autoSaveMs?: number; action?: string }) => {
+  form,
+}: {
+  children: React.ReactNode;
+  form: ReturnType<typeof useForm<any>>;
+}) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const submit = () => {
     buttonRef.current?.click();
   };
-  const cancel = () => props.form.reset();
-
-  const isDirty = props.form.formState.isDirty;
+  const cancel = () => form.reset();
+  const isDirty = form.state.isDirty;
 
   useHotkeys("mod+s", submit, {
     enabled: isDirty,
@@ -55,13 +56,13 @@ export const FormAutoSave = <T extends FieldValues>({
     <FormAutoSaveContext.Provider
       value={{
         isDirty,
-        isLoading: props.form.formState.isSubmitting,
+        isLoading: form.state.isSubmitting,
         cancel,
         submit,
       }}
     >
       <Fragment>
-        <Form {...props} disabled={false}>
+        <Form form={form}>
           {children}
           <button type="submit" className="hidden" ref={buttonRef} />
         </Form>
@@ -70,24 +71,27 @@ export const FormAutoSave = <T extends FieldValues>({
   );
 };
 
-export const FormAutoSaveWatch = <T extends FieldValues>(
-  props: Pick<FormProps<T>, "form"> & { autoSaveMs?: number },
-) => {
+export const FormAutoSaveWatch = (props: {
+  autoSaveMs?: number;
+  form: ReturnType<typeof useForm<any>>;
+}) => {
   const lastFormStateRef = useRef<string | null>(null);
-  const watchedField = props.form.watch();
+
   const ctx = useFormAutoSave();
 
   const debounce = useDebounceFn(() => {
-    const json = JSON.stringify(watchedField);
+    const json = JSON.stringify(props.form.store.state.values);
     if (json === lastFormStateRef.current) return;
     lastFormStateRef.current = json;
 
     ctx.submit();
-  }, props.autoSaveMs);
+  }, props.autoSaveMs ?? 300);
 
   useEffect(() => {
-    debounce();
-  }, [debounce, watchedField]);
+    return props.form.store.subscribe(() => {
+      debounce();
+    });
+  }, [props.form.store, debounce]);
 
   return null;
 };

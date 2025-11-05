@@ -7,17 +7,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { authClient } from "@/lib/auth-client";
 import { unwrapSafePromise } from "@/lib/promises";
 import { useMutation } from "@tanstack/react-query";
@@ -27,17 +17,13 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const EmailFormSchema = z.object({
-  email: z.email(),
+  email: z.string().email(),
 });
 
 type EmailFormType = z.infer<typeof EmailFormSchema>;
 
 export function ForgetPasswordPage() {
   const router = useRouter();
-
-  const emailForm = useZodForm({
-    schema: EmailFormSchema,
-  });
 
   const forgetPasswordMutation = useMutation({
     mutationFn: async (values: EmailFormType) => {
@@ -56,9 +42,15 @@ export function ForgetPasswordPage() {
     },
   });
 
-  function onSubmitEmail(values: EmailFormType) {
-    forgetPasswordMutation.mutate(values);
-  }
+  const form = useForm({
+    schema: EmailFormSchema,
+    defaultValues: {
+      email: "",
+    },
+    onSubmit: async (values) => {
+      await forgetPasswordMutation.mutateAsync(values);
+    },
+  });
 
   return (
     <Card className="mx-auto w-full max-w-md lg:max-w-lg lg:p-6">
@@ -78,31 +70,22 @@ export function ForgetPasswordPage() {
       </CardHeader>
 
       <CardFooter className="border-t pt-6">
-        <Form
-          form={emailForm}
-          onSubmit={onSubmitEmail}
-          className="w-full space-y-4"
-        >
-          <FormField
-            control={emailForm.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="your@email.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+        <Form form={form} className="w-full space-y-4">
+          <form.AppField name="email">
+            {(field) => (
+              <field.Field>
+                <field.Label>Email</field.Label>
+                <field.Content>
+                  <field.Input type="email" placeholder="your@email.com" />
+                  <field.Message />
+                </field.Content>
+              </field.Field>
             )}
-          />
-          <LoadingButton
-            loading={forgetPasswordMutation.isPending}
-            type="submit"
-            className="w-full"
-          >
+          </form.AppField>
+
+          <form.SubmitButton className="w-full">
             Send Reset Link
-          </LoadingButton>
+          </form.SubmitButton>
         </Form>
       </CardFooter>
     </Card>

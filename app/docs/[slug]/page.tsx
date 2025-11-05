@@ -3,10 +3,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ServerMdx } from "@/features/markdown/server-mdx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import type { DocParams } from "../doc-manager";
 import { getCurrentDoc, getDocs } from "../doc-manager";
-
-export const dynamic = "force-static";
 
 export async function generateMetadata(props: DocParams): Promise<Metadata> {
   const params = await props.params;
@@ -31,7 +30,15 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function RoutePage(props: DocParams) {
+export default function Page(props: DocParams) {
+  return (
+    <Suspense fallback={null}>
+      <RoutePage {...props} />
+    </Suspense>
+  );
+}
+
+async function RoutePage(props: DocParams) {
   const params = await props.params;
   const doc = await getCurrentDoc(params.slug);
 

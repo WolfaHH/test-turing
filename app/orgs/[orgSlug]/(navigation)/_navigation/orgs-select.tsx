@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import type { AuthOrganization } from "@/lib/auth/auth-type";
 import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 type OrganizationsSelectProps = {
@@ -24,7 +24,6 @@ type OrganizationsSelectProps = {
 };
 
 export const OrgsSelect = (props: OrganizationsSelectProps) => {
-  const router = useRouter();
   const org = props.orgs.find((org) => org.slug === props.currentOrgSlug);
 
   return (
@@ -80,15 +79,13 @@ export const OrgsSelect = (props: OrganizationsSelectProps) => {
                   </DropdownMenuItem>
                 );
               })}
-            <DropdownMenuItem
-              onClick={() => {
-                router.push("/orgs/new");
-              }}
-            >
-              <Plus className="mr-2 size-4" />
-              <span className="line-clamp-1 text-left">
-                Add a new organization
-              </span>
+            <DropdownMenuItem asChild>
+              <Link href="/orgs/new">
+                <Plus className="mr-2 size-4" />
+                <span className="line-clamp-1 text-left">
+                  Add a new organization
+                </span>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

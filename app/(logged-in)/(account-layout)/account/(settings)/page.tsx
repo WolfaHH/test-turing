@@ -1,5 +1,6 @@
 import { getRequiredUser } from "@/lib/auth/auth-user";
 import { combineWithParentMetadata } from "@/lib/metadata";
+import { Suspense } from "react";
 import { EditProfileCardForm } from "./edit-profile-form";
 
 export const generateMetadata = combineWithParentMetadata({
@@ -7,7 +8,17 @@ export const generateMetadata = combineWithParentMetadata({
   description: "Update your profile.",
 });
 
-export default async function EditProfilePage() {
+export default function Page() {
+  return (
+    <div className="flex flex-col gap-4 lg:gap-8">
+      <Suspense fallback={null}>
+        <EditProfilePage />
+      </Suspense>
+    </div>
+  );
+}
+
+async function EditProfilePage() {
   const user = await getRequiredUser();
 
   return (

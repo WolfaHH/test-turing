@@ -11,6 +11,7 @@ import { SiteConfig } from "@/site-config";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: `Welcome | ${SiteConfig.title}`,
@@ -21,7 +22,15 @@ export const metadata: Metadata = {
 /**
  * This page is show when a user login. You can add an onboarding process here.
  */
-export default async function NewUserPage(props: PageProps<"/auth/new-user">) {
+export default function Page(props: PageProps<"/auth/new-user">) {
+  return (
+    <Suspense fallback={null}>
+      <NewUserPage {...props} />
+    </Suspense>
+  );
+}
+
+async function NewUserPage(props: PageProps<"/auth/new-user">) {
   const searchParams = await props.searchParams;
   const callbackUrl =
     typeof searchParams.callbackUrl === "string"

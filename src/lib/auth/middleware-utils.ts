@@ -1,6 +1,9 @@
 import { auth } from "@/lib/auth";
+import { logger } from "@/lib/logger";
 import { RESERVED_SLUGS } from "@/lib/organizations/reserved-slugs";
 import { prisma } from "@/lib/prisma";
+import { redisClient } from "@/lib/redis";
+import { CacheKeys, CacheTTL } from "@/lib/redis-keys";
 import { SiteConfig } from "@/site-config";
 import { getSessionCookie } from "better-auth/cookies";
 import type { NextRequest } from "next/server";
@@ -52,6 +55,18 @@ export const validateSession = async (request: NextRequest) => {
 };
 
 export const findUserOrganization = async (slug: string, userId: string) => {
+  const cacheKey = CacheKeys.orgMember(slug, userId);
+
+  try {
+    const cached = await redisClient.get(cacheKey);
+
+    if (cached) {
+      return JSON.parse(cached) as { id: string } | null;
+    }
+  } catch (error) {
+    logger.error("[Cache Error] findUserOrganization:", error);
+  }
+
   const org = await prisma.organization.findFirst({
     where: {
       OR: [{ slug }, { id: slug }],
@@ -61,6 +76,18 @@ export const findUserOrganization = async (slug: string, userId: string) => {
     },
     select: { id: true },
   });
+
+  if (org) {
+    try {
+      await redisClient.setex(
+        cacheKey,
+        CacheTTL.ORG_MEMBER,
+        JSON.stringify(org),
+      );
+    } catch (error) {
+      logger.error("[Cache Error] setex findUserOrganization:", error);
+    }
+  }
 
   return org;
 };

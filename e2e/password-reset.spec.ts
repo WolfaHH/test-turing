@@ -53,7 +53,6 @@ test("password reset flow", async ({ page }) => {
   // 8. Set a new password
   const newPassword = faker.internet.password({ length: 12, memorable: true });
   await page.locator('input[name="password"]').fill(newPassword);
-  await page.pause();
   await page.getByRole("button", { name: /reset password/i }).click();
 
   await page.waitForURL(/\/auth\/signin/, { timeout: 10000 });

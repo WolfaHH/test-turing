@@ -12,6 +12,7 @@ import { env } from "@/lib/env";
 import { resend } from "@/lib/mail/resend";
 import { combineWithParentMetadata } from "@/lib/metadata";
 import { prisma } from "@/lib/prisma";
+import { Suspense } from "react";
 import { ToggleEmailCheckbox } from "./toggle-email-checkbox";
 
 export const generateMetadata = combineWithParentMetadata({
@@ -19,7 +20,15 @@ export const generateMetadata = combineWithParentMetadata({
   description: "Update your email notifications settings.",
 });
 
-export default async function MailProfilePage() {
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <MailProfilePage />
+    </Suspense>
+  );
+}
+
+async function MailProfilePage() {
   const user = await getRequiredUser();
   const userWithResendContactId = await prisma.user.findUnique({
     where: {

@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import { getDocs } from "./doc-manager";
 
 export const metadata = {
@@ -16,7 +17,15 @@ export const metadata = {
     "Everything you need to know about using Lumail for your email marketing",
 };
 
-export default async function DocsPage(props: PageProps<"/docs">) {
+export default function Page(props: PageProps<"/docs">) {
+  return (
+    <Suspense fallback={null}>
+      <DocsPage {...props} />
+    </Suspense>
+  );
+}
+
+async function DocsPage(props: PageProps<"/docs">) {
   const docs = await getDocs();
 
   const sortedDocs = [...docs].sort((a, b) => {

@@ -1,15 +1,49 @@
 ---
-description: Explore the codebase and provide a relevant explanation about a specific feature.
+description: Deep codebase exploration to answer specific questions
+argument-hint: <question>
 ---
 
-Your task is to explore the codebase to understand the following feature: "$ARGUMENTS"
+You are a codebase exploration specialist. Answer questions through systematic investigation.
 
-Follow this workflow:
+**You need to always ULTRA THINK.**
 
-1. Review all files and identify those relevant to the feature.
-2. Analyze these files and determine their dependencies (libraries or other files).
-3. Use Context7, WebSearch, or ReadFile to review these dependencies. For node dependencies, use Context7 or WebSearch to understand them.
+## Workflow
 
-## Response
+1. **PARSE QUESTION**: Understand what to investigate
+   - Extract key terms and concepts from question
+   - Identify file types, patterns, or areas to search
+   - Determine if web research is needed
 
-At the end, compile your findings into a clear response with file paths so I can CMD+Click on them. Show code examples with comments and explanations. Keep your response concise to avoid confusion.
+2. **SEARCH CODEBASE**: Launch parallel exploration
+   - Use `explore-codebase` agents for code patterns
+   - Use `explore-docs` agents for library/framework specifics
+   - Use `websearch` agents if external context needed
+   - **CRITICAL**: Launch agents in parallel for speed
+   - Search for: implementations, configurations, examples, tests
+
+3. **ANALYZE FINDINGS**: Synthesize discovered information
+   - Read relevant files found by agents
+   - Trace relationships between files
+   - Identify patterns and conventions
+   - Note file paths with line numbers (e.g., `src/app.ts:42`)
+
+4. **ANSWER QUESTION**: Provide comprehensive response
+   - Direct answer to the question
+   - Supporting evidence with file references
+   - Code examples if relevant
+   - Architectural context when useful
+
+## Execution Rules
+
+- **PARALLEL SEARCH**: Launch multiple agents simultaneously
+- **CITE SOURCES**: Always reference file paths and line numbers
+- **STAY FOCUSED**: Only explore what's needed to answer the question
+- **BE THOROUGH**: Don't stop at first match - gather complete context
+
+## Priority
+
+Accuracy > Speed > Brevity. Provide complete answers with evidence.
+
+---
+
+User: $ARGUMENTS

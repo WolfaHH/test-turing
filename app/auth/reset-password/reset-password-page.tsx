@@ -7,17 +7,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { authClient } from "@/lib/auth-client";
 import { unwrapSafePromise } from "@/lib/promises";
 import { useMutation } from "@tanstack/react-query";
@@ -32,10 +22,6 @@ const PasswordFormSchema = z.object({
 
 export function ResetPasswordPage({ token }: { token: string }) {
   const router = useRouter();
-
-  const passwordForm = useZodForm({
-    schema: PasswordFormSchema,
-  });
 
   const resetPasswordMutation = useMutation({
     mutationFn: async (values: { password: string }) => {
@@ -56,9 +42,15 @@ export function ResetPasswordPage({ token }: { token: string }) {
     },
   });
 
-  function onSubmitPassword(values: z.infer<typeof PasswordFormSchema>) {
-    resetPasswordMutation.mutate(values);
-  }
+  const form = useForm({
+    schema: PasswordFormSchema,
+    defaultValues: {
+      password: "",
+    },
+    onSubmit: async (values) => {
+      await resetPasswordMutation.mutateAsync(values);
+    },
+  });
 
   if (!token) {
     router.push("/auth/forget-password");
@@ -82,31 +74,21 @@ export function ResetPasswordPage({ token }: { token: string }) {
         </CardDescription>
       </CardHeader>
       <CardFooter className="w-full border-t pt-6">
-        <Form
-          form={passwordForm}
-          onSubmit={onSubmitPassword}
-          className="w-full space-y-4"
-        >
-          <FormField
-            control={passwordForm.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>New Password</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+        <Form form={form} className="w-full space-y-4">
+          <form.AppField name="password">
+            {(field) => (
+              <field.Field>
+                <field.Label>New Password</field.Label>
+                <field.Content>
+                  <field.Input type="password" placeholder="••••••••" />
+                  <field.Message />
+                </field.Content>
+              </field.Field>
             )}
-          />
-          <LoadingButton
-            loading={resetPasswordMutation.isPending}
-            type="submit"
-            className="w-full"
-          >
+          </form.AppField>
+          <form.SubmitButton className="w-full">
             Reset Password
-          </LoadingButton>
+          </form.SubmitButton>
         </Form>
       </CardFooter>
     </Card>

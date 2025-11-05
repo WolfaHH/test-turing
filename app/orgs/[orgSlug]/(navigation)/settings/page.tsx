@@ -1,9 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { getRequiredCurrentOrgCache } from "@/lib/react/cache";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { OrgDetailsForm } from "./(details)/org-details-form";
 
-export default async function RoutePage() {
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <RoutePage />
+    </Suspense>
+  );
+}
+
+async function RoutePage() {
   const { id: orgId } = await getRequiredCurrentOrgCache({
     permissions: {
       organization: ["update"],

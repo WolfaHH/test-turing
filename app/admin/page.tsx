@@ -1,23 +1,39 @@
 import {
   Layout,
   LayoutContent,
-  LayoutDescription,
   LayoutHeader,
   LayoutTitle,
 } from "@/features/page/layout";
 import { getRequiredAdmin } from "@/lib/auth/auth-user";
+import { Suspense } from "react";
+import { AdminStatsSection } from "./_components/admin-stats-section";
+import { AdminStatsSkeleton } from "./_components/admin-stats-skeleton";
 
-export default async function AdminPage() {
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <AdminPage />
+    </Suspense>
+  );
+}
+
+async function AdminPage() {
   await getRequiredAdmin();
 
   return (
-    <Layout size="lg">
+    <Layout>
       <LayoutHeader>
         <LayoutTitle>Admin Dashboard</LayoutTitle>
-        <LayoutDescription>Manage users and organizations</LayoutDescription>
       </LayoutHeader>
-
-      <LayoutContent></LayoutContent>
+      <LayoutContent>
+        <div className="flex flex-col gap-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Suspense fallback={<AdminStatsSkeleton />}>
+              <AdminStatsSection />
+            </Suspense>
+          </div>
+        </div>
+      </LayoutContent>
     </Layout>
   );
 }

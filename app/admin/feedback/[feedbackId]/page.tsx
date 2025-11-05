@@ -18,6 +18,7 @@ import { getRequiredAdmin } from "@/lib/auth/auth-user";
 import { getFeedbackById } from "@/query/feedback/get-feedback";
 import { Angry, Frown, Meh, SmilePlus } from "lucide-react";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { UserDetailsCard } from "../../_components/user-details-card";
 
 const ReviewIcons = [
@@ -43,7 +44,17 @@ const ReviewIcons = [
   },
 ];
 
-export default async function FeedbackDetailPage(props: {
+export default function Page(props: {
+  params: Promise<{ feedbackId: string }>;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <FeedbackDetailPage {...props} />
+    </Suspense>
+  );
+}
+
+async function FeedbackDetailPage(props: {
   params: Promise<{ feedbackId: string }>;
 }) {
   const params = await props.params;

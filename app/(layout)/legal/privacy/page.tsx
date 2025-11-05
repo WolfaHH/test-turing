@@ -11,8 +11,6 @@ export const metadata: Metadata = {
   description: "Terms of service",
 };
 
-export const dynamic = "force-static";
-
 export default function page() {
   return (
     <div>

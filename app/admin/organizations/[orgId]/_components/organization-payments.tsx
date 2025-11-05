@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { format } from "date-fns";
+import { dayjs } from "@/lib/dayjs";
 import { CreditCard, DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -115,7 +115,7 @@ export function OrganizationPayments({
             {payments.map((payment) => (
               <TableRow key={payment.id}>
                 <TableCell>
-                  {format(new Date(payment.created * 1000), "MMM dd, yyyy")}
+                  {dayjs(payment.created * 1000).format("MMM DD, YYYY")}
                 </TableCell>
                 <TableCell>
                   <div className="font-medium">{payment.description}</div>

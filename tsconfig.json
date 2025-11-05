@@ -11,7 +11,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
       {
@@ -24,13 +24,13 @@
       "@app/*": ["./app/*"]
     }
   },
-
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "tailwind.config.js"
+    "tailwind.config.js",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules", ".next", "src/generated", ".claude", ".conductor"]
 }

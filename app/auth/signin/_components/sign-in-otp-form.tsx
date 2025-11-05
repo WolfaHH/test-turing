@@ -2,21 +2,12 @@
 
 import { Typography } from "@/components/nowts/typography";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { authClient } from "@/lib/auth-client";
 import { getCallbackUrl } from "@/lib/auth/auth-utils";
 import { unwrapSafePromise } from "@/lib/promises";
@@ -146,36 +137,33 @@ const OtpEmailForm = (props: {
   defaultEmail?: string;
   isPending: boolean;
 }) => {
-  const form = useZodForm({
+  const form = useForm({
     schema: LoginWithEmailOTPScheme,
     defaultValues: {
       email: props.defaultEmail ?? "",
     },
+    onSubmit: async (values: LoginWithEmailOTPType) => {
+      props.onSubmit(values.email);
+    },
   });
 
-  function onSubmit(values: LoginWithEmailOTPType) {
-    props.onSubmit(values.email);
-  }
-
   return (
-    <Form form={form} onSubmit={onSubmit} className="max-w-lg space-y-4">
-      <FormField
-        control={form.control}
-        name="email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input
+    <Form form={form} className="max-w-lg space-y-4">
+      <form.AppField name="email">
+        {(field) => (
+          <field.Field>
+            <field.Label>Email</field.Label>
+            <field.Content>
+              <field.Input
+                type="email"
                 data-testid="otp-email-input"
                 placeholder="john@doe.com"
-                {...field}
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+              <field.Message />
+            </field.Content>
+          </field.Field>
         )}
-      />
+      </form.AppField>
 
       <LoadingButton
         loading={props.isPending}

@@ -1,12 +1,25 @@
 import { expect, test } from "@playwright/test";
-import { createTestAccount } from "./utils/auth-test";
+import {
+  createTestAccount,
+  signInAccount,
+  signOutAccount,
+} from "./utils/auth-test";
 
 test.describe("admin", () => {
   test("verify admin dashboard work", async ({ page }) => {
-    await createTestAccount({
+    const user = await createTestAccount({
       page,
       callbackURL: "/orgs",
       admin: true,
+    });
+    await signOutAccount({ page });
+    await signInAccount({
+      page,
+      userData: {
+        email: user.email,
+        password: user.password,
+      },
+      callbackURL: "/admin",
     });
 
     await page.goto("/admin");

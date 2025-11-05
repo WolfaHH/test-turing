@@ -47,7 +47,7 @@ test("update organization slug", async ({ page }) => {
   await slugInput.fill(newSlug);
 
   // 6. Click the save button
-  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await page.getByRole("button", { name: /save/i }).click();
 
   // 7. Confirm the slug change in the dialog
   await page.getByRole("button", { name: /yes, change the slug/i }).click();

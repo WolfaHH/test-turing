@@ -1,7 +1,17 @@
 import type { Prisma } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
 
-export const getOrgsMembers = async (orgId: string) => {
+type GetOrgsMembersOptions = {
+  page?: number;
+  pageSize?: number;
+};
+
+export const getOrgsMembers = async (
+  orgId: string,
+  options: GetOrgsMembersOptions = {},
+) => {
+  const { page = 1, pageSize = 50 } = options;
+
   return prisma.member.findMany({
     where: {
       organizationId: orgId,
@@ -19,6 +29,9 @@ export const getOrgsMembers = async (orgId: string) => {
       role: true,
       userId: true,
     },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    orderBy: { createdAt: "desc" },
   });
 };
 

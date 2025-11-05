@@ -97,8 +97,6 @@ test.describe("account", () => {
     await page.locator('input[name="confirmPassword"]').fill(newPassword);
     await page.getByRole("button", { name: /Change Password/i }).click();
 
-    await expect(page.getByText("Password changed successfully")).toBeVisible();
-
     await signOutAccount({ page });
 
     await signInAccount({

@@ -1,3 +1,12 @@
+/**
+ * CLIENT-SIDE ONLY File Adapter - Base64 Conversion
+ *
+ * WARNING: This adapter uses FileReader, a browser-only Web API.
+ * DO NOT import or use this in server-side code (server actions, API routes, etc.)
+ *
+ * This adapter converts files to base64 data URLs for client-side preview/testing.
+ * For production file uploads in server actions, use vercel-blob-adapter.ts instead.
+ */
 import type { UploadFileAdapter } from "./upload-file";
 
 export const fileAdapter: UploadFileAdapter = {

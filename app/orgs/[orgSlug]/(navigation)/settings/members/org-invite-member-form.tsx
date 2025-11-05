@@ -11,23 +11,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { authClient } from "@/lib/auth-client";
 import type { AuthRole } from "@/lib/auth/auth-permissions";
 import { RolesKeys } from "@/lib/auth/auth-permissions";
@@ -47,14 +36,6 @@ type SchemaType = z.infer<typeof Schema>;
 export const OrganizationInviteMemberForm = () => {
   const [open, setOpen] = useState(false);
   const { data: activeOrg } = authClient.useActiveOrganization();
-
-  const form = useZodForm({
-    schema: Schema,
-    defaultValues: {
-      email: "",
-      role: "member",
-    },
-  });
   const router = useRouter();
 
   const mutation = useMutation({
@@ -72,6 +53,17 @@ export const OrganizationInviteMemberForm = () => {
       toast.success("Invitation sent");
       setOpen(false);
       router.refresh();
+    },
+  });
+
+  const form = useForm({
+    schema: Schema,
+    defaultValues: {
+      email: "",
+      role: "member",
+    },
+    onSubmit: async (values) => {
+      await mutation.mutateAsync(values);
     },
   });
 
@@ -100,63 +92,58 @@ export const OrganizationInviteMemberForm = () => {
         </DialogHeader>
 
         <div className="border-t p-6">
-          <Form
-            form={form}
-            onSubmit={async (v) => mutation.mutateAsync(v)}
-            className="flex flex-col gap-8"
-          >
-            <div className="flex items-end gap-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="colleague@company.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <Form form={form}>
+            <div className="flex flex-col gap-8">
+              <div className="flex items-end gap-4">
+                <form.AppField name="email">
+                  {(field) => (
+                    <field.Field className="flex-2">
+                      <field.Label>Email</field.Label>
+                      <field.Content>
+                        <field.Input
+                          type="email"
+                          placeholder="colleague@company.com"
+                        />
+                        <field.Message />
+                      </field.Content>
+                    </field.Field>
+                  )}
+                </form.AppField>
 
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select role" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {RolesKeys.filter((role) => role !== "owner").map(
-                          (role) => (
-                            <SelectItem key={role} value={role.toLowerCase()}>
-                              {role.charAt(0).toUpperCase() +
-                                role.slice(1).toLowerCase()}
-                            </SelectItem>
-                          ),
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
+                <form.AppField name="role">
+                  {(field) => (
+                    <field.Field className="flex-1">
+                      <field.Label>Role</field.Label>
+                      <field.Content>
+                        <field.Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {RolesKeys.filter((role) => role !== "owner").map(
+                              (role) => (
+                                <SelectItem
+                                  key={role}
+                                  value={role.toLowerCase()}
+                                >
+                                  {role.charAt(0).toUpperCase() +
+                                    role.slice(1).toLowerCase()}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </field.Select>
+                        <field.Message />
+                      </field.Content>
+                    </field.Field>
+                  )}
+                </form.AppField>
+              </div>
+
+              <form.SubmitButton className="w-full">
+                Send invite
+              </form.SubmitButton>
             </div>
-
-            <LoadingButton
-              loading={mutation.isPending}
-              type="submit"
-              className="w-full"
-            >
-              Send invite
-            </LoadingButton>
           </Form>
         </div>
       </DialogContent>

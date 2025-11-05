@@ -21,14 +21,21 @@ import { getRequiredAdmin } from "@/lib/auth/auth-user";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { UserDetailsCard } from "../../_components/user-details-card";
 import { UserActions } from "./_components/user-actions";
 import { UserProviders } from "./_components/user-providers";
 import { UserSessions } from "./_components/user-sessions";
 
-export default async function RoutePage(props: {
-  params: Promise<{ userId: string }>;
-}) {
+export default async function Page(props: PageProps<"/admin/users/[userId]">) {
+  return (
+    <Suspense fallback={null}>
+      <RoutePage {...props} />
+    </Suspense>
+  );
+}
+
+async function RoutePage(props: PageProps<"/admin/users/[userId]">) {
   const params = await props.params;
   await getRequiredAdmin();
 

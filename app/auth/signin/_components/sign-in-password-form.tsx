@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { authClient } from "@/lib/auth-client";
 import { getCallbackUrl } from "@/lib/auth/auth-utils";
 import { unwrapSafePromise } from "@/lib/promises";
@@ -30,14 +20,6 @@ export const SignInPasswordForm = (props: {
   callbackUrl?: string;
   email?: string;
 }) => {
-  const form = useZodForm({
-    schema: LoginCredentialsFormScheme,
-    defaultValues: {
-      email: props.email ?? "",
-      password: "",
-    },
-  });
-
   const signInMutation = useMutation({
     mutationFn: async (values: LoginCredentialsFormType) => {
       return unwrapSafePromise(
@@ -57,51 +39,51 @@ export const SignInPasswordForm = (props: {
     },
   });
 
-  function onSubmit(values: LoginCredentialsFormType) {
-    signInMutation.mutate(values);
-  }
+  const form = useForm({
+    schema: LoginCredentialsFormScheme,
+    defaultValues: {
+      email: props.email ?? "",
+      password: "",
+    },
+    onSubmit: async (values) => {
+      signInMutation.mutate(values);
+    },
+  });
 
   return (
-    <Form form={form} onSubmit={onSubmit} className="max-w-lg space-y-4">
-      <FormField
-        control={form.control}
-        name="email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input placeholder="john@doe.com" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+    <Form form={form} className="max-w-lg space-y-4">
+      <form.AppField name="email">
+        {(field) => (
+          <field.Field>
+            <field.Label>Email</field.Label>
+            <field.Content>
+              <field.Input type="email" placeholder="john@doe.com" />
+              <field.Message />
+            </field.Content>
+          </field.Field>
         )}
-      />
-      <FormField
-        control={form.control}
-        name="password"
-        render={({ field }) => (
-          <FormItem className="flex-1">
+      </form.AppField>
+
+      <form.AppField name="password">
+        {(field) => (
+          <field.Field className="flex-1">
             <div className="flex items-center justify-between">
-              <FormLabel>Password</FormLabel>
+              <field.Label>Password</field.Label>
               <Link href="/auth/forget-password" className="text-sm underline">
                 Forgot password ?
               </Link>
             </div>
-            <FormControl>
-              <Input type="password" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+            <field.Content>
+              <field.Input type="password" />
+              <field.Message />
+            </field.Content>
+          </field.Field>
         )}
-      />
+      </form.AppField>
 
-      <LoadingButton
-        loading={signInMutation.isPending}
-        type="submit"
-        className="ring-offset-card w-full ring-offset-2"
-      >
+      <form.SubmitButton className="ring-offset-card w-full ring-offset-2">
         Sign in
-      </LoadingButton>
+      </form.SubmitButton>
     </Form>
   );
 };

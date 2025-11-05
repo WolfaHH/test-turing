@@ -23,7 +23,15 @@ const feedbackSearchParams = {
 
 const searchParamsCache = createSearchParamsCache(feedbackSearchParams);
 
-export default async function AdminFeedbackPage({
+export default function Page(props: PageProps<"/admin/feedback">) {
+  return (
+    <Suspense fallback={null}>
+      <AdminFeedbackPage {...props} />
+    </Suspense>
+  );
+}
+
+async function AdminFeedbackPage({
   searchParams,
 }: PageProps<"/admin/feedback">) {
   await getRequiredAdmin();

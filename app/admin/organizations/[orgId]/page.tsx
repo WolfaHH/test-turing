@@ -12,15 +12,25 @@ import { prisma } from "@/lib/prisma";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { OrganizationMembers } from "./_components/organization-members";
+import { OrganizationOverrideLimits } from "./_components/organization-override-limits";
 import { OrganizationPayments } from "./_components/organization-payments";
 import { OrganizationSubscription } from "./_components/organization-subscription";
 
-export default async function OrganizationDetailPage(
+export default function Page(props: PageProps<"/admin/organizations/[orgId]">) {
+  return (
+    <Suspense fallback={null}>
+      <OrganizationDetailPage {...props} />
+    </Suspense>
+  );
+}
+
+async function OrganizationDetailPage(
   props: PageProps<"/admin/organizations/[orgId]">,
 ) {
-  await getRequiredAdmin();
   const params = await props.params;
+  await getRequiredAdmin();
 
   const organization = await prisma.organization.findUnique({
     where: {
@@ -88,6 +98,10 @@ export default async function OrganizationDetailPage(
           <OrganizationSubscription
             organization={organization}
             subscription={organization.subscription}
+          />
+          <OrganizationOverrideLimits
+            subscription={organization.subscription}
+            organizationId={organization.id}
           />
         </div>
       </LayoutContent>

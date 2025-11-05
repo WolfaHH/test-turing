@@ -52,8 +52,10 @@ export default function RootLayout({ children, modal }: LayoutProps<"/">) {
               showSpinner={false}
               color="hsl(var(--primary))"
             />
-            {children}
-            {modal}
+            <Suspense fallback={null}>
+              {children}
+              {modal}
+            </Suspense>
             <TailwindIndicator />
             <FloatingLegalFooter />
             <Suspense>

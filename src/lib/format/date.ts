@@ -1,6 +1,5 @@
-import { format } from "date-fns";
-import { enUS } from "date-fns/locale";
+import { dayjs } from "@/lib/dayjs";
 
 export const formatDate = (date: Date) => {
-  return format(date, "MMMM d, yyyy", { locale: enUS });
+  return dayjs(date).format("MMMM D, YYYY");
 };

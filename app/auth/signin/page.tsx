@@ -11,6 +11,7 @@ import { getUser } from "@/lib/auth/auth-user";
 import { SiteConfig } from "@/site-config";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { SignInProviders } from "./sign-in-providers";
 
 export const metadata: Metadata = {
@@ -19,7 +20,15 @@ export const metadata: Metadata = {
     "Sign in to your account to access testimonials and manage your projects.",
 };
 
-export default async function AuthSignInPage() {
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <AuthSignInPage />
+    </Suspense>
+  );
+}
+
+async function AuthSignInPage() {
   const user = await getUser();
 
   if (user) {

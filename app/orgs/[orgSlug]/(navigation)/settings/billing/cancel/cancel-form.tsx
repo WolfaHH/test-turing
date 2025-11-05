@@ -1,18 +1,9 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
-import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
+import { Button } from "@/components/ui/button";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -49,12 +40,6 @@ export function CancelSubscriptionForm({
   orgSlug: string;
 }) {
   const router = useRouter();
-  const form = useZodForm({
-    schema: CancelSchema,
-    defaultValues: {
-      details: "",
-    },
-  });
 
   const { execute: cancelSubscription, isPending } = useAction(
     cancelOrgSubscriptionAction,
@@ -73,86 +58,91 @@ export function CancelSubscriptionForm({
     },
   );
 
+  const form = useForm({
+    schema: CancelSchema,
+    defaultValues: {
+      reasonType: "other" as const,
+      details: "",
+    },
+    onSubmit: async () => {
+      cancelSubscription({
+        returnUrl: `/orgs/${orgSlug}/settings/billing`,
+      });
+    },
+  });
+
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Cancel Subscription</CardTitle>
       </CardHeader>
       <CardContent>
-        <Form
-          form={form}
-          onSubmit={async () => {
-            cancelSubscription({
-              returnUrl: `/orgs/${orgSlug}/settings/billing`,
-            });
-          }}
-        >
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="reasonType"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>What's your main reason for cancelling?</FormLabel>
-                  <FormControl>
+        <Form form={form}>
+          <div className="flex flex-col gap-6">
+            <form.AppField name="reasonType">
+              {(field) => (
+                <field.Field>
+                  <field.Label>
+                    What's your main reason for cancelling?
+                  </field.Label>
+                  <field.Content>
                     <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="space-y-2"
+                      name={field.name}
+                      value={field.state.value}
+                      onValueChange={(value) =>
+                        field.handleChange(
+                          value as
+                            | "too_expensive"
+                            | "not_using"
+                            | "missing_features"
+                            | "bugs"
+                            | "competitor"
+                            | "other",
+                        )
+                      }
+                      className="gap-2"
                     >
                       {Object.entries(CANCEL_REASONS).map(([value, label]) => (
-                        <FormItem
-                          key={value}
-                          className="flex items-center space-y-0 space-x-3"
-                        >
-                          <FormControl>
-                            <RadioGroupItem value={value} />
-                          </FormControl>
-                          <FormLabel className="cursor-pointer font-normal">
+                        <div key={value} className="flex items-center gap-3">
+                          <RadioGroupItem value={value} />
+                          <label className="cursor-pointer text-sm font-normal">
                             {label}
-                          </FormLabel>
-                        </FormItem>
+                          </label>
+                        </div>
                       ))}
                     </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                    <field.Message />
+                  </field.Content>
+                </field.Field>
               )}
-            />
+            </form.AppField>
 
-            <FormField
-              control={form.control}
-              name="details"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Additional details</FormLabel>
-                  <FormControl>
-                    <Textarea
+            <form.AppField name="details">
+              {(field) => (
+                <field.Field>
+                  <field.Label>Additional details</field.Label>
+                  <field.Content>
+                    <field.Textarea
                       placeholder="Please provide more details to help us improve..."
                       className="min-h-[100px]"
-                      {...field}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                    <field.Message />
+                  </field.Content>
+                </field.Field>
               )}
-            />
+            </form.AppField>
 
             <div className="flex gap-4">
-              <LoadingButton
-                type="submit"
-                variant="destructive"
-                loading={isPending}
-              >
+              <form.SubmitButton variant="destructive" disabled={isPending}>
                 Confirm Cancellation
-              </LoadingButton>
-              <LoadingButton
+              </form.SubmitButton>
+              <Button
                 type="button"
                 variant="outline"
                 onClick={() => router.push(`/orgs/${orgSlug}/settings/billing`)}
               >
                 Go Back
-              </LoadingButton>
+              </Button>
             </div>
           </div>
         </Form>

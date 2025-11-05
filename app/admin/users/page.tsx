@@ -1,50 +1,49 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Layout,
   LayoutContent,
-  LayoutDescription,
   LayoutHeader,
   LayoutTitle,
 } from "@/features/page/layout";
 import { getRequiredAdmin } from "@/lib/auth/auth-user";
-import { Suspense } from "react";
-import { searchParamsCache } from "./_actions/search-params";
-import { AdminFilters } from "./_components/admin-filters";
-import { UserTable } from "./_components/user-table";
+import { getUsersWithStats } from "./_actions/admin-users";
+import {
+  createSearchParamsCache,
+  parseAsInteger,
+  parseAsString,
+} from "nuqs/server";
+import { UsersList } from "./_components/users-list";
 
-export default async function AdminUsersPage({
-  searchParams,
-}: PageProps<"/admin/users">) {
+const searchParamsCache = createSearchParamsCache({
+  q: parseAsString.withDefault(""),
+  page: parseAsInteger.withDefault(1),
+});
+
+export default async function Page(props: PageProps<"/admin/users">) {
   await getRequiredAdmin();
 
-  const params = await searchParamsCache.parse(searchParams);
+  const { q, page } = await searchParamsCache.parse(props.searchParams);
+
+  const pageSize = 10;
+  const { users, total } = await getUsersWithStats({
+    page,
+    pageSize,
+    search: q || undefined,
+  });
 
   return (
-    <Layout size="lg">
+    <Layout>
       <LayoutHeader>
         <LayoutTitle>User Management</LayoutTitle>
-        <LayoutDescription>
-          View and manage all users in the system
-        </LayoutDescription>
       </LayoutHeader>
 
       <LayoutContent>
-        <div className="space-y-4">
-          <AdminFilters />
-
-          <Suspense fallback={<UserTableSkeleton />}>
-            <UserTable searchParams={params} />
-          </Suspense>
-        </div>
+        <UsersList
+          users={users}
+          total={total}
+          limit={pageSize}
+          currentPage={page}
+        />
       </LayoutContent>
     </Layout>
   );
 }
-
-const UserTableSkeleton = () => (
-  <div className="space-y-2">
-    {Array.from({ length: 10 }).map((_, i) => (
-      <Skeleton key={i} className="h-16 w-full" />
-    ))}
-  </div>
-);

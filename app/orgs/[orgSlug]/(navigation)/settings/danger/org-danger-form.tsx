@@ -8,16 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { authClient } from "@/lib/auth-client";
 import { formatId } from "@/lib/format/id";
 import { unwrapSafePromise } from "@/lib/promises";
@@ -34,10 +25,6 @@ type ProductFormProps = {
 };
 
 export const OrganizationDangerForm = ({ defaultValues }: ProductFormProps) => {
-  const form = useZodForm({
-    schema: OrgDangerFormSchema,
-    defaultValues,
-  });
   const router = useRouter();
   const org = useCurrentOrg();
 
@@ -61,66 +48,66 @@ export const OrganizationDangerForm = ({ defaultValues }: ProductFormProps) => {
         `/orgs/${data.slug}/`,
       );
       router.push(newUrl);
-      form.reset(data as OrgDangerFormSchemaType);
+      form.reset();
     },
     onError: (error) => {
       toast.error(error.message);
     },
   });
 
-  return (
-    <Form
-      form={form}
-      onSubmit={(v) => {
-        dialogManager.confirm({
-          title: "Are you sure ?",
-          description:
-            "You are about to change the unique identifier of your organization. All the previous URLs will be changed.",
-          action: {
-            label: "Yes, change the slug",
-            onClick: () => {
-              mutation.mutate(v);
-            },
+  const form = useForm({
+    schema: OrgDangerFormSchema,
+    defaultValues,
+    onSubmit: async (values) => {
+      dialogManager.confirm({
+        title: "Are you sure ?",
+        description:
+          "You are about to change the unique identifier of your organization. All the previous URLs will be changed.",
+        action: {
+          label: "Yes, change the slug",
+          onClick: () => {
+            mutation.mutate(values);
           },
-        });
-      }}
-      className="flex w-full flex-col gap-6 lg:gap-8"
-    >
-      <Card>
-        <CardHeader>
-          <CardTitle>Slug</CardTitle>
-          <CardDescription>
-            Slug is the unique identifier of your organization. It's used in all
-            the URLs, if you change it, all your URLs will be broken.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FormField
-            control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder=""
-                    {...field}
-                    onChange={(e) => {
-                      const slug = formatId(e.target.value);
-                      field.onChange(slug);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-        <CardFooter className="border-tu flex justify-end">
-          <LoadingButton loading={mutation.isPending} type="submit">
-            Save
-          </LoadingButton>
-        </CardFooter>
-      </Card>
+        },
+      });
+    },
+  });
+
+  return (
+    <Form form={form}>
+      <div className="flex w-full flex-col gap-6 lg:gap-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Slug</CardTitle>
+            <CardDescription>
+              Slug is the unique identifier of your organization. It's used in
+              all the URLs, if you change it, all your URLs will be broken.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form.AppField name="slug">
+              {(field) => (
+                <field.Field>
+                  <field.Content>
+                    <field.Input
+                      type="text"
+                      placeholder=""
+                      onChange={(e) => {
+                        const slug = formatId(e.target.value);
+                        field.handleChange(slug);
+                      }}
+                    />
+                    <field.Message />
+                  </field.Content>
+                </field.Field>
+              )}
+            </form.AppField>
+          </CardContent>
+          <CardFooter className="border-tu flex justify-end">
+            <form.SubmitButton>Save</form.SubmitButton>
+          </CardFooter>
+        </Card>
+      </div>
     </Form>
   );
 };

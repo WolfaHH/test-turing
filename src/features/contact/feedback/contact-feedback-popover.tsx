@@ -2,23 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
 import { InlineTooltip } from "@/components/ui/tooltip";
-import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { resolveActionResult } from "@/lib/actions/actions-utils";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -37,12 +26,6 @@ export const ContactFeedbackPopover = (props: ContactFeedbackPopoverProps) => {
   const [open, setOpen] = useState(false);
   const session = useSession();
   const email = session.data?.user ? session.data.user.email : "";
-  const form = useZodForm({
-    schema: ContactFeedbackSchema,
-    defaultValues: {
-      email: email,
-    },
-  });
 
   const mutation = useMutation({
     mutationFn: async (values: ContactFeedbackSchemaType) => {
@@ -58,9 +41,17 @@ export const ContactFeedbackPopover = (props: ContactFeedbackPopoverProps) => {
     },
   });
 
-  const onSubmit = async (values: ContactFeedbackSchemaType) => {
-    mutation.mutate(values);
-  };
+  const form = useForm({
+    schema: ContactFeedbackSchema,
+    defaultValues: {
+      email: email,
+      message: "",
+      review: undefined,
+    },
+    onSubmit: async (values) => {
+      mutation.mutate(values);
+    },
+  });
 
   return (
     <Popover open={open} onOpenChange={(v) => setOpen(v)}>
@@ -68,64 +59,50 @@ export const ContactFeedbackPopover = (props: ContactFeedbackPopoverProps) => {
         {props.children ?? <Button variant="outline">Feedback</Button>}
       </PopoverTrigger>
       <PopoverContent className="p-0">
-        <Form
-          form={form}
-          onSubmit={async (v) => onSubmit(v)}
-          className="flex flex-col gap-4"
-        >
-          <div className="p-2">
-            {email ? null : (
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
+        <Form form={form}>
+          <div className="flex flex-col gap-4">
+            <div className="p-2">
+              {email ? null : (
+                <form.AppField name="email">
+                  {(field) => (
+                    <field.Field>
+                      <field.Label>Email</field.Label>
+                      <field.Content>
+                        <field.Input type="email" placeholder="Email" />
+                        <field.Message />
+                      </field.Content>
+                    </field.Field>
+                  )}
+                </form.AppField>
+              )}
 
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Message</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="border-accent bg-accent/50 flex w-full items-center justify-between border-t p-2">
-            <FormField
-              control={form.control}
-              name="review"
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-2 space-y-0">
-                  <ReviewInput
-                    onChange={(v) => {
-                      field.onChange(v);
-                    }}
-                    value={field.value}
-                  />
-                </FormItem>
-              )}
-            />
-            <LoadingButton
-              loading={mutation.isPending}
-              type="submit"
-              variant="outline"
-            >
-              Send
-            </LoadingButton>
+              <form.AppField name="message">
+                {(field) => (
+                  <field.Field>
+                    <field.Label>Message</field.Label>
+                    <field.Content>
+                      <field.Textarea placeholder="Enter your message" />
+                      <field.Message />
+                    </field.Content>
+                  </field.Field>
+                )}
+              </form.AppField>
+            </div>
+            <div className="border-accent bg-accent/50 flex w-full items-center justify-between border-t p-2">
+              <form.AppField name="review">
+                {(field) => (
+                  <div className="flex items-center gap-2">
+                    <ReviewInput
+                      onChange={(v) => {
+                        field.handleChange(v);
+                      }}
+                      value={field.state.value}
+                    />
+                  </div>
+                )}
+              </form.AppField>
+              <form.SubmitButton variant="outline">Send</form.SubmitButton>
+            </div>
           </div>
         </Form>
       </PopoverContent>

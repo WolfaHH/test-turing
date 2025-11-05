@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDistanceToNow } from "date-fns";
+import { dayjs } from "@/lib/dayjs";
 
 import { CalendarDays, Mail, UserRound } from "lucide-react";
 import Link from "next/link";
@@ -82,11 +82,7 @@ export function OrganizationMembers({
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <CalendarDays className="text-muted-foreground h-4 w-4" />
-                    <span>
-                      {formatDistanceToNow(member.createdAt, {
-                        addSuffix: true,
-                      })}
-                    </span>
+                    <span>{dayjs(member.createdAt).fromNow()}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-right">

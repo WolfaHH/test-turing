@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,16 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { FormAutoSave } from "@/features/form/form-auto-save";
-import { FormAutoSaveStickyBar } from "@/features/form/form-auto-save-sticky-bar";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { ImageFormItem } from "@/features/images/image-form-item";
 import { authClient } from "@/lib/auth-client";
 import { unwrapSafePromise } from "@/lib/promises";
@@ -35,10 +25,6 @@ type ProductFormProps = {
 };
 
 export const OrgDetailsForm = ({ defaultValues }: ProductFormProps) => {
-  const form = useZodForm({
-    schema: OrgDetailsFormSchema,
-    defaultValues,
-  });
   const router = useRouter();
   const org = useCurrentOrg();
   const mutation = useMutation({
@@ -57,78 +43,74 @@ export const OrgDetailsForm = ({ defaultValues }: ProductFormProps) => {
         }),
       );
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       router.refresh();
-      form.reset(data);
     },
     onError: (error) => {
       toast.error(error.message);
     },
   });
 
+  const form = useForm({
+    schema: OrgDetailsFormSchema,
+    defaultValues,
+    onSubmit: async (values) => {
+      await mutation.mutateAsync(values);
+    },
+  });
+
   return (
-    <FormAutoSave
-      form={form}
-      onSubmit={async (v) => {
-        return mutation.mutateAsync(v);
-      }}
-      className="flex w-full flex-col gap-6 lg:gap-8"
-    >
-      <FormAutoSaveStickyBar />
-      <Card>
-        <CardHeader>
-          <CardTitle>Image</CardTitle>
-          <CardDescription>
-            Add a custom image to your organization.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FormField
-            control={form.control}
-            name="logo"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <ImageFormItem
-                    className="size-32 rounded-full"
-                    onChange={(url) => field.onChange(url)}
-                    imageUrl={field.value}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Name</CardTitle>
-          <CardDescription>
-            Use your organization's name or your name if you don't have an
-            organization.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-      </Card>
-      <Card className="flex items-end p-6">
-        <Button type="submit" className="w-fit">
-          Save
-        </Button>
-      </Card>
-    </FormAutoSave>
+    <Form form={form}>
+      <div className="flex w-full flex-col gap-6 lg:gap-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Image</CardTitle>
+            <CardDescription>
+              Add a custom image to your organization.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form.AppField name="logo">
+              {(field) => (
+                <field.Field>
+                  <field.Content>
+                    <ImageFormItem
+                      className="size-32 rounded-full"
+                      onChange={(url) => field.setValue(url)}
+                      imageUrl={field.state.value}
+                    />
+                    <field.Message />
+                  </field.Content>
+                </field.Field>
+              )}
+            </form.AppField>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Name</CardTitle>
+            <CardDescription>
+              Use your organization's name or your name if you don't have an
+              organization.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form.AppField name="name">
+              {(field) => (
+                <field.Field>
+                  <field.Content>
+                    <field.Input placeholder="" />
+                    <field.Message />
+                  </field.Content>
+                </field.Field>
+              )}
+            </form.AppField>
+          </CardContent>
+        </Card>
+        <Card className="flex items-end p-6">
+          <form.SubmitButton className="w-fit">Save</form.SubmitButton>
+        </Card>
+      </div>
+    </Form>
   );
 };

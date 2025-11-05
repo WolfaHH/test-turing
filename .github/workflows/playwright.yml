@@ -33,6 +33,7 @@ jobs:
       # Core
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/nowts_test"
       DATABASE_URL_UNPOOLED: "postgresql://postgres:postgres@localhost:5432/nowts_test"
+      REDIS_URL: "redis://localhost:6379"
       BETTER_AUTH_SECRET: "test-secret-key-for-ci-testing-only-not-production"
       BETTER_AUTH_URL: "http://localhost:3000"
       NODE_ENV: "production"
@@ -76,6 +77,16 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+
+      redis:
+        image: redis/redis-stack-server:6.2.6-v6
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
 
     steps:
       - name: Checkout

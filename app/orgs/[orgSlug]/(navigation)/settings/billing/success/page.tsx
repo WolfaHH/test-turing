@@ -10,13 +10,22 @@ import { combineWithParentMetadata } from "@/lib/metadata";
 import { getRequiredCurrentOrgCache } from "@/lib/react/cache";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export const generateMetadata = combineWithParentMetadata({
   title: "Subscription Successful",
   description: "Your subscription has been successfully activated.",
 });
 
-export default async function SubscriptionSuccessPage() {
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <SubscriptionSuccessPage />
+    </Suspense>
+  );
+}
+
+async function SubscriptionSuccessPage() {
   const org = await getRequiredCurrentOrgCache({
     permissions: {
       subscription: ["manage"],

@@ -22,7 +22,15 @@ export const metadata: Metadata = {
     "Create your account to start collecting powerful testimonials for your projects.",
 };
 
-export default async function AuthSignInPage() {
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <AuthSignInPage />
+    </Suspense>
+  );
+}
+
+async function AuthSignInPage() {
   const user = await getUser();
 
   if (user) {

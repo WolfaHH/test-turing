@@ -18,6 +18,8 @@ const DEFAULT_LIMIT = {
 
 export type PlanLimit = typeof DEFAULT_LIMIT;
 
+export type OverrideLimits = Partial<PlanLimit>;
+
 type HookCtx = {
   req: Request;
   organizationId: string;
@@ -186,8 +188,35 @@ export const ADDITIONAL_FEATURES = {
   ],
 };
 
-export const getPlanLimits = (plan = "free"): PlanLimit => {
+export const getPlanLimits = (
+  plan = "free",
+  overrideLimits?: OverrideLimits | null,
+): PlanLimit => {
   const planLimits = AUTH_PLANS.find((p) => p.name === plan)?.limits;
 
-  return planLimits ?? DEFAULT_LIMIT;
+  const baseLimits = planLimits ?? DEFAULT_LIMIT;
+
+  if (!overrideLimits) {
+    return baseLimits;
+  }
+
+  return {
+    ...baseLimits,
+    ...overrideLimits,
+  };
+};
+
+export const getPlanFeatures = (plan: AppAuthPlan): string[] => {
+  const features: string[] = [
+    ...Object.entries(plan.limits)
+      .filter(([key]) => key in LIMITS_CONFIG)
+      .map(([key, value]) => {
+        const limitConfig = LIMITS_CONFIG[key as keyof typeof LIMITS_CONFIG];
+        return limitConfig.getLabel(value as number);
+      }),
+    ...ADDITIONAL_FEATURES[plan.name as keyof typeof ADDITIONAL_FEATURES].map(
+      (f) => f.label,
+    ),
+  ];
+  return features;
 };

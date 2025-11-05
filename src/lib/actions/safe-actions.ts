@@ -143,6 +143,47 @@ export const orgAction = createSafeActionClient({
   }
 });
 
+/**
+ * Admin-only safe action client
+ *
+ * @description
+ * - Validates user session and admin role using getRequiredUser()
+ * - Throws ActionError if user is not authenticated or not an admin
+ * - Provides authenticated admin user in context as ctx.user
+ * - Ensures all actions require admin privileges
+ *
+ * Use this for actions that require admin role access.
+ *
+ * @example
+ * ```ts
+ * export const updateSubscriptionPlan = adminAction
+ *   .inputSchema(z.object({
+ *     organizationId: z.string(),
+ *     planName: z.string(),
+ *   }))
+ *   .action(async ({ parsedInput: { organizationId, planName }, ctx: { user } }) => {
+ *     // user is guaranteed to be an admin
+ *     await updateOrgPlan(organizationId, planName);
+ *     return { updated: true };
+ *   });
+ * ```
+ */
+export const adminAction = createSafeActionClient({
+  handleServerError,
+}).use(async ({ next }) => {
+  const user = await getRequiredUser();
+
+  if (user.role !== "admin") {
+    throw new ActionError("You must be an admin to perform this action.");
+  }
+
+  return next({
+    ctx: {
+      user: user,
+    },
+  });
+});
+
 function handleServerError(e: Error) {
   if (e instanceof ApplicationError) {
     logger.debug("[DEV] - Action Error", e.message);

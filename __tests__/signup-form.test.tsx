@@ -2,6 +2,7 @@ import { authClient } from "@/lib/auth-client";
 import "@testing-library/jest-dom/vitest";
 import { screen, waitFor } from "@testing-library/react";
 import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SignUpCredentialsForm } from "../app/auth/signup/sign-up-credentials-form";
 import { setup } from "../test/setup";
@@ -52,9 +53,9 @@ describe("SignUpCredentialsForm", () => {
     // Submit the form
     await user.click(screen.getByRole("button", { name: /sign up/i }));
 
-    // Should show error message
+    // Should show error message via toast
     await waitFor(() => {
-      expect(screen.getByText(/password does not match/i)).toBeInTheDocument();
+      expect(toast.error).toHaveBeenCalledWith("Password does not match");
     });
 
     // Should not call signup API

@@ -1,16 +1,7 @@
 "use client";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { resolveActionResult } from "@/lib/actions/actions-utils";
 import { useMutation } from "@tanstack/react-query";
 import { AlertCircle, CheckCircle } from "lucide-react";
@@ -29,10 +20,6 @@ export const EmailForm = ({
   submitButtonLabel = "Subscribe",
   successMessage = "You have subscribed to our newsletter.",
 }: EmailFormProps) => {
-  const form = useZodForm({
-    schema: EmailActionSchema,
-  });
-
   const submit = useMutation({
     mutationFn: async ({ email }: EmailActionSchemaType) => {
       return resolveActionResult(addEmailAction({ email }));
@@ -42,6 +29,16 @@ export const EmailForm = ({
     },
     onError: () => {
       toast.error("An error occurred");
+    },
+  });
+
+  const form = useForm({
+    schema: EmailActionSchema,
+    defaultValues: {
+      email: "",
+    },
+    onSubmit: async (values) => {
+      submit.mutate(values);
     },
   });
 
@@ -76,36 +73,25 @@ export const EmailForm = ({
             opacity: 0,
           }}
         >
-          <Form
-            form={form}
-            onSubmit={async (v) => submit.mutate(v)}
-            className="flex flex-col gap-4"
-            disabled={submit.isPending}
-          >
+          <Form form={form} className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="relative w-full">
-                    <FormControl>
-                      <Input
+              <form.AppField name="email">
+                {(field) => (
+                  <field.Field className="relative w-full">
+                    <field.Content>
+                      <field.Input
+                        type="email"
                         className="border-accent-foreground/20 bg-accent focus-visible:ring-foreground py-5 text-lg"
                         placeholder="Ton email"
-                        {...field}
                       />
-                    </FormControl>
-                    <FormMessage className="absolute -bottom-5" />
-                  </FormItem>
+                      <field.Message className="absolute -bottom-5" />
+                    </field.Content>
+                  </field.Field>
                 )}
-              />
-              <LoadingButton
-                size="lg"
-                variant="invert"
-                loading={submit.isPending}
-              >
+              </form.AppField>
+              <form.SubmitButton size="lg" variant="invert">
                 {submitButtonLabel}
-              </LoadingButton>
+              </form.SubmitButton>
             </div>
             {submit.isError && (
               <Alert variant="destructive">

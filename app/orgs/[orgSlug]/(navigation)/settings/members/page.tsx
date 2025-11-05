@@ -3,6 +3,7 @@ import { combineWithParentMetadata } from "@/lib/metadata";
 import { prisma } from "@/lib/prisma";
 import { getRequiredCurrentOrgCache } from "@/lib/react/cache";
 import { getOrgsMembers } from "@/query/org/get-orgs-members";
+import { Suspense } from "react";
 import { OrgMembersForm } from "./org-members-form";
 
 export const generateMetadata = combineWithParentMetadata({
@@ -10,9 +11,17 @@ export const generateMetadata = combineWithParentMetadata({
   description: "Manage your organization members.",
 });
 
-export default async function RoutePage(
+export default function Page(
   props: PageProps<"/orgs/[orgSlug]/settings/members">,
 ) {
+  return (
+    <Suspense fallback={null}>
+      <RoutePage {...props} />
+    </Suspense>
+  );
+}
+
+async function RoutePage(props: PageProps<"/orgs/[orgSlug]/settings/members">) {
   const org = await getRequiredCurrentOrgCache({
     permissions: {
       member: ["create", "update", "delete"],

@@ -104,8 +104,7 @@ export function Footer() {
                   {SiteConfig.company.address}
                 </p>
                 <p className="text-muted-foreground text-sm">
-                  © {new Date().getFullYear()} {SiteConfig.company.name}. All
-                  rights reserved.
+                  © 2025 {SiteConfig.company.name}. All rights reserved.
                 </p>
               </div>
             </div>

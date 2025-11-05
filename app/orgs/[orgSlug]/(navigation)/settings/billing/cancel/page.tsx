@@ -6,9 +6,18 @@ import {
   LayoutTitle,
 } from "@/features/page/layout";
 import { getRequiredCurrentOrgCache } from "@/lib/react/cache";
+import { Suspense } from "react";
 import { CancelSubscriptionForm } from "./cancel-form";
 
-export default async function CancelSubscriptionPage() {
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <CancelSubscriptionPage />
+    </Suspense>
+  );
+}
+
+async function CancelSubscriptionPage() {
   const org = await getRequiredCurrentOrgCache();
 
   return (

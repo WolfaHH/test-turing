@@ -8,10 +8,19 @@ import {
 } from "@/features/page/layout";
 import { hasPermission } from "@/lib/auth/auth-org";
 import Link from "next/link";
+import { Suspense } from "react";
 import InformationCards from "./information-cards";
 import { SubscribersChart } from "./subscribers-charts";
 
-export default async function RoutePage(props: PageProps<"/orgs/[orgSlug]">) {
+export default function Page(props: PageProps<"/orgs/[orgSlug]">) {
+  return (
+    <Suspense fallback={null}>
+      <RoutePage {...props} />
+    </Suspense>
+  );
+}
+
+async function RoutePage(props: PageProps<"/orgs/[orgSlug]">) {
   const params = await props.params;
 
   return (

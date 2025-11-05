@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -5,8 +6,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { AUTH_PLANS } from "@/lib/auth/stripe/auth-plans";
-import { PricingCard } from "../plans/pricing-card";
+import { AUTH_PLANS, getPlanFeatures } from "@/lib/auth/stripe/auth-plans";
+import { SimplePricingCard } from "@app/orgs/[orgSlug]/(navigation)/settings/billing/(tabs)/_components/simple-pricing-card";
+import Link from "next/link";
 import { closeGlobalDialog } from "./global-dialog.store";
 
 export const OrgPlanDialog = () => {
@@ -24,7 +26,18 @@ export const OrgPlanDialog = () => {
         </DialogHeader>
         <div className="mt-8 flex w-full justify-center gap-4 max-md:flex-col lg:mt-12 lg:gap-8 xl:gap-12">
           {AUTH_PLANS.map((card, i) => (
-            <PricingCard key={i} plan={card} />
+            <SimplePricingCard
+              key={i}
+              title={card.name}
+              price={card.price.toString()}
+              period="month"
+              features={getPlanFeatures(card)}
+              action={
+                <Button asChild>
+                  <Link href="/orgs/default/settings/billing">Upgrade</Link>
+                </Button>
+              }
+            />
           ))}
         </div>
       </DialogContent>

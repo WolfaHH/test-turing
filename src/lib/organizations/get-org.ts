@@ -12,28 +12,18 @@ type OrgParams = {
   permissions?: AuthPermission;
 };
 
-type MemberWithUser = {
-  userId: string;
-  role: string;
-  user: {
-    email: string;
-  };
-};
-
 const getOrg = async () => {
   const user = await getSession();
 
   if (user?.session.activeOrganizationId) {
-    // Get organization directly from Prisma to include stripeCustomerId
+    // Get organization with only current user's membership to avoid over-fetching
     return prisma.organization.findFirst({
       where: { id: user.session.activeOrganizationId },
       include: {
         members: {
-          include: {
-            user: true,
-          },
+          where: { userId: user.session.userId },
+          select: { userId: true, role: true },
         },
-        invitations: true,
       },
     });
   }
@@ -54,9 +44,7 @@ export const getCurrentOrg = async (params?: OrgParams) => {
     return null;
   }
 
-  const memberRoles = org.members
-    .filter((member: MemberWithUser) => member.userId === user.session.userId)
-    .map((member: MemberWithUser) => member.role) as AuthRole[];
+  const memberRoles = org.members.map((member) => member.role) as AuthRole[];
 
   if (memberRoles.length === 0 || !isInRoles(memberRoles, params?.roles)) {
     return null;
@@ -77,13 +65,17 @@ export const getCurrentOrg = async (params?: OrgParams) => {
 
   const currentSubscription = await getOrgActiveSubscription(org.id);
 
-  const OWNER = org.members.find((m: MemberWithUser) => m.role === "owner");
+  // Fetch owner's email separately only when needed
+  const ownerMember = await prisma.member.findFirst({
+    where: { organizationId: org.id, role: "owner" },
+    select: { user: { select: { email: true } } },
+  });
 
   return {
     ...org,
     slug: org.slug ?? "org-slug-default",
     user: user.user,
-    email: (OWNER?.user.email ?? null) as string | null,
+    email: (ownerMember?.user.email ?? null) as string | null,
     memberRoles: memberRoles,
     subscription: currentSubscription ?? null,
   };

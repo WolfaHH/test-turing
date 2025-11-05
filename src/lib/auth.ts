@@ -45,7 +45,16 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 20, // 20 days
     updateAge: 60 * 60 * 24 * 7, // Refresh session every 7 days
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutes - cache session in signed cookie
+    },
   },
+  rateLimit: {
+    // Disable rate limiting in CI
+    enabled: env.CI ? false : undefined,
+  },
+  trustedOrigins: ["*"],
   databaseHooks: {
     user: {
       create: {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/promise-function-async */
 "use client";
 
-import type { PlanLimit } from "@/lib/auth/stripe/auth-plans";
+import type { OverrideLimits, PlanLimit } from "@/lib/auth/stripe/auth-plans";
 import { getPlanLimits } from "@/lib/auth/stripe/auth-plans";
 import type { CurrentOrgPayload } from "@/lib/organizations/get-org";
 import type { PropsWithChildren } from "react";
@@ -51,7 +51,12 @@ export const InjectCurrentOrgStore = (
     name: props.org.name,
     image: props.org.image,
     subscription: props.org.subscription,
-    limits: getPlanLimits(props.org.subscription?.plan),
+    limits: getPlanLimits(
+      props.org.subscription?.plan,
+      props.org.subscription?.overrideLimits
+        ? (props.org.subscription.overrideLimits as unknown as OverrideLimits)
+        : null,
+    ),
   });
   return props.children;
 };

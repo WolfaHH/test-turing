@@ -1,7 +1,14 @@
 import type { Prisma } from "@/generated/prisma";
 import { prisma } from "@/lib/prisma";
 
-const OrganizationInclude = {} satisfies Prisma.OrganizationInclude;
+const OrganizationInclude = {
+  subscription: true,
+  _count: {
+    select: {
+      members: true,
+    },
+  },
+} satisfies Prisma.OrganizationInclude;
 
 export type OrganizationWithStats = Prisma.OrganizationGetPayload<{
   include: typeof OrganizationInclude;

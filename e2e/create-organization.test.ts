@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "@playwright/test";
-import { nanoid } from "nanoid";
 import { createTestAccount } from "./utils/auth-test";
 
 test.describe("Create Organization", () => {
@@ -19,14 +18,12 @@ test.describe("Create Organization", () => {
       page.getByRole("heading", { name: "Dashboard" }),
     ).toBeVisible();
 
-    // Click on organization selector
-    await page.getByTestId("org-selector").click();
-
-    // Click on "Add a new organization" button
-    await page.getByText("Add a new organization").click();
+    // Go to the new organization creation page
+    await page.goto("/orgs/new");
 
     // Fill organization form
-    const orgName = `${faker.animal.bear()}-${nanoid(3)}`.toLowerCase();
+    const orgName =
+      `${faker.animal.bear()}-${faker.string.alphanumeric(3)}`.toLowerCase();
     const expectedSlug = orgName.split(" ").join("-");
 
     await page.getByLabel(/organization name/i).fill(orgName);

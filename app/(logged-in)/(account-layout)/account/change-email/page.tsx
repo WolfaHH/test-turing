@@ -7,17 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useZodForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoadingButton } from "@/features/form/submit-button";
+import { Form, useForm } from "@/features/form/tanstack-form";
 import { authClient, useSession } from "@/lib/auth-client";
 import { unwrapSafePromise } from "@/lib/promises";
 import { useMutation } from "@tanstack/react-query";
@@ -34,13 +24,6 @@ type ChangeEmailFormType = z.infer<typeof ChangeEmailFormSchema>;
 export default function ChangeEmailPage() {
   const router = useRouter();
   const session = useSession();
-
-  const form = useZodForm({
-    schema: ChangeEmailFormSchema,
-    defaultValues: {
-      newEmail: session.data?.user.email,
-    },
-  });
 
   const changeEmailMutation = useMutation({
     mutationFn: async (values: ChangeEmailFormType) => {
@@ -59,9 +42,15 @@ export default function ChangeEmailPage() {
     },
   });
 
-  function onSubmit(values: ChangeEmailFormType) {
-    changeEmailMutation.mutate(values);
-  }
+  const form = useForm({
+    schema: ChangeEmailFormSchema,
+    defaultValues: {
+      newEmail: session.data?.user.email ?? "",
+    },
+    onSubmit: async (values) => {
+      await changeEmailMutation.mutateAsync(values);
+    },
+  });
 
   return (
     <Card>
@@ -73,31 +62,22 @@ export default function ChangeEmailPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Form form={form} onSubmit={onSubmit} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="newEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>New Email</FormLabel>
-                <FormControl>
-                  <Input
+        <Form form={form} className="space-y-4">
+          <form.AppField name="newEmail">
+            {(field) => (
+              <field.Field>
+                <field.Label>New Email</field.Label>
+                <field.Content>
+                  <field.Input
                     type="email"
                     placeholder="new-email@example.com"
-                    {...field}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+                  <field.Message />
+                </field.Content>
+              </field.Field>
             )}
-          />
-          <LoadingButton
-            loading={changeEmailMutation.isPending}
-            type="submit"
-            className="w-full"
-          >
-            Change Email
-          </LoadingButton>
+          </form.AppField>
+          <form.SubmitButton className="w-full">Change Email</form.SubmitButton>
         </Form>
       </CardContent>
     </Card>
