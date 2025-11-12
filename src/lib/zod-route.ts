@@ -14,8 +14,12 @@ import { getCurrentOrg } from "./organizations/get-org";
  * @example
  * ```ts
  * export const POST = route
+ *   // next.js params in the url
  *   .params(z.object({ id: z.string() }))
+ *   // body of the request
  *   .body(z.object({ name: z.string() }))
+ *   // search params is stored inside query
+ *   .query(z.object({ page: z.number().optional() }))
  *   .handler(async (req, { params, body }) => {
  *     return { success: true };
  *   });
