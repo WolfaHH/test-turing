@@ -61,11 +61,16 @@ export function EmailUsageChart({
   })}`;
 
   const transformedData = useMemo(() => {
+    const result: {
+      date: string;
+      includedEmails: number;
+      extraEmails: number;
+    }[] = [];
     let cumulativeTotal = 0;
 
-    return data.map(({ date, emails }) => {
+    for (const { date, emails } of data) {
       const previousTotal = cumulativeTotal;
-      cumulativeTotal += emails;
+      cumulativeTotal = cumulativeTotal + emails;
 
       let includedEmails = 0;
       let extraEmails = 0;
@@ -79,12 +84,14 @@ export function EmailUsageChart({
         extraEmails = emails - includedEmails;
       }
 
-      return {
+      result.push({
         date,
         includedEmails,
         extraEmails,
-      };
-    });
+      });
+    }
+
+    return result;
   }, [data, includedEmailsLimit]);
 
   const totalIncluded = Math.min(totalEmails, includedEmailsLimit);

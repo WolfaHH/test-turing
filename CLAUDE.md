@@ -21,8 +21,15 @@ If you read this, ask question about the project to fill this part. You need to 
 
 ### Testing Commands
 
-- `pnpm test:ci` - Run unit tests in CI mode
-- `pnpm test:e2e:ci` - Run e2e tests in CI mode (headless)
+**CRITICAL - ALWAYS use CI commands for testing (non-interactive mode):**
+
+- **ALWAYS run `pnpm test:ci`** - Run unit tests in CI mode (located in `__tests__/`)
+- **ALWAYS run `pnpm test:e2e:ci`** - Run e2e tests in CI mode (headless) (located in `e2e/`)
+
+**NEVER run these interactive commands:**
+
+- **NEVER** `pnpm test` - Interactive mode (not compatible with Claude Code)
+- **NEVER** `pnpm test:e2e` - Interactive mode (not compatible with Claude Code)
 
 ### Database Commands
 
@@ -152,10 +159,14 @@ If you read this, ask question about the project to fill this part. You need to 
 - `src/features/dialog-manager/` - Global dialog system
 - `src/lib/actions/actions-utils.ts` - Server action utilities
 - `src/components/ui/form.tsx` - Form components
-- `prisma/schema.prisma` - Database schema
 - `src/site-config.ts` - Site configuration
 - `src/lib/actions/safe-actions.ts` - All Server Action SHOULD use this logic
 - `src/lib/zod-route.ts` - All Next.js route (inside the folder `/app/api` and name `route.ts`) SHOULD use this logic
+
+### Database Schemas
+
+- `prisma/schema/schema.prisma` - Main database schema
+- `prisma/schema/better-auth.prisma` - Better Auth schema (auto-generated)
 
 ## Development Notes
 

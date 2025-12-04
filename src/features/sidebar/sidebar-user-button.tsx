@@ -12,7 +12,7 @@ export const SidebarUserButton = () => {
 
   return (
     <UserDropdown>
-      <SidebarMenuButton variant="outline" className="h-12">
+      <SidebarMenuButton variant="outline" className="bg-secondary h-12 border">
         <Avatar className="size-8 rounded-lg">
           <AvatarImage src={data?.image ?? ""} alt={data?.name[0]} />
           <AvatarFallback className="rounded-lg">

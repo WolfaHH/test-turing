@@ -46,7 +46,9 @@ export const SignInPasswordForm = (props: {
       password: "",
     },
     onSubmit: async (values) => {
-      signInMutation.mutate(values);
+      await signInMutation.mutateAsync(values).catch(() => {
+        // Error handled by mutation's onError
+      });
     },
   });
 
@@ -69,7 +71,11 @@ export const SignInPasswordForm = (props: {
           <field.Field className="flex-1">
             <div className="flex items-center justify-between">
               <field.Label>Password</field.Label>
-              <Link href="/auth/forget-password" className="text-sm underline">
+              <Link
+                href="/auth/forget-password"
+                className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+                tabIndex={-1}
+              >
                 Forgot password ?
               </Link>
             </div>

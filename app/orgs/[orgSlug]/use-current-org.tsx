@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/promise-function-async */
 "use client";
 
 import type { OverrideLimits, PlanLimit } from "@/lib/auth/stripe/auth-plans";
 import { getPlanLimits } from "@/lib/auth/stripe/auth-plans";
 import type { CurrentOrgPayload } from "@/lib/organizations/get-org";
+import type React from "react";
 import type { PropsWithChildren } from "react";
+import { useEffect } from "react";
 import { create } from "zustand";
 
 type CurrentOrgStore = {
@@ -40,23 +41,27 @@ export const InjectCurrentOrgStore = (
   props: PropsWithChildren<{
     org?: Omit<CurrentOrgStore, "limits">;
   }>,
-) => {
-  if (!props.org) return props.children;
+): React.ReactNode => {
+  const org = props.org;
 
-  if (useCurrentOrg.getState()) return props.children;
+  useEffect(() => {
+    if (!org) return;
+    if (useCurrentOrg.getState()) return;
 
-  useCurrentOrg.setState({
-    id: props.org.id,
-    slug: props.org.slug,
-    name: props.org.name,
-    image: props.org.image,
-    subscription: props.org.subscription,
-    limits: getPlanLimits(
-      props.org.subscription?.plan,
-      props.org.subscription?.overrideLimits
-        ? (props.org.subscription.overrideLimits as unknown as OverrideLimits)
-        : null,
-    ),
-  });
+    useCurrentOrg.setState({
+      id: org.id,
+      slug: org.slug,
+      name: org.name,
+      image: org.image,
+      subscription: org.subscription,
+      limits: getPlanLimits(
+        org.subscription?.plan,
+        org.subscription?.overrideLimits
+          ? (org.subscription.overrideLimits as unknown as OverrideLimits)
+          : null,
+      ),
+    });
+  }, [org]);
+
   return props.children;
 };

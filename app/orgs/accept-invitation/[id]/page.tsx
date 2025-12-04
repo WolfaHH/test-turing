@@ -1,13 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Layout,
-  LayoutContent,
-  LayoutDescription,
-  LayoutHeader,
-  LayoutTitle,
-} from "@/features/page/layout";
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { auth, SocialProviders } from "@/lib/auth";
 import { getUser } from "@/lib/auth/auth-user";
 import { prisma } from "@/lib/prisma";
@@ -36,64 +36,82 @@ export default async function RoutePage(
     },
   });
 
+  if (!invitation) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <Card className="mx-auto w-full max-w-md lg:max-w-lg lg:p-6">
+          <CardHeader className="text-center">
+            <CardTitle>Invitation Not Found</CardTitle>
+            <CardDescription>
+              This invitation may have expired or been revoked.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <Layout>
-      <LayoutHeader className="flex flex-col items-center gap-4">
-        <div className="mt-4 flex justify-center">
-          <Avatar className="size-16">
-            {invitation?.organization.logo ? (
-              <AvatarImage
-                src={invitation.organization.logo}
-                alt={invitation.organization.name}
-              />
-            ) : null}
-            <AvatarFallback>
-              {invitation?.organization.name.substring(0, 1).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </div>
-        <LayoutTitle className="text-center">
-          Invitation to join {invitation?.organization.name}
-        </LayoutTitle>
-
-        <LayoutDescription className="text-center">
-          Invite members to collaborate in your organization
-        </LayoutDescription>
-      </LayoutHeader>
-      <LayoutContent>
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <Card className="mx-auto w-full max-w-md lg:max-w-lg lg:p-6">
+        <CardHeader>
+          <div className="flex justify-center">
+            <Avatar className="size-16">
+              {invitation.organization.logo ? (
+                <AvatarImage
+                  src={invitation.organization.logo}
+                  alt={invitation.organization.name}
+                />
+              ) : null}
+              <AvatarFallback className="text-xl font-medium">
+                {invitation.organization.name.substring(0, 1).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <CardTitle className="text-center">
+            Join {invitation.organization.name}
+          </CardTitle>
+          <CardDescription className="text-center">
+            You&apos;ve been invited to collaborate in this organization
+          </CardDescription>
+        </CardHeader>
         {user ? (
-          <form className="mx-auto w-fit">
-            <Button
-              formAction={async () => {
-                "use server";
+          <CardFooter className="flex flex-col gap-4 border-t pt-6">
+            <p className="text-muted-foreground text-center text-sm">
+              Signed in as <span className="font-medium">{user.email}</span>
+            </p>
+            <form className="w-full">
+              <Button
+                className="w-full"
+                formAction={async () => {
+                  "use server";
 
-                await auth.api.acceptInvitation({
-                  body: {
-                    invitationId: params.id,
-                  },
-                  headers: await headers(),
-                });
+                  await auth.api.acceptInvitation({
+                    body: {
+                      invitationId: params.id,
+                    },
+                    headers: await headers(),
+                  });
 
-                redirect(`/orgs/${invitation?.organization.slug}`);
-              }}
-            >
-              Accept Invitation
-            </Button>
-          </form>
+                  redirect(`/orgs/${invitation.organization.slug}`);
+                }}
+              >
+                Accept Invitation
+              </Button>
+            </form>
+          </CardFooter>
         ) : (
-          <Card className="mx-auto max-w-lg">
-            <CardHeader>
-              <CardTitle>Sign in to accept invitation</CardTitle>
-            </CardHeader>
-            <CardContent className="border-t pt-6">
-              <SignInProviders
-                callbackUrl={`/orgs/accept-invitation/${params.id}`}
-                providers={Object.keys(SocialProviders ?? {})}
-              />
-            </CardContent>
-          </Card>
+          <CardContent className="border-t pt-6">
+            <p className="text-muted-foreground mb-4 text-center text-sm">
+              Sign in to accept this invitation
+            </p>
+            <SignInProviders
+              callbackUrl={`/orgs/accept-invitation/${params.id}`}
+              providers={Object.keys(SocialProviders ?? {})}
+            />
+          </CardContent>
         )}
-      </LayoutContent>
-    </Layout>
+      </Card>
+    </div>
   );
 }

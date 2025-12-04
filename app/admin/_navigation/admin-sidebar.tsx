@@ -21,7 +21,7 @@ import { SidebarUserButton } from "@/features/sidebar/sidebar-user-button";
 import { ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getAdminNavigation } from "./admin-navigation.links";
 
 export function AdminSidebar() {
@@ -70,23 +70,19 @@ export function AdminSidebar() {
 const ItemCollapsing = (
   props: PropsWithChildren<{ defaultOpenStartPath?: string }>,
 ) => {
-  const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
   const isOpen = props.defaultOpenStartPath
     ? pathname.startsWith(props.defaultOpenStartPath)
     : true;
 
-  useEffect(() => {
-    if (isOpen) {
-      setOpen(isOpen);
-    }
-  }, [isOpen]);
+  const [open, setOpen] = useState(isOpen);
+
   return (
     <Collapsible
       defaultOpen={isOpen}
       onOpenChange={setOpen}
-      open={open}
+      open={open || isOpen}
       className="group/collapsible"
     >
       {props.children}

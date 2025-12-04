@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AuthButtonClient } from "../auth/auth-button-client";
-import { ThemeToggle } from "../theme/theme-toggle";
 
 function useBoundedScroll(threshold: number) {
   const { scrollY } = useScroll();
@@ -96,7 +95,6 @@ export function LandingHeader() {
           <Link href="#pricing">Pricing</Link>
           <Link href="/posts">Blog</Link>
           <AuthButtonClient />
-          <ThemeToggle />
         </motion.nav>
       </div>
     </motion.header>

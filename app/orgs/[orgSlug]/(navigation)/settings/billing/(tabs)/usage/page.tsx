@@ -43,7 +43,8 @@ async function BillingUsagePage() {
   // PLACEHOLDER DATA - Replace with real database queries
   const usageData = Array.from({ length: 30 }, (_, i) => {
     const date = billingPeriodStart.add(i, "day");
-    const usage = Math.floor(Math.random() * 10);
+    // Use deterministic placeholder value based on day index
+    const usage = (i * 7 + 3) % 10;
     return {
       date: date.format("YYYY-MM-DD"),
       usage,

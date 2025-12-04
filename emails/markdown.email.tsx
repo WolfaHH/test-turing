@@ -7,8 +7,10 @@ export default function MarkdownEmail(props: {
   preview?: string;
   disabledSignature?: boolean;
 }) {
+  let markdown = props.markdown;
+
   if (!props.disabledSignature) {
-    props.markdown += `
+    markdown += `
 
 Best,\n
 ${SiteConfig.team.name} from ${SiteConfig.title}
@@ -16,7 +18,7 @@ ${SiteConfig.team.name} from ${SiteConfig.title}
   }
 
   // Normalize markdown by removing leading/trailing spaces from each line
-  props.markdown = props.markdown
+  markdown = markdown
     .split("\n")
     .map((line) => line.trim())
     .join("\n");
@@ -39,7 +41,7 @@ ${SiteConfig.team.name} from ${SiteConfig.title}
           },
         }}
       >
-        {props.markdown}
+        {markdown}
       </Markdown>
     </EmailLayout>
   );

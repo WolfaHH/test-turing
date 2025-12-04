@@ -21,7 +21,7 @@ export default function OrgBreadcrumb() {
 
   return (
     <Breadcrumb>
-      <BreadcrumbList className="border-border bg-background rounded-lg border px-3 py-2 shadow-sm shadow-black/5">
+      <BreadcrumbList className="border-border bg-background h-8 rounded-lg border px-3 shadow-sm shadow-black/5">
         <BreadcrumbItem>
           <BreadcrumbLink href={basePath}>
             <Home size={16} strokeWidth={2} aria-hidden="true" />

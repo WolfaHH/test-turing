@@ -1,5 +1,6 @@
 export const CacheKeys = {
   userOrgs: (userId: string) => `user:${userId}:orgs`,
+  userFirstOrg: (userId: string) => `user:${userId}:first-org`,
   orgMember: (orgSlug: string, userId: string) =>
     `org:${orgSlug}:member:${userId}`,
   orgBySlug: (slug: string) => `org:slug:${slug}`,

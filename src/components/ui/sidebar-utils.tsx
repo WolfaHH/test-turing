@@ -20,6 +20,31 @@ import {
   SidebarMenuSubItem,
 } from "./sidebar";
 
+const findBestMatch = (pathname: string, hrefs: string[]): string | null => {
+  const matches = hrefs.filter(
+    (href) => pathname === href || pathname.startsWith(`${href}/`),
+  );
+  if (matches.length === 0) return null;
+  return matches.reduce((best, current) =>
+    current.length > best.length ? current : best,
+  );
+};
+
+const SidebarMenuButtonLinkWithActive = ({
+  href,
+  isActive,
+  children,
+  ...props
+}: SidebarMenuButtonProps & { href: string; isActive: boolean }) => {
+  return (
+    <SidebarMenuButton {...props} asChild isActive={isActive}>
+      <Link prefetch={true} href={href}>
+        {children}
+      </Link>
+    </SidebarMenuButton>
+  );
+};
+
 export const SidebarMenuButtonLink = ({
   href,
   children,
@@ -54,6 +79,14 @@ export const SidebarSubButtonLink = ({
 
 export const SidebarNavigationMenu = (props: { link: NavigationGroup }) => {
   const { link } = props;
+  const pathname = usePathname();
+
+  const allHrefs = link.links.flatMap((item) =>
+    item.links
+      ? [item.href, ...item.links.map((sub) => sub.href)]
+      : [item.href],
+  );
+  const bestMatch = findBestMatch(pathname, allHrefs);
 
   return (
     <SidebarMenu>
@@ -66,13 +99,16 @@ export const SidebarNavigationMenu = (props: { link: NavigationGroup }) => {
               className="group/collapsible"
             >
               <SidebarMenuItem>
-                <SidebarMenuButtonLink href={item.href}>
+                <SidebarMenuButtonLinkWithActive
+                  href={item.href}
+                  isActive={bestMatch === item.href}
+                >
                   <item.Icon />
                   <span>{item.label}</span>
                   <CollapsibleTrigger className="ml-auto">
                     <ChevronRight className="text-muted-foreground ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </CollapsibleTrigger>
-                </SidebarMenuButtonLink>
+                </SidebarMenuButtonLinkWithActive>
 
                 <CollapsibleContent>
                   <SidebarMenuSub>
@@ -93,10 +129,13 @@ export const SidebarNavigationMenu = (props: { link: NavigationGroup }) => {
 
         return (
           <SidebarMenuItem key={item.label}>
-            <SidebarMenuButtonLink href={item.href}>
+            <SidebarMenuButtonLinkWithActive
+              href={item.href}
+              isActive={bestMatch === item.href}
+            >
               <item.Icon />
               <span>{item.label}</span>
-            </SidebarMenuButtonLink>
+            </SidebarMenuButtonLinkWithActive>
           </SidebarMenuItem>
         );
       })}

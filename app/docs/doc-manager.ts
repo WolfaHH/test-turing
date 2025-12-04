@@ -15,6 +15,7 @@ const AttributeSchema = z.object({
   order: z.number().optional(),
   subcategory: z.string().optional(),
   method: z.string().optional(),
+  endpoint: z.string().optional(),
   examples: z.record(z.string(), z.string()).optional(),
   results: z.record(z.string(), z.string()).optional(),
 });

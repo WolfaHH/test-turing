@@ -4,7 +4,7 @@ import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import type * as React from "react";
 import type { z } from "zod";
 
-import { Button } from "@/components/ui/button";
+import type { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { LoadingButton } from "./submit-button";
 
 export const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts();
@@ -27,7 +28,7 @@ export function SubmitButton(props: React.ComponentProps<typeof Button>) {
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
       {(isSubmitting) => (
-        <Button type="submit" disabled={isSubmitting} {...props} />
+        <LoadingButton type="submit" loading={isSubmitting} {...props} />
       )}
     </form.Subscribe>
   );

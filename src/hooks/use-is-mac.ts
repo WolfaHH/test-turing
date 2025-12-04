@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+const emptySubscribe = () => () => {
+  // noop - subscription not needed for client detection
+};
 
 export function useIsMac(): boolean {
-  const [isMac, setIsMac] = useState(false);
-
-  useEffect(() => {
-    const userAgent =
-      typeof navigator !== "undefined" ? navigator.userAgent : "";
-    setIsMac(userAgent.includes("Mac OS X"));
-  }, []);
-
-  return isMac;
+  return useSyncExternalStore(
+    emptySubscribe,
+    () =>
+      typeof navigator !== "undefined" &&
+      navigator.userAgent.includes("Mac OS X"),
+    () => false,
+  );
 }

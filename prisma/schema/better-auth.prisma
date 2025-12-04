@@ -44,6 +44,7 @@ model Session {
 
   @@unique([token])
   @@map("session")
+  @@index([userId])
 }
 
 model Account {
@@ -63,6 +64,7 @@ model Account {
   updatedAt             DateTime
 
   @@map("account")
+  @@index([userId])
 }
 
 model Verification {
@@ -74,6 +76,7 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+  @@index([identifier])
 }
 
 model Organization {
@@ -101,6 +104,7 @@ model Member {
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   role           String
   createdAt      DateTime
+  updatedAt      DateTime     @default(now()) @updatedAt
 
   @@index([userId, organizationId])
   @@map("member")
@@ -117,7 +121,11 @@ model Invitation {
   inviterId      String
   user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+
   @@map("invitation")
+  @@index([organizationId])
+  @@index([email])
 }
 
 model Subscription {

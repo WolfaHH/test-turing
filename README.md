@@ -90,18 +90,21 @@ REDIS_URL=redis://localhost:6379
 For production deployments, we recommend using a managed Redis service:
 
 **Upstash** (Serverless Redis):
+
 - Free tier: 10,000 commands/day
 - Serverless with pay-per-use pricing
 - Sign up at [console.upstash.com](https://console.upstash.com)
 - Copy your Redis URL and add to `.env`
 
 **Redis Cloud** (Official Redis):
+
 - Free tier: 30MB RAM
 - Managed by Redis Labs
 - Sign up at [redis.com/try-free](https://redis.com/try-free/)
 - Get your connection URL from the dashboard
 
 **Railway**:
+
 - $5/month for 512MB RAM
 - Simple setup and deployment
 - Go to [railway.app](https://railway.app) and deploy Redis

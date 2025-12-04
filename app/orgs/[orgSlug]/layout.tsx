@@ -1,6 +1,7 @@
 import { orgMetadata } from "@/lib/metadata";
-import { getRequiredCurrentOrg } from "@/lib/organizations/get-org";
+import { getRequiredCurrentOrgCache } from "@/lib/react/cache";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { InjectCurrentOrgStore } from "./use-current-org";
 
 export async function generateMetadata(
@@ -13,10 +14,18 @@ export async function generateMetadata(
 export default async function RouteLayout(
   props: LayoutProps<"/orgs/[orgSlug]">,
 ) {
-  // Organization validation is now handled by middleware for security
-  // This ensures the user has access before reaching this layout
-  const org = await getRequiredCurrentOrg();
+  return (
+    <>
+      {props.children}
+      <Suspense fallback={null}>
+        <LayoutPage />
+      </Suspense>
+    </>
+  );
+}
 
+const LayoutPage = async () => {
+  const org = await getRequiredCurrentOrgCache();
   return (
     <InjectCurrentOrgStore
       org={{
@@ -26,8 +35,6 @@ export default async function RouteLayout(
         image: org.logo ?? null,
         subscription: org.subscription,
       }}
-    >
-      {props.children}
-    </InjectCurrentOrgStore>
+    />
   );
-}
+};

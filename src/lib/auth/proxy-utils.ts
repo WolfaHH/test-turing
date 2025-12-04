@@ -61,7 +61,7 @@ export const findUserOrganization = async (slug: string, userId: string) => {
     const cached = await redisClient.get(cacheKey);
 
     if (cached) {
-      return JSON.parse(cached) as { id: string } | null;
+      return JSON.parse(cached) as { id: string; slug: string | null } | null;
     }
   } catch (error) {
     logger.error("[Cache Error] findUserOrganization:", error);
@@ -74,7 +74,7 @@ export const findUserOrganization = async (slug: string, userId: string) => {
         some: { userId },
       },
     },
-    select: { id: true },
+    select: { id: true, slug: true },
   });
 
   if (org) {
@@ -86,6 +86,43 @@ export const findUserOrganization = async (slug: string, userId: string) => {
       );
     } catch (error) {
       logger.error("[Cache Error] setex findUserOrganization:", error);
+    }
+  }
+
+  return org;
+};
+
+export const getFirstUserOrganization = async (userId: string) => {
+  const cacheKey = CacheKeys.userFirstOrg(userId);
+
+  try {
+    const cached = await redisClient.get(cacheKey);
+    if (cached) {
+      return JSON.parse(cached) as { id: string; slug: string | null } | null;
+    }
+  } catch (error) {
+    logger.error("[Cache Error] getFirstUserOrganization:", error);
+  }
+
+  const org = await prisma.organization.findFirst({
+    where: {
+      members: {
+        some: { userId },
+      },
+    },
+    select: { id: true, slug: true },
+    orderBy: { createdAt: "asc" },
+  });
+
+  if (org) {
+    try {
+      await redisClient.setex(
+        cacheKey,
+        CacheTTL.ORG_MEMBER,
+        JSON.stringify(org),
+      );
+    } catch (error) {
+      logger.error("[Cache Error] setex getFirstUserOrganization:", error);
     }
   }
 
@@ -138,4 +175,12 @@ export const isAdminRoute = (pathname: string) => {
 
 export const isReservedSlug = (slug: string) => {
   return RESERVED_SLUGS.includes(slug);
+};
+
+export const buildOrgRedirectUrl = (request: NextRequest, newSlug: string) => {
+  const newUrl = new URL(request.url);
+  const parts = request.nextUrl.pathname.split("/");
+  parts[2] = newSlug;
+  newUrl.pathname = parts.join("/");
+  return NextResponse.redirect(newUrl);
 };

@@ -1,6 +1,8 @@
 import {
+  buildOrgRedirectUrl,
   extractOrgSlug,
   findUserOrganization,
+  getFirstUserOrganization,
   handleRootRedirect,
   isAdminRoute,
   isReservedSlug,
@@ -9,9 +11,9 @@ import {
   switchActiveOrganization,
   validateAdminAccess,
   validateSession,
-} from "@/lib/auth/middleware-utils";
-import type { NextRequest } from "next/server";
+} from "@/lib/auth/proxy-utils";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -40,6 +42,14 @@ export async function proxy(request: NextRequest) {
 
   const { session, activeOrganisation } = sessionData;
 
+  if (slug === "default") {
+    const firstOrg = await getFirstUserOrganization(session.session.userId);
+    if (firstOrg?.slug) {
+      return buildOrgRedirectUrl(request, firstOrg.slug);
+    }
+    return redirectToOrgList(request);
+  }
+
   if (activeOrganisation?.slug === slug) {
     return NextResponse.next();
   }
@@ -48,6 +58,10 @@ export async function proxy(request: NextRequest) {
 
   if (!org) {
     return redirectToOrgList(request);
+  }
+
+  if (org.slug && slug !== org.slug) {
+    return buildOrgRedirectUrl(request, org.slug);
   }
 
   return switchActiveOrganization(request, org.id);

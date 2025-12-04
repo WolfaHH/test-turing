@@ -1,29 +1,18 @@
-import { Footer } from "@/features/layout/footer";
-import { Header } from "@/features/layout/header";
-import { Layout, LayoutContent } from "@/features/page/layout";
 import type { ReactNode } from "react";
 import { DocSidebar } from "./_components/doc-sidebar";
+import { DocsHeader } from "./_components/docs-header";
 import { getDocs } from "./doc-manager";
 
 export default async function RouteLayout(props: { children: ReactNode }) {
   const docs = await getDocs();
 
   return (
-    <div className="bg-card flex min-h-full flex-col">
-      <Header />
-      <div className="relative min-h-full flex-1 pt-8 pb-16 lg:pt-12">
-        <Layout className="relative" size="xl">
-          <LayoutContent className="flex flex-col gap-10 py-8 lg:flex-row">
-            <aside className="sticky top-20 h-fit w-[250px] shrink-0 self-start">
-              <DocSidebar docs={docs} currentSlug="" />
-            </aside>
-            <main className="flex-1" style={{ maxWidth: "calc(100% - 250px)" }}>
-              {props.children}
-            </main>
-          </LayoutContent>
-        </Layout>
+    <div className="flex min-h-screen flex-col">
+      <DocsHeader />
+      <div className="flex flex-1">
+        <DocSidebar docs={docs} />
+        <main className="flex-1">{props.children}</main>
       </div>
-      <Footer />
     </div>
   );
 }

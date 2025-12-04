@@ -4,17 +4,18 @@ import type { BadgeProps } from "@/components/ui/badge";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import type { DocType } from "../doc-manager";
 
 type DocSidebarProps = {
   docs: DocType[];
-  currentSlug: string;
 };
 
-export function DocSidebar({ docs, currentSlug }: DocSidebarProps) {
+export function DocSidebar({ docs }: DocSidebarProps) {
+  const pathname = usePathname();
+
   const groupedDocs = useMemo(() => {
-    // Create "General" group for docs without subcategory
     const grouped: Record<string, typeof docs> = {
       General: [],
     };
@@ -25,7 +26,6 @@ export function DocSidebar({ docs, currentSlug }: DocSidebarProps) {
       grouped[subcategory].push(doc);
     }
 
-    // Sort docs within each subcategory by order or title
     Object.keys(grouped).forEach((key) => {
       grouped[key].sort((a, b) => {
         if (
@@ -41,7 +41,6 @@ export function DocSidebar({ docs, currentSlug }: DocSidebarProps) {
     return grouped;
   }, [docs]);
 
-  // Sort subcategories alphabetically, but keep "General" at the top
   const sortedSubcategories = useMemo(() => {
     return Object.keys(groupedDocs).sort((a, b) => {
       if (a === "General") return -1;
@@ -51,46 +50,34 @@ export function DocSidebar({ docs, currentSlug }: DocSidebarProps) {
   }, [groupedDocs]);
 
   return (
-    <nav className="flex flex-col gap-6">
-      {sortedSubcategories.map((subcategory) => {
-        const subcategoryDocs = groupedDocs[subcategory];
+    <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 overflow-y-auto border-r lg:block">
+      <nav className="flex flex-col gap-6 p-6">
+        {sortedSubcategories.map((subcategory) => {
+          const subcategoryDocs = groupedDocs[subcategory];
 
-        // For the General category, render without collapsible
-        if (subcategory === "General" && subcategoryDocs.length > 0) {
+          if (subcategoryDocs.length === 0) return null;
+
           return (
-            <div key={subcategory} className="flex flex-col gap-2">
-              {subcategoryDocs.map((doc) => (
-                <DocLink
-                  key={doc.slug}
-                  doc={doc}
-                  isActive={currentSlug === doc.slug}
-                />
-              ))}
+            <div key={subcategory} className="flex flex-col gap-3">
+              <h4 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                {subcategory}
+              </h4>
+              <ul className="flex flex-col gap-1">
+                {subcategoryDocs.map((doc) => {
+                  const href = `/docs/${doc.slug}`;
+                  const isActive = pathname === href;
+                  return (
+                    <li key={doc.slug}>
+                      <DocLink doc={doc} isActive={isActive} />
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           );
-        }
-
-        // Skip empty subcategories
-        if (subcategoryDocs.length === 0) return null;
-
-        return (
-          <div key={subcategory} className="flex flex-col gap-2">
-            <div className="mb-2 text-sm font-medium">
-              <span>{subcategory}</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              {subcategoryDocs.map((doc) => (
-                <DocLink
-                  key={doc.slug}
-                  doc={doc}
-                  isActive={currentSlug === doc.slug}
-                />
-              ))}
-            </div>
-          </div>
-        );
-      })}
-    </nav>
+        })}
+      </nav>
+    </aside>
   );
 }
 
@@ -112,10 +99,8 @@ function DocLink({ doc, isActive }: DocLinkProps) {
     <Link
       href={`/docs/${doc.slug}`}
       className={cn(
-        "text-muted-foreground hover:text-foreground inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm transition",
-        {
-          "text-primary": isActive,
-        },
+        "hover:bg-accent flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
+        isActive ? "bg-accent text-foreground" : "text-muted-foreground",
       )}
     >
       {doc.attributes.method ? (

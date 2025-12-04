@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 
 export default async function RouteLayout(props: LayoutProps<"/account">) {
   return (
-    <Layout>
+    <Layout size="lg">
       <LayoutHeader>
         <LayoutTitle>Settings</LayoutTitle>
       </LayoutHeader>

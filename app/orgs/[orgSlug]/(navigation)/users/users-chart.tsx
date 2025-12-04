@@ -48,7 +48,7 @@ export function UsersChart() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="h-64 w-full">
           <AreaChart
             accessibilityLayer
             data={chartData}

@@ -35,6 +35,7 @@ export const OrgsSelect = (props: OrganizationsSelectProps) => {
               data-testid="org-selector"
               variant="default"
               size="lg"
+              className="border-border bg-input dark:bg-input/30 rounded-md border"
             >
               {org ? (
                 <span className="inline-flex w-full items-center gap-2">

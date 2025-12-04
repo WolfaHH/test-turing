@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -16,19 +12,24 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { SidebarNavigationMenu } from "@/components/ui/sidebar-utils";
-import { ContactFeedbackPopover } from "@/features/contact/feedback/contact-feedback-popover";
 import type { NavigationGroup } from "@/features/navigation/navigation.type";
 import { SidebarUserButton } from "@/features/sidebar/sidebar-user-button";
 import type { AuthRole } from "@/lib/auth/auth-permissions";
 import type { AuthOrganization } from "@/lib/auth/auth-type";
-import { ChevronDown } from "lucide-react";
+import { ArrowLeft, Settings } from "lucide-react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { PropsWithChildren } from "react";
-import { useEffect, useState } from "react";
-import { OrgCommand } from "./org-command";
+import { useMemo } from "react";
 import { getOrganizationNavigation } from "./org-navigation.links";
+
 import { OrgsSelect } from "./orgs-select";
 import { UpgradeCard } from "./upgrade-org-card";
+
+const OrgCommand = dynamic(
+  async () => import("./org-command").then((mod) => mod.OrgCommand),
+  { ssr: false },
+);
 
 export function OrgSidebar({
   slug,
@@ -39,69 +40,60 @@ export function OrgSidebar({
   roles: AuthRole[] | undefined;
   userOrgs: AuthOrganization[];
 }) {
-  const links: NavigationGroup[] = getOrganizationNavigation(slug, roles);
+  const pathname = usePathname();
+  const allLinks: NavigationGroup[] = getOrganizationNavigation(slug, roles);
+
+  const isSettingsPage = pathname.includes("/settings");
+
+  const links = useMemo(() => {
+    if (isSettingsPage) {
+      return allLinks.filter((group) => group.title === "Organization");
+    }
+    return allLinks.filter((group) => group.title === "Menu");
+  }, [allLinks, isSettingsPage]);
 
   return (
     <Sidebar variant="inset">
       <SidebarHeader className="flex flex-col gap-2">
-        <OrgsSelect orgs={userOrgs} currentOrgSlug={slug} />
-        <OrgCommand orgSlug={slug} roles={roles} />
+        {isSettingsPage ? (
+          <Button variant="ghost" className="justify-start" asChild>
+            <Link href={`/orgs/${slug}`} prefetch={false}>
+              <ArrowLeft className="size-4" />
+              <span>Back to Dashboard</span>
+            </Link>
+          </Button>
+        ) : (
+          <>
+            <OrgsSelect orgs={userOrgs} currentOrgSlug={slug} />
+            <OrgCommand />
+          </>
+        )}
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="border-card">
         {links.map((link) => (
-          <ItemCollapsing
-            defaultOpenStartPath={link.defaultOpenStartPath}
-            key={link.title}
-          >
-            <SidebarGroup key={link.title}>
-              <SidebarGroupLabel asChild>
-                <CollapsibleTrigger>
-                  {link.title}
-                  <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                </CollapsibleTrigger>
-              </SidebarGroupLabel>
-              <CollapsibleContent>
-                <SidebarGroupContent>
-                  <SidebarNavigationMenu link={link} />
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </SidebarGroup>
-          </ItemCollapsing>
+          <SidebarGroup key={link.title}>
+            <SidebarGroupLabel>{link.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarNavigationMenu link={link} />
+            </SidebarGroupContent>
+          </SidebarGroup>
         ))}
       </SidebarContent>
       <SidebarFooter className="flex flex-col gap-2">
-        <UpgradeCard />
-        <ContactFeedbackPopover />
+        {!isSettingsPage && (
+          <>
+            <UpgradeCard />
+            <Button variant="outline" asChild size="sm">
+              <Link href={`/orgs/${slug}/settings`} prefetch={false}>
+                <Settings className="size-4" />
+                <span>Settings</span>
+              </Link>
+            </Button>
+          </>
+        )}
         <SidebarUserButton />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
 }
-
-const ItemCollapsing = (
-  props: PropsWithChildren<{ defaultOpenStartPath?: string }>,
-) => {
-  const [open, setOpen] = useState(false);
-  const pathname = usePathname();
-
-  const isOpen = props.defaultOpenStartPath
-    ? pathname.startsWith(props.defaultOpenStartPath)
-    : true;
-
-  useEffect(() => {
-    if (isOpen) {
-      setOpen(isOpen);
-    }
-  }, [isOpen]);
-  return (
-    <Collapsible
-      defaultOpen={isOpen}
-      onOpenChange={setOpen}
-      open={open}
-      className="group/collapsible"
-    >
-      {props.children}
-    </Collapsible>
-  );
-};

@@ -22,12 +22,8 @@ test("invite and login as invited user", async ({ page }) => {
   const currentUrl = page.url();
   const orgSlug = currentUrl.split("/orgs/")[1].split("/")[0];
 
-  // 2. Navigate to organization settings page
-  await page.waitForTimeout(1000);
-  await page.goto(`/orgs/${orgSlug}/settings`);
-
   // 3. Click on the Members tab
-  await page.getByRole("link", { name: /members/i }).click();
+  await page.goto(`/orgs/${orgSlug}/settings/members`);
 
   // 4. Verify the current user is listed as an owner
   await expect(page.getByText("Owner")).toBeVisible();

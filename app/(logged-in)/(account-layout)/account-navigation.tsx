@@ -14,7 +14,7 @@ export async function AccountNavigation({ children }: PropsWithChildren) {
   return (
     <SidebarProvider>
       <AccountSidebar userOrgs={userOrganizations} />
-      <SidebarInset className="border-accent border">
+      <SidebarInset className="border-border border">
         <header className="flex h-16 shrink-0 items-center gap-2">
           <Layout size="lg">
             <SidebarTrigger className="-ml-1" />
