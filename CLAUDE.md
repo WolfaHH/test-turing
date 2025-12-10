@@ -51,6 +51,7 @@ If you read this, ask question about the project to fill this part. You need to 
 - **Styling**: TailwindCSS v4 with Shadcn/UI components
 - **Database**: PostgreSQL with Prisma ORM
 - **Authentication**: Better Auth with organization support
+- **Forms**: TanStack Form with Zod validation (~~React Hook Form~~ deprecated)
 - **Email**: React Email with Resend
 - **Payments**: Stripe integration
 - **Testing**: Vitest for unit tests, Playwright for e2e
@@ -74,7 +75,7 @@ If you read this, ask question about the project to fill this part. You need to 
 - **Authentication**: Email/password, magic links, OAuth (GitHub, Google)
 - **Billing**: Stripe subscriptions with plan management
 - **Dialog System**: Global dialog manager for modals and confirmations
-- **Forms**: React Hook Form with Zod validation and server actions
+- **Forms**: TanStack Form with Zod validation and server actions
 - **Email System**: Transactional emails with React Email
 
 ## Code Conventions
@@ -115,10 +116,37 @@ If you read this, ask question about the project to fill this part. You need to 
 
 ### Forms and Server Actions
 
-- Use React Hook Form with Zod validation
+**CRITICAL**: Use TanStack Form for ALL forms - ~~React Hook Form~~ is deprecated
+
+- Use `useForm` from `@/features/form/tanstack-form.tsx` with Zod validation
+- Use `Form` wrapper component for form submission handling
+- Use `form.AppField` for field binding with built-in components (Input, Select, Textarea, Checkbox, Switch)
 - Server actions in `.action.ts` files
 - Use `resolveActionResult` helper for mutations
-- Follow form creation pattern in `/src/features/form/`
+
+**Example pattern:**
+```tsx
+const form = useForm({
+  schema: z.object({ email: z.string().email() }),
+  defaultValues: { email: '' },
+  onSubmit: async (values) => { /* handle submit */ },
+})
+
+<Form form={form}>
+  <form.AppField name="email">
+    {(field) => (
+      <field.Field>
+        <field.Label>Email</field.Label>
+        <field.Content>
+          <field.Input type="email" />
+          <field.Message />
+        </field.Content>
+      </field.Field>
+    )}
+  </form.AppField>
+  <form.SubmitButton>Submit</form.SubmitButton>
+</Form>
+```
 
 ### Authentication
 
@@ -158,7 +186,7 @@ If you read this, ask question about the project to fill this part. You need to 
 - `src/lib/auth.ts` - Authentication configuration
 - `src/features/dialog-manager/` - Global dialog system
 - `src/lib/actions/actions-utils.ts` - Server action utilities
-- `src/components/ui/form.tsx` - Form components
+- `src/features/form/tanstack-form.tsx` - TanStack Form components (useForm, Form, field components)
 - `src/site-config.ts` - Site configuration
 - `src/lib/actions/safe-actions.ts` - All Server Action SHOULD use this logic
 - `src/lib/zod-route.ts` - All Next.js route (inside the folder `/app/api` and name `route.ts`) SHOULD use this logic
