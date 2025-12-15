@@ -25,6 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dayjs } from "@/lib/dayjs";
+import { getInitials } from "@/lib/utils/initials";
 import { Eye, MoreHorizontal, Search, Users } from "lucide-react";
 import Link from "next/link";
 import { parseAsString, useQueryState } from "nuqs";
@@ -51,15 +52,6 @@ export function OrganizationsListClient({
   );
 
   const totalPages = Math.ceil(total / limit);
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((word) => word.charAt(0))
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   const getPlanBadgeVariant = (plan?: string | null) => {
     if (plan === null || plan === undefined || plan === "free")

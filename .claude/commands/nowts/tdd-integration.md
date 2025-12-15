@@ -3,87 +3,60 @@ description: Build React components with Test-Driven Development using Playwrigh
 allowed-tools: Read, Write, Edit, Glob, Bash(pnpm test:e2e:ci *)
 ---
 
-You are a TDD specialist building React components with integration testing. Write tests FIRST, then implement components.
+<objective>
+Build React components using TDD with Playwright integration tests. Write tests FIRST, then implement.
+</objective>
 
-## Workflow
-
-1. **RESEARCH**: Understand existing patterns
-   - Read at least 3 similar files (MANDATORY - see CLAUDE.md)
-   - Check `e2e/create-organization.test.ts` for test patterns
+<process>
+1. **Research**: Read 3+ similar files (MANDATORY)
+   - Check `e2e/create-organization.test.ts` for patterns
    - Check `e2e/utils/auth-test.ts` for auth utilities
-   - Check existing pages in `app/` for routing patterns
-   - **CRITICAL**: Organization features go in `app/orgs/[orgSlug]/...`
 
-2. **PLAN**: Define component structure
-   - Component name and location (`src/features/` or `src/components/`)
-   - Page route in `app/` directory
-   - Database operations needed (via `@/lib/prisma`)
-   - Authentication requirements (from `e2e/utils/auth-test.ts`)
+2. **Plan**: Define component structure and database operations
 
-3. **CREATE TEST**: Write integration test FIRST
-   - Create test file in `e2e/` directory: `e2e/<feature-name>.test.ts`
-   - Use Playwright test structure:
+3. **Create test**: Write integration test FIRST in `e2e/<feature>.test.ts`
 
-     ```typescript
-     import { test, expect } from "@playwright/test";
-     import { createTestAccount } from "./utils/auth-test";
-     import { prisma } from "@/lib/prisma";
+4. **Create component**: Implement in `src/features/` or `src/components/`
 
-     test.describe("Feature Name", () => {
-       test("should do something", async ({ page }) => {
-         // Setup test data with Prisma
-         // Create test account
-         await createTestAccount({ page, callbackURL: "/target-url" });
-         // Test interactions
-         // Assert results
-       });
-     });
-     ```
+5. **Run test**: `pnpm test:e2e:ci -g "test-name"`
 
-   - **CRITICAL**: Use `createTestAccount()` for auth
-   - **CRITICAL**: Use `prisma` from `@/lib/prisma` for database operations
+6. **Iterate**: Fix until test passes
+</process>
 
-4. **CREATE COMPONENT**: Implement the component
-   - Create React component in `src/features/<feature>/` or `src/components/`
-   - Create page in `app/` directory (Server Component preferred)
-   - Follow project patterns:
-     - Use `PageProps<"/route/path">` for page components (NEVER create local PageProps)
-     - Use Shadcn/UI components from `@/components/ui/`
-     - Use `@/` imports (TypeScript path alias)
-   - **STAY IN SCOPE**: Only build what the test requires
+<test_template>
+```typescript
+import { test, expect } from "@playwright/test";
+import { createTestAccount } from "./utils/auth-test";
+import { prisma } from "@/lib/prisma";
 
-5. **RUN TEST**: Execute the specific test
-   - `pnpm test:e2e:ci -g "test-name"`
-   - Watch for failures
-   - Read error messages carefully
+test.describe("Feature Name", () => {
+  test("should do something", async ({ page }) => {
+    await createTestAccount({ page, callbackURL: "/target-url" });
+    // Test interactions and assertions
+  });
+});
+```
+</test_template>
 
-6. **ITERATE**: Fix component until test passes
-   - Edit component based on test failures
-   - Re-run test: `pnpm test:e2e:ci -g "test-name"`
-   - **DEBUG**: Use `page.evaluate()` for inspecting page state
-   - **DEBUG**: Use `console.log()` inside `page.evaluate()` for debugging
-   - **NEVER** use `page.pause()` or screenshots
-   - Repeat until test passes
-
-## Test Utilities Available
-
+<utilities>
 - `createTestAccount({ page, callbackURL, admin? })` - Create and login test user
 - `signInAccount({ page, userData, callbackURL })` - Login existing user
-- `signOutAccount({ page })` - Logout current user
 - `prisma` from `@/lib/prisma` - Database operations
+</utilities>
 
-## Execution Rules
+<rules>
+- Write test FIRST - no exceptions
+- Read 3 files minimum before creating components
+- Use `PageProps<"/route/path">` for page components
+- NO screenshots or page.pause()
+- Organization routes in `/orgs/[orgSlug]`
+</rules>
 
-- **WRITE TEST FIRST** - No exceptions
-- **READ 3 FILES MINIMUM** before creating components (see CLAUDE.md)
-- **USE EXISTING PATTERNS** - Check similar features first
-- **NO screenshots** - Use assertions instead
-- **NO page.pause()** - Use console.log for debugging
-- **ORGANIZATION ROUTES** must be in `/orgs/[orgSlug]` structure
-
-## Priority
-
-Test-first development. Never write component code before the test exists.
+<success_criteria>
+- Test written before component
+- Component follows existing patterns
+- Test passes
+</success_criteria>
 
 ---
 

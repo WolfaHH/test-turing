@@ -118,42 +118,13 @@ If you read this, ask question about the project to fill this part. You need to 
 
 **CRITICAL**: Use TanStack Form for ALL forms - ~~React Hook Form~~ is deprecated
 
-- Use `useForm` from `@/features/form/tanstack-form.tsx` with Zod validation
-- Use `Form` wrapper component for form submission handling
-- Use `form.AppField` for field binding with built-in components (Input, Select, Textarea, Checkbox, Switch)
+- See `.claude/rules/tanstack-form.md` for detailed patterns
 - Server actions in `.action.ts` files
 - Use `resolveActionResult` helper for mutations
 
-**Example pattern:**
-```tsx
-const form = useForm({
-  schema: z.object({ email: z.string().email() }),
-  defaultValues: { email: '' },
-  onSubmit: async (values) => { /* handle submit */ },
-})
-
-<Form form={form}>
-  <form.AppField name="email">
-    {(field) => (
-      <field.Field>
-        <field.Label>Email</field.Label>
-        <field.Content>
-          <field.Input type="email" />
-          <field.Message />
-        </field.Content>
-      </field.Field>
-    )}
-  </form.AppField>
-  <form.SubmitButton>Submit</form.SubmitButton>
-</Form>
-```
-
 ### Authentication
 
-- Use `getUser()` for optional user (server-side)
-- Use `getRequiredUser()` for required user (server-side)
-- Use `useSession()` from auth-client.ts (client-side)
-- Use `getCurrentOrgCache()` to get the current org
+- See `.claude/rules/authentication.md` for detailed patterns
 
 ### Database
 
@@ -163,9 +134,7 @@ const form = useForm({
 
 ### Dialog System
 
-- Use `dialogManager` for global modals
-- Types: confirm, input, custom dialogs
-- Automatic loading states and error handling
+- See `.claude/rules/dialog-manager.md` for detailed patterns
 
 ## Testing
 
@@ -189,7 +158,7 @@ const form = useForm({
 - `src/features/form/tanstack-form.tsx` - TanStack Form components (useForm, Form, field components)
 - `src/site-config.ts` - Site configuration
 - `src/lib/actions/safe-actions.ts` - All Server Action SHOULD use this logic
-- `src/lib/zod-route.ts` - All Next.js route (inside the folder `/app/api` and name `route.ts`) SHOULD use this logic
+- `src/lib/zod-route.ts` - See `.claude/rules/api-routes.md` for detailed patterns
 
 ### Database Schemas
 
@@ -202,7 +171,6 @@ const form = useForm({
 - Use TypeScript strict mode - no `any` types
 - Prefer server components and avoid unnecessary client-side state
 - Prefer using `??` than `||`
-- All API Route SHOULD use @src/lib/zod-route.ts, each file name `route.ts` should use Zod Route. ALWAYS READ zod-route.ts before creating any routes.
 - All API Request SHOULD use @src/lib/up-fetch.ts and NEVER use `fetch`
 
 ## Files naming

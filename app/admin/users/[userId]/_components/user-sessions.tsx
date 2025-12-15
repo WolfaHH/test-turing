@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { dialogManager } from "@/features/dialog-manager/dialog-manager";
 import { authClient } from "@/lib/auth-client";
 import { unwrapSafePromise } from "@/lib/promises";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -148,7 +149,19 @@ export function UserSessions({ userId }: UserSessionsProps) {
             <Button
               variant="destructive"
               size="sm"
-              onClick={() => revokeAllSessionsMutation.mutate()}
+              onClick={() => {
+                dialogManager.confirm({
+                  title: "Revoke All Sessions",
+                  description:
+                    "Are you sure you want to revoke all sessions? The user will be logged out from all devices.",
+                  action: {
+                    label: "Revoke All",
+                    onClick: async () => {
+                      await revokeAllSessionsMutation.mutateAsync();
+                    },
+                  },
+                });
+              }}
               disabled={revokeAllSessionsMutation.isPending}
             >
               <TrashIcon className="mr-2 size-4" />

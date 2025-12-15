@@ -3,65 +3,38 @@ description: Safely rename database tables or columns by replacing Prisma's dest
 allowed-tools: Bash(pnpm *), Read, Edit, Glob
 ---
 
-You are a database migration specialist. Safely rename database columns or tables by fixing Prisma's destructive migrations.
+<objective>
+Fix Prisma's destructive migrations when renaming columns or tables to preserve data.
+</objective>
 
-## Problem
-
-Prisma generates DESTRUCTIVE migrations when renaming:
-
+<problem>
+Prisma generates destructive migrations:
 ```sql
--- AlterTable
-ALTER TABLE "Post" DROP COLUMN "content",
-ADD COLUMN "markdown" TEXT NOT NULL;
+ALTER TABLE "Post" DROP COLUMN "content", ADD COLUMN "markdown" TEXT NOT NULL;
 ```
+This DELETES all data!
+</problem>
 
-This DELETES all data in the column!
-
-## Solution
-
+<solution>
 Replace with non-destructive RENAME:
-
 ```sql
--- AlterTable
 ALTER TABLE "Post" RENAME COLUMN "content" TO "markdown";
 ```
+</solution>
 
-## Workflow
+<process>
+1. **Generate**: `pnpm prisma migrate dev --name <name> --create-only`
+2. **Locate**: Find migration in `prisma/schema/migrations/<timestamp>_<name>/migration.sql`
+3. **Fix**: Replace DROP/ADD with RENAME operations
+4. **Review**: Verify no data loss
+5. **Apply**: `pnpm prisma migrate deploy`
+</process>
 
-1. **GENERATE MIGRATION**: Create migration from schema changes
-   - `pnpm prisma migrate dev --name <descriptive-name> --create-only`
-   - This generates but does NOT apply the migration
-   - **CRITICAL**: Use `--create-only` to prevent auto-apply
-
-2. **LOCATE MIGRATION**: Find the generated migration file
-   - Look in `prisma/schema/migrations/<timestamp>_<name>/migration.sql`
-   - Read the file to identify DROP/ADD patterns
-
-3. **FIX MIGRATION**: Replace destructive operations
-   - For column renames: Replace `DROP COLUMN "old", ADD COLUMN "new"` with `RENAME COLUMN "old" TO "new"`
-   - For table renames: Replace `DROP TABLE "Old"; CREATE TABLE "New"` with `RENAME TABLE "Old" TO "New"`
-   - **PRESERVE** all other ALTER TABLE statements (constraints, indexes, etc.)
-
-4. **REVIEW CHANGES**: Verify the migration is safe
-   - Ensure no data loss
-   - Check all RENAME operations are syntactically correct
-   - Verify PostgreSQL syntax: `ALTER TABLE "schema"."table" RENAME COLUMN "old" TO "new";`
-
-5. **APPLY MIGRATION**: Deploy the fixed migration
-   - `pnpm prisma migrate deploy`
-   - Monitor for errors
-   - Verify data integrity after migration
-
-## Execution Rules
-
-- **NEVER apply migrations** without reviewing them first
-- **ALWAYS use** `--create-only` flag when generating migrations
-- **VERIFY** migration syntax before applying
-- **BACKUP** database before running migrations in production
-
-## Priority
-
-Data safety first. Never apply destructive migrations.
+<success_criteria>
+- Migration uses RENAME instead of DROP/ADD
+- Data preserved after migration
+- Schema correctly updated
+</success_criteria>
 
 ---
 

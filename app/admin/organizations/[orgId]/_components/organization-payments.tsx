@@ -11,48 +11,42 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dayjs } from "@/lib/dayjs";
+import { upfetch } from "@/lib/up-fetch";
+import { useQuery } from "@tanstack/react-query";
 import { CreditCard, DollarSign } from "lucide-react";
-import { useEffect, useState } from "react";
+import { z } from "zod";
 
-type Payment = {
-  id: string;
-  amount: number;
-  currency: string;
-  status: string;
-  created: number;
-  description: string;
-  invoice?: {
-    invoice_pdf?: string;
-  };
-};
+const PaymentSchema = z.object({
+  id: z.string(),
+  amount: z.number(),
+  currency: z.string(),
+  status: z.string(),
+  created: z.number(),
+  description: z.string(),
+  invoice: z
+    .object({
+      invoice_pdf: z.string().optional(),
+    })
+    .optional(),
+});
 
 export function OrganizationPayments({
   organizationId,
 }: {
   organizationId: string;
 }) {
-  const [payments, setPayments] = useState<Payment[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        const response = await fetch(
-          `/api/admin/organizations/${organizationId}/payments`,
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setPayments(data.payments ?? []);
-        }
-      } catch {
-        // Silent fail - payments are not critical for the admin view
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void fetchPayments();
-  }, [organizationId]);
+  const { data: payments = [], isLoading: loading } = useQuery({
+    queryKey: ["admin", "organization-payments", organizationId],
+    queryFn: async () => {
+      const data = await upfetch(
+        `/api/admin/organizations/${organizationId}/payments`,
+        {
+          schema: z.object({ payments: z.array(PaymentSchema) }),
+        },
+      );
+      return data.payments;
+    },
+  });
 
   const formatAmount = (amount: number, currency: string) => {
     return new Intl.NumberFormat("en-US", {

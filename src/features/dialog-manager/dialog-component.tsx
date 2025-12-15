@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+ 
 "use client";
 
 import { Typography } from "@/components/nowts/typography";

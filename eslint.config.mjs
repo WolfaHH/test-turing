@@ -1,7 +1,7 @@
 import pluginJs from "@eslint/js";
 import pluginNext from "@next/eslint-plugin-next";
-import hooksPlugin from "eslint-plugin-react-hooks";
 import pluginReact from "eslint-plugin-react";
+import hooksPlugin from "eslint-plugin-react-hooks";
 // Plugin doesn't support TailwindV4
 // FYI : https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/325
 // import tailwind from "eslint-plugin-tailwindcss";
@@ -112,7 +112,6 @@ export default [
       "@typescript-eslint/no-unnecessary-type-arguments": "error",
       "@typescript-eslint/no-unnecessary-type-constraint": "error",
       "@typescript-eslint/prefer-includes": "error",
-      "@typescript-eslint/prefer-nullish-coalescing": "error",
       "@typescript-eslint/prefer-optional-chain": "error",
       "@typescript-eslint/prefer-readonly": "error",
       "@typescript-eslint/prefer-string-starts-ends-with": "error",
@@ -124,10 +123,11 @@ export default [
       "@typescript-eslint/array-type": "error",
       "@typescript-eslint/consistent-type-exports": "error",
       "@typescript-eslint/dot-notation": "error",
-      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/default-param-last": "error",
+      "@typescript-eslint/consistent-type-definitions": 0,
+      "@typescript-eslint/prefer-nullish-coalescing": 0,
       "react/no-unescaped-entities": 0,
       "react/no-unknown-property": 0,
       "@next/next/no-img-element": 0,
