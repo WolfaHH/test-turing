@@ -4,7 +4,7 @@
 
 ```ts
 import { getUser, getRequiredUser } from "@/lib/auth/auth-user";
-import { getCurrentOrgCache } from "@/lib/organizations/get-org";
+import { getCurrentOrg } from "@/lib/organizations/get-org";
 ```
 
 ### Get Optional User
@@ -30,7 +30,7 @@ const user = await getRequiredUser();
 ### Get Current Organization
 
 ```ts
-const org = await getCurrentOrgCache();
+const org = await getCurrentOrg();
 // Returns current organization or null
 ```
 
@@ -69,7 +69,7 @@ For organization-scoped pages:
 
 ```tsx
 export default async function OrgPage() {
-  const org = await getCurrentOrgCache();
+  const org = await getCurrentOrg();
   if (!org) redirect("/select-org");
 
   return <OrgDashboard org={org} />;

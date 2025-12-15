@@ -1,4 +1,4 @@
-# AGENTS.md
+# CLAUDE.md
 
 This file provides guidance to AI Agents.
 
@@ -104,9 +104,9 @@ If you read this, ask question about the project to fill this part. You need to 
 
 ### Styling preferences
 
-- Use the shared typography components in `@src/components/ui/typography.tsx` for paragraphs and headings (instead of creating custom `p`, `h1`, `h2`, etc.).
+- Use the shared typography components in `@/components/nowts/typography.tsx` for paragraphs and headings (instead of creating custom `p`, `h1`, `h2`, etc.).
 - For spacing, prefer utility layouts like `flex flex-col gap-4` for vertical spacing and `flex gap-4` for horizontal spacing (instead of `space-y-4`).
-- Prefer the card container `@src/components/ui/card.tsx` for styled wrappers rather than adding custom styles directly to `<div>` elements.
+- Prefer the card container `@/components/ui/card.tsx` for styled wrappers rather than adding custom styles directly to `<div>` elements.
 
 ### State Management
 
@@ -171,7 +171,7 @@ If you read this, ask question about the project to fill this part. You need to 
 - Use TypeScript strict mode - no `any` types
 - Prefer server components and avoid unnecessary client-side state
 - Prefer using `??` than `||`
-- All API Request SHOULD use @src/lib/up-fetch.ts and NEVER use `fetch`
+- All API Request SHOULD use `@/lib/up-fetch.ts` and NEVER use `fetch`
 
 ## Files naming
 
@@ -183,11 +183,11 @@ If you read this, ask question about the project to fill this part. You need to 
 
 ## TypeScript imports
 
-Important, when you import thing try to always use TypeScript paths :
+Always use TypeScript path aliases instead of relative imports:
 
-- `@/*` is link to @src
-- `@email/*` is link to @emails
-- `@app/*` is link to @app
+- `@/*` → `./src/*` (e.g., `@/components/ui/button`)
+- `@email/*` → `./emails/*` (e.g., `@email/welcome`)
+- `@app/*` → `./app/*` (e.g., `@app/api/route`)
 
 ## Workflow modification
 
