@@ -2,11 +2,9 @@
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Form, useForm } from "@/features/form/tanstack-form";
-import { useDebounceFn } from "@/hooks/use-debounce-fn";
 import { authClient } from "@/lib/auth-client";
 import { formatId } from "@/lib/format/id";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { toast } from "sonner";
 import type { NewOrganizationSchemaType } from "./new-org.schema";
 import { CreateOrgSchema } from "./new-org.schema";
@@ -40,39 +38,6 @@ export const NewOrganizationForm = () => {
     },
   });
 
-  const checkSlugMutation = useMutation({
-    mutationFn: async (slug: string) => {
-      const { data, error } = await authClient.organization.checkSlug({
-        slug,
-      });
-
-      if (error) {
-        form.fieldInfo.slug.instance?.setErrorMap({
-          onChange: "This organization ID is already taken",
-        });
-      }
-
-      return data;
-    },
-  });
-
-  const debouncedCheckSlug = useDebounceFn((slug: string) => {
-    if (slug) {
-      checkSlugMutation.mutate(slug);
-    }
-  }, 500);
-
-  useEffect(() => {
-    const unsubscribe = form.store.subscribe(() => {
-      const slug = form.getFieldValue("slug");
-      if (slug) {
-        debouncedCheckSlug(slug);
-      }
-    });
-
-    return unsubscribe;
-  }, [form, debouncedCheckSlug]);
-
   return (
     <div className="flex w-full flex-col gap-6 lg:gap-8">
       <Card className="bg-card overflow-hidden">
@@ -92,7 +57,6 @@ export const NewOrganizationForm = () => {
                         field.handleChange(value);
                         const formattedSlug = formatId(value);
                         form.setFieldValue("slug", formattedSlug);
-                        debouncedCheckSlug(formattedSlug);
                       }}
                     />
                     <field.Message />
@@ -100,7 +64,27 @@ export const NewOrganizationForm = () => {
                 </field.Field>
               )}
             </form.AppField>
-            <form.AppField name="slug">
+            <form.AppField
+              name="slug"
+              asyncDebounceMs={300}
+              validators={{
+                onChangeAsync: async ({ value }) => {
+                  if (!value) {
+                    return undefined;
+                  }
+
+                  const { error } = await authClient.organization.checkSlug({
+                    slug: value,
+                  });
+
+                  if (error) {
+                    return "This organization ID is already taken";
+                  }
+
+                  return undefined;
+                },
+              }}
+            >
               {(field) => (
                 <field.Field>
                   <field.Label>Organization Slug</field.Label>
@@ -109,12 +93,6 @@ export const NewOrganizationForm = () => {
                       type="text"
                       className="input"
                       placeholder="Enter organization Slug"
-                      onChange={(e) => {
-                        const formattedSlug = formatId(e.target.value);
-                        field.handleChange(formattedSlug);
-                        form.setFieldValue("slug", formattedSlug);
-                        debouncedCheckSlug(formattedSlug);
-                      }}
                     />
                     <field.Description>
                       The organization ID is used to identify the organization,
@@ -127,9 +105,7 @@ export const NewOrganizationForm = () => {
             </form.AppField>
           </CardContent>
           <CardFooter className="border-border flex justify-end border-t pt-6">
-            <form.SubmitButton size="lg" disabled={checkSlugMutation.isPending}>
-              Create organization
-            </form.SubmitButton>
+            <form.SubmitButton size="lg">Create organization</form.SubmitButton>
           </CardFooter>
         </Form>
       </Card>

@@ -256,11 +256,14 @@ function FieldMessage(props: React.ComponentProps<typeof FieldError>) {
   const field = useFieldContext<string>();
   const isInvalid = useFieldInvalid();
 
+  const formattedErrors = field.state.meta.errors.map((error) => {
+    if (typeof error === "string") {
+      return { message: error };
+    }
+    return error as { message?: string };
+  });
+
   return (
-    <>
-      {isInvalid ? (
-        <FieldError {...props} errors={field.state.meta.errors} />
-      ) : null}
-    </>
+    <>{isInvalid ? <FieldError {...props} errors={formattedErrors} /> : null}</>
   );
 }
