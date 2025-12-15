@@ -54,7 +54,6 @@ export const auth = betterAuth({
     // Disable rate limiting in CI
     enabled: env.CI ? false : undefined,
   },
-  trustedOrigins: ["*"],
   databaseHooks: {
     user: {
       create: {
