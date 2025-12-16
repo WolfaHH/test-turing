@@ -1,3 +1,44 @@
+## 2025-12-15 - Security, Performance & TanStack Form Migration
+
+### 🔒 **Security Improvements**
+
+- **Auth Security Fix**: Removed insecure trusted origins wildcard configuration
+- **Impersonation Fixes**: Use hard redirects for impersonation to update profile button immediately (#75)
+
+### 🚀 **Performance & Architecture**
+
+- **Major Performance Improvements**: Refactored application for significantly faster load times (#86)
+- **TanStack Form Migration**: Replaced React Hook Form with TanStack Form across all forms (#83)
+- **Redis Optimization**: Added Redis caching for improved performance
+- **OTP-Based Password Reset**: Implemented new password reset flow using OTP
+
+### 🔧 **Authentication & UI Improvements**
+
+- **OTP Sign-In Flow**: Complete implementation of OTP authentication
+- **Auth UI Enhancements**: Responsive provider buttons (full width when single provider), cleaner OTP email display
+- **Middleware Refactor**: Extracted utilities and added admin route protection (#73)
+
+### 📦 **Dependency Updates**
+
+- **Better-Auth**: Updated to version 1.3.27
+- **Next.js 16 Compatibility**: Fixed generateStaticParams for posts in production
+- Various dependency upgrades
+
+### 🛠️ **Developer Experience**
+
+- **Global PageProps Type**: Standardized page component typing with `PageProps<"/route/path">`
+- **VSCode Snippets**: Updated snippets and workflow configuration (#79)
+- **Environment Variables Guide**: Added setup documentation
+- **Chart Components**: Improved type safety in chart and tooltip components (#71)
+
+### 🐛 **Bug Fixes**
+
+- Fixed breadcrumb path selection slice issue (#70)
+- Fixed typo in prisma:generate script (#82)
+- Fixed ESLint and TypeScript errors across codebase
+- Fixed Vitest config ESM conversion
+- Removed unused shadcn-prose dependency
+
 ## 2025-08-23 - Major Platform Updates & Infrastructure Improvements
 
 ### 🚀 **New Features & Components**
@@ -85,7 +126,6 @@
   - Improved button state validation and error handling
   - Added step-by-step emoji logging for better CI debugging
 - **Build and deployment fixes**
-  - Fixed NotifyNowts API call error handling to prevent build failures
   - Added proper error catching for external API dependencies
   - Updated Prisma migration strategy for CI environments
 
