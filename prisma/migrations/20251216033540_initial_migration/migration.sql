@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "public"."user" (
+CREATE TABLE "user" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -8,13 +8,16 @@ CREATE TABLE "public"."user" (
     "createdAt" TIMESTAMP(3) NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "resendContactId" TEXT,
-    "stripeCustomerId" TEXT,
+    "role" TEXT,
+    "banned" BOOLEAN,
+    "banReason" TEXT,
+    "banExpires" TIMESTAMP(3),
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."session" (
+CREATE TABLE "session" (
     "id" TEXT NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
     "token" TEXT NOT NULL,
@@ -24,12 +27,13 @@ CREATE TABLE "public"."session" (
     "userAgent" TEXT,
     "userId" TEXT NOT NULL,
     "activeOrganizationId" TEXT,
+    "impersonatedBy" TEXT,
 
     CONSTRAINT "session_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."account" (
+CREATE TABLE "account" (
     "id" TEXT NOT NULL,
     "accountId" TEXT NOT NULL,
     "providerId" TEXT NOT NULL,
@@ -48,7 +52,7 @@ CREATE TABLE "public"."account" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."verification" (
+CREATE TABLE "verification" (
     "id" TEXT NOT NULL,
     "identifier" TEXT NOT NULL,
     "value" TEXT NOT NULL,
@@ -60,31 +64,33 @@ CREATE TABLE "public"."verification" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."organization" (
+CREATE TABLE "organization" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "slug" TEXT,
     "logo" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "metadata" TEXT,
+    "stripeCustomerId" TEXT,
     "email" TEXT,
 
     CONSTRAINT "organization_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."member" (
+CREATE TABLE "member" (
     "id" TEXT NOT NULL,
     "organizationId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "role" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "member_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."invitation" (
+CREATE TABLE "invitation" (
     "id" TEXT NOT NULL,
     "organizationId" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -92,12 +98,13 @@ CREATE TABLE "public"."invitation" (
     "status" TEXT NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
     "inviterId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "invitation_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."subscription" (
+CREATE TABLE "subscription" (
     "id" TEXT NOT NULL,
     "plan" TEXT NOT NULL,
     "referenceId" TEXT NOT NULL,
@@ -108,12 +115,13 @@ CREATE TABLE "public"."subscription" (
     "periodEnd" TIMESTAMP(3),
     "cancelAtPeriodEnd" BOOLEAN,
     "seats" INTEGER,
+    "overrideLimits" JSONB,
 
     CONSTRAINT "subscription_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."Feedback" (
+CREATE TABLE "Feedback" (
     "id" TEXT NOT NULL,
     "review" INTEGER NOT NULL,
     "message" TEXT NOT NULL,
@@ -126,31 +134,55 @@ CREATE TABLE "public"."Feedback" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_email_key" ON "public"."user"("email");
+CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "session_token_key" ON "public"."session"("token");
+CREATE INDEX "session_userId_idx" ON "session"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "organization_slug_key" ON "public"."organization"("slug");
+CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
+
+-- CreateIndex
+CREATE INDEX "account_userId_idx" ON "account"("userId");
+
+-- CreateIndex
+CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "organization_slug_key" ON "organization"("slug");
+
+-- CreateIndex
+CREATE INDEX "member_userId_organizationId_idx" ON "member"("userId", "organizationId");
+
+-- CreateIndex
+CREATE INDEX "invitation_organizationId_idx" ON "invitation"("organizationId");
+
+-- CreateIndex
+CREATE INDEX "invitation_email_idx" ON "invitation"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "subscription_referenceId_key" ON "subscription"("referenceId");
 
 -- AddForeignKey
-ALTER TABLE "public"."session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."member" ADD CONSTRAINT "member_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "member" ADD CONSTRAINT "member_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."member" ADD CONSTRAINT "member_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "member" ADD CONSTRAINT "member_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."invitation" ADD CONSTRAINT "invitation_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "invitation" ADD CONSTRAINT "invitation_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."invitation" ADD CONSTRAINT "invitation_inviterId_fkey" FOREIGN KEY ("inviterId") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "invitation" ADD CONSTRAINT "invitation_inviterId_fkey" FOREIGN KEY ("inviterId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Feedback" ADD CONSTRAINT "Feedback_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "subscription" ADD CONSTRAINT "subscription_referenceId_fkey" FOREIGN KEY ("referenceId") REFERENCES "organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
