@@ -4,7 +4,8 @@
 
 ```ts
 import { getUser, getRequiredUser } from "@/lib/auth/auth-user";
-import { getCurrentOrg } from "@/lib/organizations/get-org";
+import { getCurrentOrg, getRequiredCurrentOrg } from "@/lib/organizations/get-org";
+import { getRequiredCurrentOrgCache } from "@/lib/react/cache";
 ```
 
 ### Get Optional User
@@ -30,8 +31,14 @@ const user = await getRequiredUser();
 ### Get Current Organization
 
 ```ts
+// Optional - returns null if no org
 const org = await getCurrentOrg();
-// Returns current organization or null
+
+// Required - throws if no org
+const org = await getRequiredCurrentOrg();
+
+// Cached (for RSC) - use when calling multiple times in same request
+const org = await getRequiredCurrentOrgCache();
 ```
 
 ## Client-Side (React Components)
@@ -65,12 +72,11 @@ export default async function ProtectedPage() {
 }
 ```
 
-For organization-scoped pages:
+For organization-scoped pages (use cached version in RSC):
 
 ```tsx
 export default async function OrgPage() {
-  const org = await getCurrentOrg();
-  if (!org) redirect("/select-org");
+  const org = await getRequiredCurrentOrgCache();
 
   return <OrgDashboard org={org} />;
 }
