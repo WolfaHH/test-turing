@@ -11,11 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { dialogManager } from "@/features/dialog-manager/dialog-manager";
 import type { Organization, Subscription } from "@/generated/prisma";
 import { AUTH_PLANS } from "@/lib/auth/stripe/auth-plans";
-import { logger } from "@/lib/logger";
 import { dayjs } from "@/lib/dayjs";
 import { ExternalLink } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   cancelSubscriptionAction,
@@ -35,18 +36,16 @@ export function OrganizationSubscription({
   organization: OrganizationWithSubscription;
   subscription: Subscription | null;
 }) {
+  const router = useRouter();
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Get the correct default value for the select, including yearly suffix if applicable
   const getDefaultPlanKey = () => {
     if (!subscription?.plan) return "free";
 
-    // Check if this is a yearly subscription by looking at the actual plan data
     const currentPlan = AUTH_PLANS.find(
       (plan) => plan.name === subscription.plan,
     );
 
-    // If the subscription has yearly pricing and the period is yearly (12 months), append -yearly
     if (
       currentPlan?.yearlyPrice &&
       subscription.periodEnd &&
@@ -59,7 +58,6 @@ export function OrganizationSubscription({
         (periodEnd.getMonth() - periodStart.getMonth());
 
       if (monthsDiff >= 11) {
-        // Allow for some variance, yearly should be ~12 months
         return `${subscription.plan}-yearly`;
       }
     }
@@ -80,7 +78,6 @@ export function OrganizationSubscription({
     const isYearly = selectedPlanKey.endsWith("-yearly");
     const planName = selectedPlanKey.replace("-yearly", "");
 
-    // Allow updates even if same plan (to change billing frequency)
     if (selectedPlanKey === (subscription?.plan ?? "free")) return;
 
     setIsUpdating(true);
@@ -98,28 +95,36 @@ export function OrganizationSubscription({
           isYearly,
         });
       }
-      window.location.reload();
-    } catch (error) {
-      logger.error("Failed to update plan:", error);
+      router.refresh();
+    } catch {
+      // Error is handled by the action
     } finally {
       setIsUpdating(false);
     }
   };
 
-  const handleCancelSubscription = async () => {
+  const handleCancelSubscription = () => {
     if (!subscription) return;
 
-    setIsUpdating(true);
-    try {
-      await cancelSubscriptionAction({
-        organizationId: organization.id,
-      });
-      window.location.reload();
-    } catch (error) {
-      logger.error("Failed to cancel subscription:", error);
-    } finally {
-      setIsUpdating(false);
-    }
+    dialogManager.confirm({
+      title: "Cancel Subscription",
+      description:
+        "Are you sure you want to cancel this subscription? The organization will lose access at the end of the billing period.",
+      action: {
+        label: "Cancel Subscription",
+        onClick: async () => {
+          setIsUpdating(true);
+          try {
+            await cancelSubscriptionAction({
+              organizationId: organization.id,
+            });
+            router.refresh();
+          } finally {
+            setIsUpdating(false);
+          }
+        },
+      },
+    });
   };
 
   const handleReactivateSubscription = async () => {
@@ -130,9 +135,9 @@ export function OrganizationSubscription({
       await reactivateSubscriptionAction({
         organizationId: organization.id,
       });
-      window.location.reload();
-    } catch (error) {
-      logger.error("Failed to reactivate subscription:", error);
+      router.refresh();
+    } catch {
+      // Error is handled by the action
     } finally {
       setIsUpdating(false);
     }

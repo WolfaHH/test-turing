@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { dialogManager } from "@/features/dialog-manager/dialog-manager";
 import { authClient } from "@/lib/auth-client";
 import { unwrapSafePromise } from "@/lib/promises";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -160,7 +161,18 @@ export function UserActions({ user }: UserActionsProps) {
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem
-            onClick={() => banUserMutation.mutate({ userId: user.id })}
+            onClick={() => {
+              dialogManager.confirm({
+                title: "Ban User",
+                description: `Are you sure you want to ban ${user.name || user.email}? They will no longer be able to access the platform.`,
+                action: {
+                  label: "Ban User",
+                  onClick: async () => {
+                    await banUserMutation.mutateAsync({ userId: user.id });
+                  },
+                },
+              });
+            }}
             disabled={banUserMutation.isPending}
             className="text-destructive focus:text-destructive"
           >

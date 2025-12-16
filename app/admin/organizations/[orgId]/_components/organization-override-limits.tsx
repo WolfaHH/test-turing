@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { dialogManager } from "@/features/dialog-manager/dialog-manager";
 import type { Subscription } from "@/generated/prisma";
 import type { OverrideLimits, PlanLimit } from "@/lib/auth/stripe/auth-plans";
 import { getPlanLimits } from "@/lib/auth/stripe/auth-plans";
-import { logger } from "@/lib/logger";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateOverrideLimitsAction } from "../_actions/subscription-admin.actions";
 
@@ -18,6 +19,7 @@ export function OrganizationOverrideLimits({
   subscription: Subscription | null;
   organizationId: string;
 }) {
+  const router = useRouter();
   const [isUpdating, setIsUpdating] = useState(false);
   const currentOverrideLimits =
     subscription?.overrideLimits as OverrideLimits | null;
@@ -41,27 +43,35 @@ export function OrganizationOverrideLimits({
         overrideLimits: hasAnyLimit ? limits : undefined,
       });
 
-      window.location.reload();
-    } catch (error) {
-      logger.error("Failed to update override limits:", error);
+      router.refresh();
+    } catch {
+      // Error is handled by the action
     } finally {
       setIsUpdating(false);
     }
   };
 
-  const handleReset = async () => {
-    setIsUpdating(true);
-    try {
-      await updateOverrideLimitsAction({
-        organizationId,
-        overrideLimits: undefined,
-      });
-      window.location.reload();
-    } catch (error) {
-      logger.error("Failed to reset override limits:", error);
-    } finally {
-      setIsUpdating(false);
-    }
+  const handleReset = () => {
+    dialogManager.confirm({
+      title: "Reset Override Limits",
+      description:
+        "Are you sure you want to reset all override limits? The organization will use the default plan limits.",
+      action: {
+        label: "Reset Limits",
+        onClick: async () => {
+          setIsUpdating(true);
+          try {
+            await updateOverrideLimitsAction({
+              organizationId,
+              overrideLimits: undefined,
+            });
+            router.refresh();
+          } finally {
+            setIsUpdating(false);
+          }
+        },
+      },
+    });
   };
 
   if (!showForm) {

@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { getInitials } from "@/lib/utils/initials";
 import Link from "next/link";
 
 type User = {
@@ -16,15 +17,6 @@ type UserTableCellProps = {
   fallbackEmail?: string | null;
   href: string;
   size?: "sm" | "md";
-};
-
-const getInitials = (name: string) => {
-  return name
-    .split(" ")
-    .map((word) => word.charAt(0))
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 };
 
 export const UserTableCell = ({

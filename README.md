@@ -304,5 +304,3 @@ Real-world metrics:
 ## Contributions
 
 Feel free to create a pull request with any changes you think valuable
-
-x

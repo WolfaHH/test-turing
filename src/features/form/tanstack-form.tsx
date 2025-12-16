@@ -19,9 +19,46 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { LoadingButton } from "./submit-button";
 
+/**
+ * TanStack Form context exports for advanced field/form access
+ *
+ * @description
+ * - `useFieldContext<T>()` - Access current field state inside custom field components
+ * - `useFormContext()` - Access form instance from anywhere in the form tree
+ * - `fieldContext` / `formContext` - Raw context objects (rarely needed)
+ *
+ * Use `useFieldContext` when building custom field components that need field state.
+ * Use `useFormContext` for custom components that need to read/write form state.
+ *
+ * @example
+ * // Custom field component using field context
+ * function CustomDatePicker(props: DatePickerProps) {
+ *   const field = useFieldContext<Date>();
+ *   return (
+ *     <DatePicker
+ *       value={field.state.value}
+ *       onChange={(date) => field.handleChange(date)}
+ *     />
+ *   );
+ * }
+ */
 export const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts();
 
+/**
+ * Form submit button with automatic loading state
+ *
+ * @description
+ * Shows loading spinner automatically when form is submitting.
+ * Use inside Form component or access via `form.SubmitButton` (preferred).
+ *
+ * @example
+ * // Preferred: Use via form instance
+ * <form.SubmitButton>Save</form.SubmitButton>
+ *
+ * // With size/variant props
+ * <form.SubmitButton size="lg" variant="outline">Create</form.SubmitButton>
+ */
 export function SubmitButton(props: React.ComponentProps<typeof Button>) {
   const form = useFormContext();
 
@@ -103,10 +140,6 @@ function FormSwitch(props: React.ComponentProps<typeof Switch>) {
   );
 }
 
-/**
- * Hook to determine if a field is in an invalid state
- * A field is considered invalid when it has been touched, is not valid, and form has submission attempts
- */
 function useFieldInvalid() {
   const field = useFieldContext<string>();
   const form = useFormContext();
@@ -123,6 +156,16 @@ function FieldField(props: React.ComponentProps<typeof Field>) {
   return <Field {...props} data-invalid={isInvalid} />;
 }
 
+/**
+ * Low-level form hook with pre-configured field components
+ *
+ * @description
+ * Internal hook created by createFormHook with all field components pre-registered.
+ * **Prefer using `useForm` instead** - it provides a simpler API with Zod integration.
+ *
+ * Only use `useAppForm` if you need direct access to TanStack Form's raw API
+ * without the Zod validation wrapper.
+ */
 export const { useAppForm } = createFormHook({
   fieldComponents: {
     Input: FormInput,
@@ -144,16 +187,56 @@ export const { useAppForm } = createFormHook({
 });
 
 /**
- * Hook to create a TanStack form with Zod validation
- * Returns a type-safe FormApi with inferred form data type
+ * Create a type-safe form with Zod validation
+ *
+ * @description
+ * Primary hook for creating forms. Returns a form instance with:
+ * - `form.AppField` - Render fields with built-in components (Input, Select, Textarea, Checkbox, Switch)
+ * - `form.SubmitButton` - Submit button with automatic loading state
+ * - `form.Subscribe` - Subscribe to form state changes
+ * - `form.setFieldValue(name, value)` - Programmatically set field values
+ * - `form.store.state.values` - Access current form values
+ *
+ * Field components available inside `form.AppField`:
+ * - `field.Input`, `field.Textarea`, `field.Select`, `field.Checkbox`, `field.Switch`
+ * - `field.Label`, `field.Description`, `field.Message`, `field.Field`, `field.Content`
  *
  * @example
+ * // Basic form with validation
  * const form = useForm({
- *   schema: z.object({ email: z.string().email() }),
- *   defaultValues: { email: '' },
- *   onSubmit: async (values) => console.log(values),
- * })
- * // form is typed as FormApi<{ email: string }>
+ *   schema: z.object({
+ *     email: z.string().email(),
+ *     name: z.string().min(2),
+ *   }),
+ *   defaultValues: { email: "", name: "" },
+ *   onSubmit: async (values) => {
+ *     await saveUser(values);
+ *   },
+ * });
+ *
+ * @example
+ * // With server action
+ * const form = useForm({
+ *   schema: MySchema,
+ *   defaultValues: { ... },
+ *   onSubmit: async (values) => {
+ *     const result = await resolveActionResult(myServerAction(values));
+ *   },
+ * });
+ *
+ * @example
+ * // Programmatic field updates
+ * <field.Input
+ *   onChange={(e) => {
+ *     field.handleChange(e.target.value);
+ *     form.setFieldValue("slug", formatSlug(e.target.value));
+ *   }}
+ * />
+ *
+ * @param options.schema - Zod schema for validation and type inference
+ * @param options.defaultValues - Initial form values (must match schema shape)
+ * @param options.onSubmit - Called with validated values on form submit
+ * @param options.validationMode - When to validate: "onBlur" (default), "onChange", "onSubmit"
  */
 export function useForm<TSchema extends z.ZodType>({
   schema,
@@ -178,31 +261,65 @@ export function useForm<TSchema extends z.ZodType>({
 }
 
 /**
- * Form wrapper component that provides form context and handles submission
+ * Form wrapper that provides context and handles submission
+ *
+ * @description
+ * Wraps form content, provides form context to children, and handles
+ * form submission with preventDefault automatically.
  *
  * @example
- * const form = useForm({
- *   schema: z.object({ email: z.string().email() }),
- *   defaultValues: { email: '' },
- *   onSubmit: async (values) => console.log(values),
- * })
- *
- * <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+ * // Standard form structure
+ * <Form form={form} className="flex flex-col gap-4">
  *   <form.AppField name="email">
  *     {(field) => (
- *       <Field>
- *         <FormLabel>Email</FormLabel>
- *         <FieldContent>
+ *       <field.Field>
+ *         <field.Label>Email</field.Label>
+ *         <field.Content>
  *           <field.Input type="email" placeholder="you@example.com" />
- *           <FormMessage />
- *         </FieldContent>
- *       </Field>
+ *           <field.Message />
+ *         </field.Content>
+ *       </field.Field>
  *     )}
  *   </form.AppField>
- *   <form.AppForm>
- *     <form.SubmitButton>Submit</form.SubmitButton>
- *   </form.AppForm>
- * </form>
+ *
+ *   <form.AppField name="role">
+ *     {(field) => (
+ *       <field.Field>
+ *         <field.Label>Role</field.Label>
+ *         <field.Content>
+ *           <field.Select>
+ *             <SelectTrigger><SelectValue /></SelectTrigger>
+ *             <SelectContent>
+ *               <SelectItem value="admin">Admin</SelectItem>
+ *               <SelectItem value="member">Member</SelectItem>
+ *             </SelectContent>
+ *           </field.Select>
+ *           <field.Message />
+ *         </field.Content>
+ *       </field.Field>
+ *     )}
+ *   </form.AppField>
+ *
+ *   <form.SubmitButton>Submit</form.SubmitButton>
+ * </Form>
+ *
+ * @example
+ * // With async field validation
+ * <form.AppField
+ *   name="slug"
+ *   asyncDebounceMs={300}
+ *   validators={{
+ *     onChangeAsync: async ({ value }) => {
+ *       const exists = await checkSlugExists(value);
+ *       return exists ? "Slug already taken" : undefined;
+ *     },
+ *   }}
+ * >
+ *   {(field) => <field.Input />}
+ * </form.AppField>
+ *
+ * @param props.form - Form instance from useForm()
+ * @param props.children - Form content (fields, submit button)
  */
 export function Form({
   children,
@@ -234,9 +351,6 @@ function FieldLabel(props: React.ComponentProps<typeof FieldLabelComponent>) {
   return <FieldLabelComponent htmlFor={field.name} {...props} />;
 }
 
-/**
- * Description text for form field - uses FieldDescription with TanStack Form integration
- */
 function FieldDescription({
   className,
   ...props
@@ -256,11 +370,14 @@ function FieldMessage(props: React.ComponentProps<typeof FieldError>) {
   const field = useFieldContext<string>();
   const isInvalid = useFieldInvalid();
 
+  const formattedErrors = field.state.meta.errors.map((error) => {
+    if (typeof error === "string") {
+      return { message: error };
+    }
+    return error as { message?: string };
+  });
+
   return (
-    <>
-      {isInvalid ? (
-        <FieldError {...props} errors={field.state.meta.errors} />
-      ) : null}
-    </>
+    <>{isInvalid ? <FieldError {...props} errors={formattedErrors} /> : null}</>
   );
 }
