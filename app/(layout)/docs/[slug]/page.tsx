@@ -3,6 +3,7 @@
 import { Typography } from "@/components/nowts/typography";
 import { Button } from "@/components/ui/button";
 import { ServerMdx } from "@/features/markdown/server-mdx";
+import { cn } from "@/lib/utils";
 import { SiteConfig } from "@/site-config";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
@@ -102,12 +103,8 @@ export default async function page(props: DocParams) {
   const pageUrl = `${SiteConfig.prodUrl}/docs/${doc.slug}`;
 
   return (
-    <div
-      className={
-        hasApiExamples ? "xl:pr-[800px]" : toc.length > 0 ? "xl:pr-64" : ""
-      }
-    >
-      <div className="w-full">
+    <div className={cn("flex w-full")}>
+      <div className="min-w-0 flex-1">
         <div className="mx-auto max-w-3xl px-8 py-8">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
@@ -153,9 +150,9 @@ export default async function page(props: DocParams) {
           </div>
         </div>
       </div>
-      <div className="fixed top-16 right-0 hidden h-[calc(100vh-4rem)] overflow-y-auto xl:flex">
-        {hasApiExamples && (
-          <aside className="bg-background w-96 overflow-y-auto border-l">
+      {hasApiExamples && (
+        <div className="w-full max-w-96 border-l">
+          <aside className="bg-background sticky top-14 h-fit max-h-[calc(100vh-3.5rem)] overflow-y-auto">
             <div className="p-6">
               <DocsApiExamples
                 method={method}
@@ -165,16 +162,18 @@ export default async function page(props: DocParams) {
               />
             </div>
           </aside>
-        )}
+        </div>
+      )}
 
-        {toc.length > 0 && (
-          <aside className="bg-background w-64 overflow-y-auto border-l">
+      {toc.length > 0 && (
+        <div className="w-full max-w-64 border-l">
+          <aside className="bg-background sticky top-14 h-fit max-h-[calc(100vh-3.5rem)] overflow-y-auto">
             <div className="p-6">
               <DocsTableOfContents toc={toc} />
             </div>
           </aside>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
