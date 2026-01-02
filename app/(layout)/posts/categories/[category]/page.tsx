@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import { Typography } from "@/components/nowts/typography";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -17,6 +18,8 @@ import Link from "next/link";
 export async function generateMetadata(
   props: CategoryParams,
 ): Promise<Metadata> {
+  "use cache";
+  cacheLife("max");
   const params = await props.params;
   return {
     title: `${SiteConfig.title}'s Blog about ${params.category}`,
@@ -33,6 +36,8 @@ export async function generateMetadata(
 type CategoryParams = PageProps<"/posts/categories/[category]">;
 
 export default async function RoutePage(props: CategoryParams) {
+  "use cache";
+  cacheLife("max");
   const tags = await getPostsTags();
   const params = await props.params;
   const posts = await getPosts([params.category]);

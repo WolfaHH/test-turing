@@ -1,5 +1,4 @@
-"use cache";
-
+import { cacheLife } from "next/cache";
 import { Typography } from "@/components/nowts/typography";
 import { Button } from "@/components/ui/button";
 import { ServerMdx } from "@/features/markdown/server-mdx";
@@ -17,6 +16,7 @@ import { getCurrentDoc, getDocs } from "../doc-manager";
 
 export async function generateMetadata(props: DocParams): Promise<Metadata> {
   "use cache";
+  cacheLife("max");
   const params = await props.params;
   const doc = await getCurrentDoc(params.slug);
 
@@ -64,6 +64,7 @@ function extractToc(content: string): TocItem[] {
 
 export default async function page(props: DocParams) {
   "use cache";
+  cacheLife("max");
 
   const params = await props.params;
   const doc = await getCurrentDoc(params.slug);

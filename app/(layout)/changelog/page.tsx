@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import { Typography } from "@/components/nowts/typography";
 import { getChangelogs } from "@/features/changelog/changelog-manager";
 import { ChangelogTimeline } from "@/features/changelog/changelog-timeline";
@@ -19,6 +20,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ChangelogPage() {
+  "use cache";
+  cacheLife("max");
   const changelogs = await getChangelogs();
 
   if (changelogs.length === 0) {

@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Layout, LayoutContent } from "@/features/page/layout";
@@ -24,6 +25,8 @@ export const metadata: Metadata = {
 };
 
 export default async function RoutePage() {
+  "use cache";
+  cacheLife("max");
   const tags = await getPostsTags();
   const posts = await getPosts();
 

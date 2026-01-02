@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import { Typography } from "@/components/nowts/typography";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -27,6 +28,8 @@ export default function Page(props: PageProps<"/docs">) {
 }
 
 async function DocsPage(_props: PageProps<"/docs">) {
+  "use cache";
+  cacheLife("max");
   const docs = await getDocs();
 
   const sortedDocs = [...docs].sort((a, b) => {

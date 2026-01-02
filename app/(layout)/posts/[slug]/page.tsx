@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { ServerMdx } from "@/features/markdown/server-mdx";
@@ -14,6 +15,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata(props: PostParams): Promise<Metadata> {
+  "use cache";
+  cacheLife("max");
   const params = await props.params;
   const post = await getCurrentPost(params.slug);
 
@@ -51,6 +54,8 @@ export async function generateStaticParams() {
 }
 
 export default async function RoutePage(props: PostParams) {
+  "use cache";
+  cacheLife("max");
   const params = await props.params;
   const post = await getCurrentPost(params.slug);
 

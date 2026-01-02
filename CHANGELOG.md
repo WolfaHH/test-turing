@@ -2,6 +2,7 @@
 
 ## 2026-01-02
 
+REFACTOR: Add cacheLife("max") to docs, changelog, and posts pages for 30-day cache instead of 15-minute default
 REFACTOR: Improve mobile nav user button to show avatar + name/email with dropdown instead of just avatar
 FEATURE: Add responsive mobile navigation for documentation with sticky header and sheet sidebar
 FIX: Fix documentation page horizontal overflow when description text is too long

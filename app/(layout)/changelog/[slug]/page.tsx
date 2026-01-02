@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -17,6 +18,8 @@ import { notFound } from "next/navigation";
 export async function generateMetadata(
   props: ChangelogParams,
 ): Promise<Metadata> {
+  "use cache";
+  cacheLife("max");
   const params = await props.params;
   const changelog = await getCurrentChangelog(params.slug);
 
@@ -55,6 +58,8 @@ export async function generateStaticParams() {
 }
 
 export default async function ChangelogDetailPage(props: ChangelogParams) {
+  "use cache";
+  cacheLife("max");
   const params = await props.params;
   const changelog = await getCurrentChangelog(params.slug);
 
