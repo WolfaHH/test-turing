@@ -22,9 +22,8 @@ The Debug Panel (`src/features/debug/`) provides:
 
 ```tsx
 import {
-  useDebugPanelStore,
-  type DebugAction,
-  type DebugInfo,
+  useDebugPanelAction,
+  useDebugPanelInfo,
 } from "@/features/debug";
 ```
 
@@ -45,19 +44,23 @@ type DebugInfo = {
 };
 ```
 
-## Store Methods
+## Hooks
 
 ```tsx
-const store = useDebugPanelStore.getState();
+// Register an action button (auto-cleanup on unmount)
+useDebugPanelAction({
+  id: "my-action",
+  label: "My Action",
+  onClick: () => { ... },
+  variant: "default" | "destructive", // optional
+});
 
-// Actions
-store.addAction(action: DebugAction);
-store.removeAction(id: string);
-
-// Info
-store.addInfo(info: DebugInfo);
-store.removeInfo(id: string);
-store.updateInfo(id: string, value: DebugInfo["value"]);
+// Register an info display (auto-cleanup on unmount)
+useDebugPanelInfo({
+  id: "my-info",
+  label: "My Info",
+  value: "some value",
+});
 ```
 
 </api_reference>
@@ -68,58 +71,42 @@ store.updateInfo(id: string, value: DebugInfo["value"]);
 ```tsx
 "use client";
 
-import { useDebugPanelStore } from "@/features/debug";
-import { useEffect } from "react";
+import { useDebugPanelAction } from "@/features/debug";
+import { useCallback } from "react";
 import { clearCacheAction } from "./actions";
 
 export function MyComponent() {
-  useEffect(() => {
-    const store = useDebugPanelStore.getState();
+  const handleClearCache = useCallback(() => clearCacheAction(), []);
 
-    store.addAction({
-      id: "clear-cache",
-      label: "Clear Cache",
-      onClick: () => clearCacheAction(),
-    });
-
-    return () => {
-      store.removeAction("clear-cache");
-    };
-  }, []);
+  useDebugPanelAction({
+    id: "clear-cache",
+    label: "Clear Cache",
+    onClick: handleClearCache,
+  });
 
   return <div>...</div>;
 }
 ```
 
-## Pattern 2: Add Info with useEffect
+## Pattern 2: Add Info
 
 ```tsx
 "use client";
 
-import { useDebugPanelStore } from "@/features/debug";
-import { useEffect } from "react";
+import { useDebugPanelInfo } from "@/features/debug";
 
 export function DebugEnvInfo() {
-  useEffect(() => {
-    const store = useDebugPanelStore.getState();
+  useDebugPanelInfo({
+    id: "env",
+    label: "Environment",
+    value: process.env.NODE_ENV ?? null,
+  });
 
-    store.addInfo({
-      id: "env",
-      label: "Environment",
-      value: process.env.NODE_ENV,
-    });
-
-    store.addInfo({
-      id: "build-id",
-      label: "Build ID",
-      value: process.env.NEXT_PUBLIC_BUILD_ID ?? "local",
-    });
-
-    return () => {
-      store.removeInfo("env");
-      store.removeInfo("build-id");
-    };
-  }, []);
+  useDebugPanelInfo({
+    id: "build-id",
+    label: "Build ID",
+    value: process.env.NEXT_PUBLIC_BUILD_ID ?? "local",
+  });
 
   return null;
 }
@@ -130,23 +117,14 @@ export function DebugEnvInfo() {
 ```tsx
 "use client";
 
-import { useDebugPanelStore } from "@/features/debug";
-import { useEffect } from "react";
+import { useDebugPanelInfo } from "@/features/debug";
 
 export function DebugCounter({ count }: { count: number }) {
-  useEffect(() => {
-    useDebugPanelStore.getState().addInfo({
-      id: "counter",
-      label: "Count",
-      value: count,
-    });
-  }, [count]);
-
-  useEffect(() => {
-    return () => {
-      useDebugPanelStore.getState().removeInfo("counter");
-    };
-  }, []);
+  useDebugPanelInfo({
+    id: "counter",
+    label: "Count",
+    value: count,
+  });
 
   return null;
 }
@@ -155,64 +133,72 @@ export function DebugCounter({ count }: { count: number }) {
 ## Pattern 4: Destructive Action
 
 ```tsx
-store.addAction({
-  id: "reset-db",
-  label: "Reset DB",
-  variant: "destructive",
-  onClick: async () => {
+"use client";
+
+import { useDebugPanelAction } from "@/features/debug";
+import { useCallback } from "react";
+import { resetDatabaseAction } from "./actions";
+
+export function DebugResetDb() {
+  const handleResetDb = useCallback(async () => {
     await resetDatabaseAction();
-  },
-});
+  }, []);
+
+  useDebugPanelAction({
+    id: "reset-db",
+    label: "Reset DB",
+    variant: "destructive",
+    onClick: handleResetDb,
+  });
+
+  return null;
+}
 ```
 
-## Pattern 5: Multiple Actions at Once
+## Pattern 5: Multiple Actions Component
 
 ```tsx
-useEffect(() => {
-  const store = useDebugPanelStore.getState();
+"use client";
 
-  const actions = [
-    { id: "seed-users", label: "Seed Users", onClick: seedUsersAction },
-    { id: "clear-cache", label: "Clear Cache", onClick: clearCacheAction },
-    {
-      id: "reset-db",
-      label: "Reset DB",
-      onClick: resetDbAction,
-      variant: "destructive" as const,
-    },
-  ];
+import { useDebugPanelAction } from "@/features/debug";
+import { useCallback } from "react";
 
-  actions.forEach(store.addAction);
+export function DebugDataActions() {
+  const handleSeedUsers = useCallback(() => seedUsersAction(), []);
+  const handleClearCache = useCallback(() => clearCacheAction(), []);
+  const handleResetDb = useCallback(() => resetDbAction(), []);
 
-  return () => {
-    actions.forEach((a) => store.removeAction(a.id));
-  };
-}, []);
+  useDebugPanelAction({ id: "seed-users", label: "Seed Users", onClick: handleSeedUsers });
+  useDebugPanelAction({ id: "clear-cache", label: "Clear Cache", onClick: handleClearCache });
+  useDebugPanelAction({ id: "reset-db", label: "Reset DB", onClick: handleResetDb, variant: "destructive" });
+
+  return null;
+}
 ```
 
 </patterns>
 
 <rules>
 - ALWAYS use unique `id` values to avoid conflicts
-- ALWAYS clean up with `removeAction`/`removeInfo` in useEffect return
+- Use `useCallback` for onClick handlers to prevent unnecessary re-registrations
 - Actions support async functions (loading state shown automatically)
 - Use `variant: "destructive"` for dangerous actions
 - The Debug Panel is only visible in development (`NODE_ENV !== "production"`)
 - Server actions can be called directly in `onClick` handlers
+- Cleanup is automatic - hooks handle registration and removal on unmount
 </rules>
 
 <process>
 1. **Identify what to add**: Action (button) or Info (display value)
-2. **Create a client component** that registers the action/info in useEffect
+2. **Create a client component** with the appropriate hook (`useDebugPanelAction` or `useDebugPanelInfo`)
 3. **Use unique IDs** to prevent conflicts
-4. **Clean up on unmount** by removing the action/info
+4. **Wrap callbacks in useCallback** for stable references
 5. **Place the component** in the appropriate layout or page
 </process>
 
 <success_criteria>
-
 - Action/Info appears in Debug Panel when component is mounted
-- Action/Info is removed when component unmounts
+- Action/Info is automatically removed when component unmounts
 - Loading state works for async actions
 - No duplicate IDs with existing debug items
-  </success_criteria>
+</success_criteria>

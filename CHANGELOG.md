@@ -2,6 +2,9 @@
 
 ## 2026-01-02
 
+FIX: Fix documentation page horizontal overflow when description text is too long
+FEATURE: Add /add-documentation slash command for creating and updating docs in content/docs/
+REFACTOR: Add useDebugPanelAction and useDebugPanelInfo hooks for cleaner debug panel registration with automatic cleanup
 FIX: Improve changelog dialog responsiveness on mobile with smaller padding and text sizes
 
 ## 2025-12-28

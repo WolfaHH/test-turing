@@ -21,5 +21,5 @@ export const getServerUrl = () => {
   }
 
   // If we are in development, we return the localhost URL
-  return "http://localhost:3002";
+  return `http://localhost:${process.env.PORT ?? 3000}`;
 };

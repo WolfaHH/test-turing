@@ -56,7 +56,7 @@ export default function RootLayout({ children, modal }: LayoutProps<"/">) {
               {children}
               {modal}
             </Suspense>
-            <DebugPanel />
+            {process.env.NODE_ENV === "production" ? null : <DebugPanel />}
             <FloatingLegalFooter />
             <Suspense>
               <ServerToaster />

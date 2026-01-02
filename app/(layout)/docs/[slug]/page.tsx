@@ -107,83 +107,73 @@ export default async function page(props: DocParams) {
         hasApiExamples ? "xl:pr-[800px]" : toc.length > 0 ? "xl:pr-64" : ""
       }
     >
-      <div className="flex w-full">
-        <div className="flex min-w-0 flex-1">
-          <div className="mx-auto w-fit px-8 py-8">
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-3">
-                <div className="flex items-start justify-between gap-8">
-                  <Typography
-                    variant="h1"
-                    className="text-4xl font-bold tracking-tight"
-                  >
-                    {doc.attributes.title}
-                  </Typography>
-                  <DocsCopyPage page={doc.content} url={pageUrl} />
-                </div>
-                {doc.attributes.description && (
-                  <Typography
-                    variant="p"
-                    className="text-muted-foreground text-lg"
-                  >
-                    {doc.attributes.description}
-                  </Typography>
-                )}
+      <div className="w-full">
+        <div className="mx-auto max-w-3xl px-8 py-8">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-start justify-between gap-8">
+                <Typography
+                  variant="h1"
+                  className="text-4xl font-bold tracking-tight"
+                >
+                  {doc.attributes.title}
+                </Typography>
+                <DocsCopyPage page={doc.content} url={pageUrl} />
               </div>
+              {doc.attributes.description && (
+                <Typography
+                  variant="p"
+                  className="text-muted-foreground text-lg"
+                >
+                  {doc.attributes.description}
+                </Typography>
+              )}
+            </div>
 
-              <div className="prose prose-neutral dark:prose-invert max-w-none">
-                <ServerMdx source={doc.content} />
-              </div>
+            <ServerMdx source={doc.content} className="w-full max-w-none" />
 
-              <div className="border-border flex items-center justify-between border-t pt-6">
-                {neighbours.previous && (
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href={`/docs/${neighbours.previous.slug}`}>
-                      <ArrowLeft className="size-4" />
-                      {neighbours.previous.attributes.title}
-                    </Link>
-                  </Button>
-                )}
-                {neighbours.next && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="ml-auto"
-                    asChild
-                  >
-                    <Link href={`/docs/${neighbours.next.slug}`}>
-                      {neighbours.next.attributes.title}
-                      <ArrowRight className="size-4" />
-                    </Link>
-                  </Button>
-                )}
-              </div>
+            <div className="border-border flex items-center justify-between border-t pt-6">
+              {neighbours.previous && (
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/docs/${neighbours.previous.slug}`}>
+                    <ArrowLeft className="size-4" />
+                    {neighbours.previous.attributes.title}
+                  </Link>
+                </Button>
+              )}
+              {neighbours.next && (
+                <Button variant="outline" size="sm" className="ml-auto" asChild>
+                  <Link href={`/docs/${neighbours.next.slug}`}>
+                    {neighbours.next.attributes.title}
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
+      </div>
+      <div className="fixed top-16 right-0 hidden h-[calc(100vh-4rem)] overflow-y-auto xl:flex">
+        {hasApiExamples && (
+          <aside className="bg-background w-96 overflow-y-auto border-l">
+            <div className="p-6">
+              <DocsApiExamples
+                method={method}
+                endpoint={endpoint}
+                examples={examples}
+                results={results}
+              />
+            </div>
+          </aside>
+        )}
 
-        <div className="fixed top-16 right-0 hidden h-[calc(100vh-4rem)] overflow-y-auto xl:flex">
-          {hasApiExamples && (
-            <aside className="bg-background w-96 overflow-y-auto border-l">
-              <div className="p-6">
-                <DocsApiExamples
-                  method={method}
-                  endpoint={endpoint}
-                  examples={examples}
-                  results={results}
-                />
-              </div>
-            </aside>
-          )}
-
-          {toc.length > 0 && (
-            <aside className="bg-background w-64 overflow-y-auto border-l">
-              <div className="p-6">
-                <DocsTableOfContents toc={toc} />
-              </div>
-            </aside>
-          )}
-        </div>
+        {toc.length > 0 && (
+          <aside className="bg-background w-64 overflow-y-auto border-l">
+            <div className="p-6">
+              <DocsTableOfContents toc={toc} />
+            </div>
+          </aside>
+        )}
       </div>
     </div>
   );
