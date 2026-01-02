@@ -34,11 +34,10 @@ Requires a valid user session. Provides `ctx.user` in the handler.
 ```ts
 import { authRoute } from "@/lib/zod-route";
 
-export const GET = authRoute
-  .handler(async (req, { ctx }) => {
-    const { user } = ctx;
-    return { userId: user.id };
-  });
+export const GET = authRoute.handler(async (req, { ctx }) => {
+  const { user } = ctx;
+  return { userId: user.id };
+});
 ```
 
 ### `orgRoute` - Organization Handler
@@ -49,11 +48,10 @@ Requires organization membership with optional role/permission checks. Provides 
 import { orgRoute } from "@/lib/zod-route";
 
 // Basic organization route
-export const GET = orgRoute
-  .handler(async (req, { ctx }) => {
-    const { organization } = ctx;
-    return { orgId: organization.id };
-  });
+export const GET = orgRoute.handler(async (req, { ctx }) => {
+  const { organization } = ctx;
+  return { orgId: organization.id };
+});
 
 // With permissions
 export const POST = orgRoute
@@ -97,11 +95,13 @@ Use `.body()` for JSON body validation:
 
 ```ts
 export const POST = route
-  .body(z.object({
-    name: z.string().min(1),
-    email: z.string().email(),
-    age: z.number().positive().optional()
-  }))
+  .body(
+    z.object({
+      name: z.string().min(1),
+      email: z.string().email(),
+      age: z.number().positive().optional(),
+    }),
+  )
   .handler(async (req, { body }) => {
     return await createUser(body);
   });
@@ -113,11 +113,13 @@ Use `.query()` for URL search parameters:
 
 ```ts
 export const GET = route
-  .query(z.object({
-    page: z.coerce.number().default(1),
-    limit: z.coerce.number().default(10),
-    search: z.string().optional()
-  }))
+  .query(
+    z.object({
+      page: z.coerce.number().default(1),
+      limit: z.coerce.number().default(10),
+      search: z.string().optional(),
+    }),
+  )
   .handler(async (req, { query }) => {
     return await listItems(query);
   });
@@ -127,12 +129,12 @@ export const GET = route
 
 The route handlers automatically handle errors:
 
-| Error Type | Status | Behavior |
-| --- | --- | --- |
-| `ZodRouteError` | Custom | Returns error message with specified status |
-| `ApplicationError` | 400 | Returns error message |
-| Unknown Error (dev) | 500 | Returns full error message |
-| Unknown Error (prod) | 500 | Returns "Internal server error" |
+| Error Type           | Status | Behavior                                    |
+| -------------------- | ------ | ------------------------------------------- |
+| `ZodRouteError`      | Custom | Returns error message with specified status |
+| `ApplicationError`   | 400    | Returns error message                       |
+| Unknown Error (dev)  | 500    | Returns full error message                  |
+| Unknown Error (prod) | 500    | Returns "Internal server error"             |
 
 ### Throwing Errors
 
@@ -179,7 +181,7 @@ export const POST = orgRoute
 export const PUT = orgRoute
   .metadata({
     roles: ["admin"],
-    permissions: { settings: ["update"] }
+    permissions: { settings: ["update"] },
   })
   .handler(async (req, { ctx }) => {
     // Requires admin role AND settings.update permission

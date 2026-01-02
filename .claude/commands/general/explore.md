@@ -14,7 +14,8 @@ Use the Task tool with `subagent_type="Explore"` and thoroughness level "very th
 </process>
 
 <success_criteria>
+
 - Direct answer with supporting evidence
 - File paths with line numbers cited (e.g., `src/app.ts:42`)
 - Complete context gathered before answering
-</success_criteria>
+  </success_criteria>

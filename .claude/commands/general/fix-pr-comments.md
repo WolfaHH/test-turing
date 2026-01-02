@@ -32,7 +32,7 @@ Systematically address ALL unresolved PR review comments.
    - `git add -A`
    - `git commit -m "fix: address PR review comments"`
    - `git push`
-</process>
+     </process>
 
 <rules>
 - Read files before editing - no exceptions
@@ -41,7 +41,8 @@ Systematically address ALL unresolved PR review comments.
 </rules>
 
 <success_criteria>
+
 - Every unresolved comment addressed
 - Changes committed and pushed
 - No scope creep beyond review requests
-</success_criteria>
+  </success_criteria>

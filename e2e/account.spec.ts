@@ -97,8 +97,15 @@ test.describe("account", () => {
     await page.locator('input[name="confirmPassword"]').fill(newPassword);
     await page.getByRole("button", { name: /Change Password/i }).click();
 
+    // Wait for success toast
+    await expect(page.getByText("Password changed successfully")).toBeVisible({
+      timeout: 10000,
+    });
+
+    // Sign out first (revokeOtherSessions only affects other sessions, not current)
     await signOutAccount({ page });
 
+    // Sign in with the new password to verify it works
     await signInAccount({
       page,
       userData: {

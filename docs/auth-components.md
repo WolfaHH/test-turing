@@ -16,7 +16,7 @@ export default function Home() {
     <div>
       <SignInButton size="lg" variant="default" />
     </div>
-  )
+  );
 }
 ```
 
@@ -25,6 +25,7 @@ export default function Home() {
 Composant client qui affiche l'avatar de l'utilisateur avec un dropdown menu. Quand l'utilisateur clique dessus, il voit un menu avec des actions (Dashboard, Account Settings, Admin, Theme, Logout).
 
 **Props:**
+
 ```tsx
 {
   user: {
@@ -46,7 +47,7 @@ export default function Home() {
     <div>
       <LoggedInButton user={user} />
     </div>
-  )
+  );
 }
 ```
 
@@ -57,6 +58,7 @@ Composant serveur qui affiche automatiquement `LoggedInButton` ou `SignInButton`
 **Props:** Aucune
 
 **Features:**
+
 - Utilise `Suspense` avec fallback `Skeleton`
 - Récupère l'utilisateur côté serveur
 - Idéal pour les layouts et pages serveur
@@ -69,7 +71,7 @@ export default function Header() {
     <div>
       <AuthButton />
     </div>
-  )
+  );
 }
 ```
 
@@ -80,6 +82,7 @@ Composant client qui a le même comportement que `AuthButton`. Il affiche automa
 **Props:** Aucune
 
 **Features:**
+
 - Utilise le hook `useSession` côté client
 - À utiliser quand tu as besoin d'un composant client
 
@@ -93,7 +96,7 @@ export default function ClientHeader() {
     <div>
       <AuthButtonClient />
     </div>
-  )
+  );
 }
 ```
 

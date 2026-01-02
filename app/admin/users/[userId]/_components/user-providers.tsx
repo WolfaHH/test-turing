@@ -106,16 +106,18 @@ export function UserProviders({ accounts }: UserProvidersProps) {
                       <code className="text-sm">{account.accountId}</code>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant={
-                          account.accessTokenExpiresAt &&
-                          new Date(account.accessTokenExpiresAt) > new Date()
-                            ? "default"
-                            : account.accessToken
-                              ? "secondary"
-                              : "outline"
-                        }
-                      >
+                      <Badge variant="outline" className="gap-1.5">
+                        <span
+                          className={`size-1.5 rounded-full ${
+                            account.accessTokenExpiresAt &&
+                            new Date(account.accessTokenExpiresAt) > new Date()
+                              ? "bg-emerald-500"
+                              : account.accessToken
+                                ? "bg-amber-500"
+                                : "bg-gray-400"
+                          }`}
+                          aria-hidden="true"
+                        />
                         {account.accessTokenExpiresAt &&
                         new Date(account.accessTokenExpiresAt) > new Date()
                           ? "Active"

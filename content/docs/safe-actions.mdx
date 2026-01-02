@@ -1,7 +1,8 @@
 ---
 title: "Safe Actions"
 description: "Type-safe server actions with authentication, organization authorization, and error handling"
-keywords: ["server actions", "next-safe-action", "authentication", "authorization"]
+keywords:
+  ["server actions", "next-safe-action", "authentication", "authorization"]
 tags: ["developer", "internal"]
 order: 1
 subcategory: "Developer"
@@ -19,10 +20,12 @@ Base client for public actions that don't require authentication.
 import { action } from "@/lib/actions/safe-actions";
 
 export const subscribeNewsletter = action
-  .inputSchema(z.object({
-    email: z.string().email(),
-    name: z.string().optional()
-  }))
+  .inputSchema(
+    z.object({
+      email: z.string().email(),
+      name: z.string().optional(),
+    }),
+  )
   .action(async ({ parsedInput: { email, name } }) => {
     await addToNewsletter(email, name);
     return { subscribed: true };
@@ -37,10 +40,12 @@ Requires a valid user session. Provides `ctx.user` in the handler.
 import { authAction } from "@/lib/actions/safe-actions";
 
 export const updateProfile = authAction
-  .inputSchema(z.object({
-    name: z.string().min(1),
-    bio: z.string().optional(),
-  }))
+  .inputSchema(
+    z.object({
+      name: z.string().min(1),
+      bio: z.string().optional(),
+    }),
+  )
   .action(async ({ parsedInput: { name, bio }, ctx: { user } }) => {
     await updateUserProfile(user.id, { name, bio });
     return { updated: true };
@@ -57,10 +62,12 @@ import { orgAction } from "@/lib/actions/safe-actions";
 // With permissions
 export const inviteUser = orgAction
   .metadata({ permissions: { users: ["create", "invite"] } })
-  .inputSchema(z.object({
-    email: z.string().email(),
-    role: z.enum(["member", "admin"])
-  }))
+  .inputSchema(
+    z.object({
+      email: z.string().email(),
+      role: z.enum(["member", "admin"]),
+    }),
+  )
   .action(async ({ parsedInput: { email, role }, ctx: { org } }) => {
     const invitation = await inviteUserToOrg(email, role, org.id);
     return { invitationId: invitation.id };
@@ -70,12 +77,14 @@ export const inviteUser = orgAction
 export const manageTeam = orgAction
   .metadata({
     roles: ["admin", "manager"],
-    permissions: { teams: ["create", "update", "delete"] }
+    permissions: { teams: ["create", "update", "delete"] },
   })
-  .inputSchema(z.object({
-    action: z.enum(["create", "update", "delete"]),
-    teamData: z.object({ name: z.string() }).optional()
-  }))
+  .inputSchema(
+    z.object({
+      action: z.enum(["create", "update", "delete"]),
+      teamData: z.object({ name: z.string() }).optional(),
+    }),
+  )
   .action(async ({ parsedInput, ctx: { org } }) => {
     return await performTeamAction(parsedInput, org.id);
   });
@@ -89,14 +98,18 @@ Requires the user to have admin role. Provides `ctx.user` in the handler.
 import { adminAction } from "@/lib/actions/safe-actions";
 
 export const updateSubscriptionPlan = adminAction
-  .inputSchema(z.object({
-    organizationId: z.string(),
-    planName: z.string(),
-  }))
-  .action(async ({ parsedInput: { organizationId, planName }, ctx: { user } }) => {
-    await updateOrgPlan(organizationId, planName);
-    return { updated: true };
-  });
+  .inputSchema(
+    z.object({
+      organizationId: z.string(),
+      planName: z.string(),
+    }),
+  )
+  .action(
+    async ({ parsedInput: { organizationId, planName }, ctx: { user } }) => {
+      await updateOrgPlan(organizationId, planName);
+      return { updated: true };
+    },
+  );
 ```
 
 ## Error Handling

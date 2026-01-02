@@ -21,9 +21,10 @@ Build React components using TDD with Vitest unit tests. Write tests FIRST, then
 5. **Run test**: `pnpm test:ci <test-file>`
 
 6. **Iterate**: Fix until test passes
-</process>
+   </process>
 
 <test_template>
+
 ```typescript
 import { setup } from "../test/setup";
 import { screen, waitFor } from "@testing-library/react";
@@ -38,6 +39,7 @@ describe("ComponentName", () => {
   });
 });
 ```
+
 </test_template>
 
 <utilities>
@@ -56,10 +58,11 @@ describe("ComponentName", () => {
 </rules>
 
 <success_criteria>
+
 - Test written before component
 - Component follows existing patterns
 - Test passes
-</success_criteria>
+  </success_criteria>
 
 ---
 

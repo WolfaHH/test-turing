@@ -37,9 +37,10 @@ test("update organization slug", async ({ page }) => {
   const newSlug = `${faker.internet.domainWord().toLowerCase()}-${faker.string.alphanumeric(4).toLowerCase()}`;
 
   // 5. Find the slug input field and update it
-  const slugInput = page.getByRole("textbox");
+  const slugInput = page.locator('input[name="slug"]');
 
-  // Verify the current value matches the original org slug
+  // Wait for the input to be visible and have the correct value
+  await slugInput.waitFor({ state: "visible" });
   await expect(slugInput).toHaveValue(originalSlug);
 
   // Update the slug

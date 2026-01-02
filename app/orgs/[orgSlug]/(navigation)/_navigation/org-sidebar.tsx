@@ -12,6 +12,9 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { SidebarNavigationMenu } from "@/components/ui/sidebar-utils";
+import { ChangelogDebugActions } from "@/features/changelog/changelog-debug-actions";
+import type { Changelog } from "@/features/changelog/changelog-manager";
+import { ChangelogSidebarStack } from "@/features/changelog/changelog-sidebar-stack";
 import type { NavigationGroup } from "@/features/navigation/navigation.type";
 import { SidebarUserButton } from "@/features/sidebar/sidebar-user-button";
 import type { AuthRole } from "@/lib/auth/auth-permissions";
@@ -35,10 +38,12 @@ export function OrgSidebar({
   slug,
   userOrgs,
   roles,
+  changelogs,
 }: {
   slug: string;
   roles: AuthRole[] | undefined;
   userOrgs: AuthOrganization[];
+  changelogs: Changelog[];
 }) {
   const pathname = usePathname();
   const allLinks: NavigationGroup[] = getOrganizationNavigation(slug, roles);
@@ -82,6 +87,10 @@ export function OrgSidebar({
       <SidebarFooter className="flex flex-col gap-2">
         {!isSettingsPage && (
           <>
+            {changelogs.length > 0 && (
+              <ChangelogSidebarStack changelogs={changelogs} />
+            )}
+            <ChangelogDebugActions />
             <UpgradeCard />
             <Button variant="outline" asChild size="sm">
               <Link href={`/orgs/${slug}/settings`} prefetch={false}>

@@ -8,7 +8,7 @@ import {
 
 export default function RouteLoading() {
   return (
-    <Layout>
+    <Layout size="lg">
       <LayoutHeader>
         <LayoutTitle>User Management</LayoutTitle>
       </LayoutHeader>

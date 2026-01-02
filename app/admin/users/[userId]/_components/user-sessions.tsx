@@ -222,13 +222,15 @@ export function UserSessions({ userId }: UserSessionsProps) {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Badge
-                          variant={
-                            new Date(session.expiresAt) > new Date()
-                              ? "default"
-                              : "destructive"
-                          }
-                        >
+                        <Badge variant="outline" className="gap-1.5">
+                          <span
+                            className={`size-1.5 rounded-full ${
+                              new Date(session.expiresAt) > new Date()
+                                ? "bg-emerald-500"
+                                : "bg-red-500"
+                            }`}
+                            aria-hidden="true"
+                          />
                           {new Date(session.expiresAt) > new Date()
                             ? "Active"
                             : "Expired"}

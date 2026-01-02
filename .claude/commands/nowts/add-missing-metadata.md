@@ -15,6 +15,7 @@ Identify and add high-quality metadata to Next.js pages that are missing it.
 </process>
 
 <metadata_template>
+
 ```typescript
 import type { Metadata } from "next";
 import { SiteConfig } from "@/site-config";
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
   },
 };
 ```
+
 </metadata_template>
 
 <rules>
@@ -40,7 +42,8 @@ export const metadata: Metadata = {
 </rules>
 
 <success_criteria>
+
 - All server component pages have metadata
 - Descriptions accurately reflect page content
 - Metadata follows project conventions
-</success_criteria>
+  </success_criteria>

@@ -1,11 +1,13 @@
-import { Typography } from "@/components/nowts/typography";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { InlineTooltip } from "@/components/ui/tooltip";
 import {
   Layout,
@@ -15,11 +17,13 @@ import {
   LayoutTitle,
 } from "@/features/page/layout";
 import { getRequiredAdmin } from "@/lib/auth/auth-user";
+import { getInitials } from "@/lib/utils/initials";
 import { getFeedbackById } from "@/query/feedback/get-feedback";
-import { Angry, Frown, Meh, SmilePlus } from "lucide-react";
+import { Angry, ChevronRight, Frown, Meh, SmilePlus } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { UserDetailsCard } from "../../_components/user-details-card";
+import { FeedbackReplyButton } from "../_components/feedback-reply-button";
 
 const ReviewIcons = [
   {
@@ -67,6 +71,8 @@ async function FeedbackDetailPage(props: {
   }
 
   const reviewIcon = ReviewIcons.find((icon) => icon.value === feedback.review);
+  const displayName = feedback.user?.name ?? "Anonymous";
+  const displayEmail = feedback.user?.email ?? feedback.email ?? "No email";
 
   return (
     <Layout size="lg">
@@ -79,36 +85,68 @@ async function FeedbackDetailPage(props: {
 
       <LayoutContent className="space-y-6">
         {feedback.user ? (
-          <UserDetailsCard user={feedback.user} />
+          <Item variant="outline" asChild>
+            <Link
+              href={`/admin/users/${feedback.user.id}`}
+              className="cursor-pointer"
+            >
+              <ItemMedia>
+                <Avatar className="size-10">
+                  <AvatarImage
+                    src={feedback.user.image ?? undefined}
+                    alt={displayName}
+                  />
+                  <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
+                </Avatar>
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>
+                  {displayName}
+                  <Badge variant="outline" className="text-xs">
+                    {feedback.user.role ?? "user"}
+                  </Badge>
+                </ItemTitle>
+                <ItemDescription>{displayEmail}</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <ChevronRight className="text-muted-foreground size-5" />
+              </ItemActions>
+            </Link>
+          </Item>
         ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>Anonymous</CardTitle>
-              <CardDescription>Email {feedback.email}</CardDescription>
-            </CardHeader>
-          </Card>
+          <Item variant="outline">
+            <ItemMedia>
+              <Avatar className="size-10">
+                <AvatarFallback>{displayEmail[0].toUpperCase()}</AvatarFallback>
+              </Avatar>
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>Anonymous</ItemTitle>
+              <ItemDescription>{displayEmail}</ItemDescription>
+            </ItemContent>
+          </Item>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Review</CardTitle>
-            <CardDescription>
-              {reviewIcon && (
-                <div className="flex items-center gap-3">
-                  <InlineTooltip title={reviewIcon.tooltip}>
-                    <reviewIcon.icon size={28} className="text-primary" />
-                  </InlineTooltip>
-                  <Typography variant="muted">{reviewIcon.tooltip}</Typography>
-                </div>
-              )}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Typography variant="p" className="whitespace-pre-wrap">
+        <Item variant="outline">
+          <ItemMedia>
+            {reviewIcon && (
+              <InlineTooltip title={reviewIcon.tooltip}>
+                <reviewIcon.icon size={24} className="text-primary" />
+              </InlineTooltip>
+            )}
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle>{reviewIcon?.tooltip ?? "No rating"}</ItemTitle>
+            <ItemDescription className="whitespace-pre-wrap">
               {feedback.message}
-            </Typography>
-          </CardContent>
-        </Card>
+            </ItemDescription>
+          </ItemContent>
+        </Item>
+
+        <FeedbackReplyButton
+          feedbackId={feedback.id}
+          recipientName={displayName}
+        />
       </LayoutContent>
     </Layout>
   );

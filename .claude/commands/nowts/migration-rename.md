@@ -31,10 +31,11 @@ ALTER TABLE "Post" RENAME COLUMN "content" TO "markdown";
 </process>
 
 <success_criteria>
+
 - Migration uses RENAME instead of DROP/ADD
 - Data preserved after migration
 - Schema correctly updated
-</success_criteria>
+  </success_criteria>
 
 ---
 

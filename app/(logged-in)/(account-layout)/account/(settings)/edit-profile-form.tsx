@@ -1,6 +1,6 @@
 "use client";
 
-import { AvatarUploader } from "@/components/avatar-upload";
+import { ImageDropzone } from "@/features/images/image-dropzone";
 import { Typography } from "@/components/nowts/typography";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -104,9 +104,12 @@ export const EditProfileCardForm = ({
           <div className="flex items-center gap-2">
             <form.AppField name="image">
               {(field) => (
-                <AvatarUploader
-                  onImageChange={(file) => uploadImageMutation.mutate(file)}
-                  currentAvatar={field.state.value}
+                <ImageDropzone
+                  variant="avatar"
+                  onChange={(file) => uploadImageMutation.mutate(file)}
+                  value={field.state.value}
+                  isUploading={uploadImageMutation.isPending}
+                  onRemove={() => field.setValue(null)}
                 />
               )}
             </form.AppField>

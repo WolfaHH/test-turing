@@ -19,9 +19,10 @@ Create isolated component tests using Vitest and React Testing Library.
 4. **Run test**: `pnpm test:ci <test-file>`
 
 5. **Iterate**: Fix until test passes, remove debug statements
-</process>
+   </process>
 
 <test_template>
+
 ```typescript
 import { setup } from "../test/setup";
 import { screen, waitFor } from "@testing-library/react";
@@ -41,9 +42,11 @@ describe("ComponentName", () => {
   });
 });
 ```
+
 </test_template>
 
 <mocking_patterns>
+
 ```typescript
 // Mock modules
 vi.mock("@/lib/module", () => ({
@@ -60,6 +63,7 @@ vi.mock("@/features/module/action", () => ({
   serverAction: vi.fn().mockResolvedValue({ success: true }),
 }));
 ```
+
 </mocking_patterns>
 
 <rules>
@@ -70,10 +74,11 @@ vi.mock("@/features/module/action", () => ({
 </rules>
 
 <success_criteria>
+
 - Uses setup() helper from test/setup.tsx
 - External dependencies mocked
 - All assertions pass
-</success_criteria>
+  </success_criteria>
 
 ---
 

@@ -17,7 +17,10 @@ export async function AccountNavigation({ children }: PropsWithChildren) {
       <SidebarInset className="border-border border">
         <header className="flex h-16 shrink-0 items-center gap-2">
           <Layout size="lg">
-            <SidebarTrigger className="-ml-1" />
+            <SidebarTrigger
+              variant="outline"
+              className="size-8 cursor-pointer"
+            />
           </Layout>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>

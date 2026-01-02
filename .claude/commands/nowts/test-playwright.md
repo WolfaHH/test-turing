@@ -19,9 +19,10 @@ Create comprehensive E2E tests using Playwright for full application testing.
 4. **Run test**: `pnpm test:e2e:ci -g "test-name"`
 
 5. **Iterate**: Fix until test passes, remove debug logs
-</process>
+   </process>
 
 <test_template>
+
 ```typescript
 import { test, expect } from "@playwright/test";
 import { createTestAccount } from "./utils/auth-test";
@@ -36,6 +37,7 @@ test.describe("Feature Name", () => {
   });
 });
 ```
+
 </test_template>
 
 <patterns>
@@ -51,6 +53,7 @@ await page.getByLabel(/email/i).fill("test@example.com");
 // Assertions
 await expect(page.getByText("Success")).toBeVisible();
 await expect(page).toHaveURL("/success");
+
 ```
 </patterns>
 
@@ -70,3 +73,4 @@ await expect(page).toHaveURL("/success");
 ---
 
 Create E2E test for: $ARGUMENTS
+```

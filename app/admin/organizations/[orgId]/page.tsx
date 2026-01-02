@@ -3,14 +3,13 @@ import {
   Layout,
   LayoutActions,
   LayoutContent,
-  LayoutDescription,
   LayoutHeader,
-  LayoutTitle,
 } from "@/features/page/layout";
+import { OrganizationTitleForm } from "./_components/organization-title-form";
 import { getRequiredAdmin } from "@/lib/auth/auth-user";
 import { prisma } from "@/lib/prisma";
-import { ArrowLeft, ExternalLink } from "lucide-react";
-import Link from "next/link";
+import { stripe } from "@/lib/stripe";
+import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { OrganizationMembers } from "./_components/organization-members";
@@ -57,23 +56,42 @@ async function OrganizationDetailPage(
     notFound();
   }
 
+  const stripeCustomerId =
+    organization.stripeCustomerId ??
+    organization.subscription?.stripeCustomerId ??
+    null;
+
+  let paymentMethod: {
+    brand: string;
+    last4: string;
+    expMonth: number;
+    expYear: number;
+  } | null = null;
+
+  if (stripeCustomerId) {
+    const methods = await stripe.paymentMethods
+      .list({ customer: stripeCustomerId, type: "card", limit: 1 })
+      .catch(() => null);
+
+    if (methods?.data[0]?.card) {
+      const card = methods.data[0].card;
+      paymentMethod = {
+        brand: card.brand,
+        last4: card.last4,
+        expMonth: card.exp_month,
+        expYear: card.exp_year,
+      };
+    }
+  }
+
   return (
     <Layout size="lg">
       <LayoutHeader>
-        <div className="flex items-center gap-2">
-          <Link href="/admin/organizations">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Organizations
-            </Button>
-          </Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <LayoutTitle>{organization.name}</LayoutTitle>
-        </div>
-        <LayoutDescription>
-          Manage {organization.name}'s members, payments, and subscription
-        </LayoutDescription>
+        <OrganizationTitleForm
+          organizationId={organization.id}
+          name={organization.name}
+          logo={organization.logo}
+        />
       </LayoutHeader>
       <LayoutActions>
         {organization.stripeCustomerId && (
@@ -94,7 +112,12 @@ async function OrganizationDetailPage(
       <LayoutContent>
         <div className="space-y-6">
           <OrganizationMembers members={organization.members} />
-          <OrganizationPayments organizationId={organization.id} />
+          <OrganizationPayments
+            organizationId={organization.id}
+            subscription={organization.subscription}
+            paymentMethod={paymentMethod}
+            stripeCustomerId={stripeCustomerId}
+          />
           <OrganizationSubscription
             organization={organization}
             subscription={organization.subscription}

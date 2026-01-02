@@ -18,16 +18,19 @@ Automatically fix all ESLint and TypeScript errors by discovering issues and pro
 
 <agent_instructions>
 For each file group, launch a Snipper agent with:
+
 ```
 Fix all ESLint and TypeScript errors in these files:
 [list of files with their specific errors]
 
 Make minimal changes to fix errors while preserving functionality.
 ```
+
 </agent_instructions>
 
 <success_criteria>
+
 - All lint errors fixed
 - All TypeScript errors resolved
 - Code formatted consistently
-</success_criteria>
+  </success_criteria>

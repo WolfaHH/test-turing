@@ -55,11 +55,11 @@ export const POST = orgRoute
 
 ## Route Types
 
-| Route | Use Case |
-|-------|----------|
-| `route` | Public endpoints, no auth required |
-| `authRoute` | Requires logged-in user |
-| `orgRoute` | Requires organization membership + optional permissions |
+| Route       | Use Case                                                |
+| ----------- | ------------------------------------------------------- |
+| `route`     | Public endpoints, no auth required                      |
+| `authRoute` | Requires logged-in user                                 |
+| `orgRoute`  | Requires organization membership + optional permissions |
 
 ## Error Handling
 

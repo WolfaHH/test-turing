@@ -1,188 +1,185 @@
-## 2025-12-15 - Security, Performance & TanStack Form Migration
+# Changelog
 
-### 🔒 **Security Improvements**
+## 2026-01-02
 
-- **Auth Security Fix**: Removed insecure trusted origins wildcard configuration
-- **Impersonation Fixes**: Use hard redirects for impersonation to update profile button immediately (#75)
+FIX: Improve changelog dialog responsiveness on mobile with smaller padding and text sizes
 
-### 🚀 **Performance & Architecture**
+## 2025-12-28
 
-- **Major Performance Improvements**: Refactored application for significantly faster load times (#86)
-- **TanStack Form Migration**: Replaced React Hook Form with TanStack Form across all forms (#83)
-- **Redis Optimization**: Added Redis caching for improved performance
-- **OTP-Based Password Reset**: Implemented new password reset flow using OTP
+REFACTOR: Replace admin back button with breadcrumb navigation (matching org page style)
 
-### 🔧 **Authentication & UI Improvements**
+## 2025-12-27
 
-- **OTP Sign-In Flow**: Complete implementation of OTP authentication
-- **Auth UI Enhancements**: Responsive provider buttons (full width when single provider), cleaner OTP email display
-- **Middleware Refactor**: Extracted utilities and added admin route protection (#73)
+REFACTOR: Merge billing info into single card with next payment date, amount, and payment method
+FEATURE: Add "Create customer" button to auto-create Stripe customer for organizations
+FEATURE: Add inline title editing with org avatar on admin organization detail page
+FEATURE: Add coupon code support for admin subscription management (enables 100% off plans without payment method)
+REFACTOR: Admin user organizations list uses badges for role and plan instead of text with dots
+REFACTOR: Admin user organizations list uses proper ItemGroup pattern with separators and unified border
+REFACTOR: Modernize admin subscription UI with plan cards, monthly/yearly toggle, and status indicators
+REFACTOR: Feedback detail page uses Item component instead of Card for consistent styling
+REFACTOR: Post detail page now matches changelog detail style - max-w-2xl layout, aspect-video image, badges with icons, prose content
+REFACTOR: Simplify admin charts with Stripe-style design - hero numbers, no grid, cleaner layout
+REFACTOR: Use dot style badges for status indicators in admin user sessions and providers tables
+FEATURE: Add MRR growth and user growth charts to admin dashboard with Stripe data
+REFACTOR: Remove 15 PostCard variants, keep single clean compact design
+REFACTOR: Consolidate image upload components into unified ImageDropzone with avatar/square variants
+REFACTOR: Unify sidebar trigger button style across all navigation components
+REFACTOR: Add size="lg" to all admin dashboard pages for consistent layout width
+CHORE: Add v2.1.0 changelog entry and update image paths
+REFACTOR: Changelog timeline with vertical line on left, date labels, and compact cards
+FEATURE: Add active state highlighting to content header navigation
+FIX: Remove pulsing animation from changelog timeline first item
+REFACTOR: Modernize changelog UI with docs-style header, footer, and blog post layout
+REFACTOR: Changelog detail page now uses aspect-video image, cleaner badges, and prose styling
+REFACTOR: Changelog list page uses card-based layout with hover effects and latest badge
 
-### 📦 **Dependency Updates**
+## 2025-12-26
 
-- **Better-Auth**: Updated to version 1.3.27
-- **Next.js 16 Compatibility**: Fixed generateStaticParams for posts in production
-- Various dependency upgrades
+FEATURE: Changelog page timeline view with vertical timeline, version badges, and hover effects
+CHORE: Add unit tests for changelog-manager and changelog actions
+CHORE: Add E2E tests for changelog dialog flow
+FIX: InterceptDialog uses router.refresh() after router.back() to reset parallel route slot state
+FIX: InterceptDialog only calls router.back() when closing, not on every state change
+FEATURE: Add "Reset Changelog" debug action to restore dismissed changelogs
+FEATURE: Debug Panel with draggable/resizable UI, session info, and dynamic action buttons (dev only)
+FEATURE: Public changelog system with CardStack animation and timeline UI
+FEATURE: Changelog CardStack widget in organization sidebar
+FEATURE: Intercepting routes for changelog dialog from any page
+FEATURE: Claude Code slash command for creating changelog entries
+FEATURE: Add reply button with textarea dialog on feedback detail page
+FEATURE: Clickable user Item on feedback detail page navigates to user profile
+REFACTOR: Replace feedback table with Item components for cleaner UI
 
-### 🛠️ **Developer Experience**
+## 2025-12-15
 
-- **Global PageProps Type**: Standardized page component typing with `PageProps<"/route/path">`
-- **VSCode Snippets**: Updated snippets and workflow configuration (#79)
-- **Environment Variables Guide**: Added setup documentation
-- **Chart Components**: Improved type safety in chart and tooltip components (#71)
+FIX: Remove insecure trusted origins wildcard configuration in auth
+FIX: Use hard redirects for impersonation to update profile button immediately
+FIX: Breadcrumb path selection slice issue
+FIX: Typo in prisma:generate script
+FIX: ESLint and TypeScript errors across codebase
+FIX: Vitest config ESM conversion
+FIX: generateStaticParams for posts in production (Next.js 16 compatibility)
 
-### 🐛 **Bug Fixes**
+FEATURE: Major performance improvements with refactored application architecture
+FEATURE: TanStack Form migration replacing React Hook Form across all forms
+FEATURE: Redis caching for improved performance
+FEATURE: OTP-based password reset flow
+FEATURE: Complete OTP sign-in flow implementation
+FEATURE: Responsive provider buttons (full width when single provider)
+FEATURE: Global PageProps type for standardized page component typing
 
-- Fixed breadcrumb path selection slice issue (#70)
-- Fixed typo in prisma:generate script (#82)
-- Fixed ESLint and TypeScript errors across codebase
-- Fixed Vitest config ESM conversion
-- Removed unused shadcn-prose dependency
+REFACTOR: Middleware utilities extraction with admin route protection
 
-## 2025-08-23 - Major Platform Updates & Infrastructure Improvements
+CHORE: Update Better-Auth to version 1.3.27
+CHORE: Update VSCode snippets and workflow configuration
+CHORE: Add environment variables guide
+CHORE: Improve type safety in chart and tooltip components
+CHORE: Remove unused shadcn-prose dependency
 
-### 🚀 **New Features & Components**
+## 2025-08-23
 
-- **GridBackground Component**: Added customizable grid background component for visual design
-- **Admin Feedback System**: Complete feedback management with filters, tables, and detailed views
-- **Documentation System**: New docs section with dynamic content management and sidebar navigation
-- **Last Used Provider Tracking**: Enhanced sign-in experience with provider preference storage
-- **Contact Pages**: Added about and contact pages for improved user engagement
+FEATURE: GridBackground component for customizable visual design
+FEATURE: Admin feedback system with filters, tables, and detailed views
+FEATURE: Documentation system with dynamic content and sidebar navigation
+FEATURE: Last used provider tracking for enhanced sign-in experience
+FEATURE: Contact and about pages
 
-### 📦 **Major Dependency Updates**
+CHORE: Update Next.js to 15.5.0
+CHORE: Update React to 19.1.1
+CHORE: Update AI SDK to v5
+CHORE: Update all Radix UI component packages
+CHORE: Update testing dependencies and build tools
+CHORE: Claude Code integration with new agents, commands, and formatting hooks
+CHORE: Improve API file organization and documentation structure
 
-- **Next.js**: Updated to 15.5.0 with latest App Router features
-- **React**: Updated to 19.1.1 with new React capabilities
-- **AI SDK**: Updated to v5 with enhanced AI functionality
-- **Radix UI**: Updated all component packages to latest versions
-- **Development Tools**: Updated testing dependencies and build tools
+## 2025-08-13
 
-### 🛠️ **Infrastructure & Development Workflow**
+FEATURE: Complete admin dashboard with sidebar layout and routing
+FEATURE: Admin-only authentication guards with role checking
+FEATURE: User management interface with search, pagination, and role filtering
+FEATURE: User detail pages with session management and impersonation
+FEATURE: Organization management interface with member management
+FEATURE: Subscription management with plan changes and billing controls
+FEATURE: Payment history with Stripe integration for admin oversight
+FEATURE: AutomaticPagination reusable component
 
-- **Claude Code Integration**: Enhanced workflow with new agents, commands, and formatting hooks
-- **API Standards**: Improved file organization and API documentation structure
-- **TypeScript Formatting**: Automated formatting hook for consistent code quality
-- **Billing System**: Enhanced organization-level billing with improved error handling
-- **Authentication**: Better user experience with provider tracking and improved layouts
+REFACTOR: Move billing ownership from User to Organization level
+REFACTOR: Migrate stripeCustomerId from User model to Organization model
+REFACTOR: Update webhook handlers for organization-based billing
+REFACTOR: Replace Better-Auth subscription methods with custom server actions
+REFACTOR: Billing page with Card components and Typography
 
-## 2025-08-13 - Admin Interface & Organization Billing Migration
+FIX: Remove all `any` type usage in Stripe webhook handlers
+FIX: Type compatibility issues across billing system
+FIX: Card hover effects replaced with clean styling
+FIX: Organization/user names now clickable instead of separate View buttons
 
-### 🛠️ **Complete Admin Interface Overhaul**
+## 2025-07-14
 
-- **Built comprehensive admin dashboard from scratch**
-  - Created admin navigation with sidebar layout and routing
-  - Added admin-only authentication guards with proper role checking
-  - Implemented consistent Layout components across all admin pages
-- **User management interface**
-  - User list with search, pagination, and role-based filtering
-  - Individual user detail pages with session management
-  - Better Auth integration for user impersonation, banning, and role changes
-  - Real-time session tracking with device detection and revocation capabilities
-  - Authentication provider display (GitHub, Google, Email/Password)
-- **Organization management interface**
-  - Organization list with search and pagination
-  - Organization detail pages with member management
-  - Subscription management with plan changes and billing controls
-  - Payment history and Stripe integration for admin billing oversight
-- **UI/UX consistency improvements**
-  - Replaced Card hover effects with clean, professional styling
-  - Made organization/user names clickable instead of separate "View" buttons
-  - Added organization logos with avatar fallbacks matching user interface
-  - Created reusable AutomaticPagination component for consistent pagination
+FEATURE: Playwright workflow migrated to local CI testing with PostgreSQL service
+FEATURE: Comprehensive logging throughout all E2E tests
 
-### 💳 **Stripe Billing Architecture Refactor**
+REFACTOR: Migrate Prisma configuration from package.json to prisma.config.ts
+REFACTOR: Rename RESEND_EMAIL_FROM to EMAIL_FROM
 
-- **Moved billing ownership from User to Organization level**
-  - Migrated `stripeCustomerId` from User model to Organization model
-  - Updated all webhook handlers and billing actions for organization-based billing
-  - Replaced Better-Auth subscription methods with custom server actions
-- **Enhanced type safety and removed deprecated patterns**
-  - Eliminated all `any` type usage in Stripe webhook handlers
-  - Created proper TypeScript interfaces for Stripe webhook events
-  - Fixed type compatibility issues across the billing system
+FIX: Delete account test case sensitivity issue
+FIX: Button state validation and error handling in tests
+FIX: External API dependency error catching for build
+FIX: DATABASE_URL_UNPOOLED configuration for Prisma
+FIX: OAuth secrets renamed (GITHUB to OAUTH_GITHUB)
 
-### 🎨 **Billing Page UI Improvements**
-
-- Refactored billing page with Card components and Typography
-- Added plan limits section with progress bars showing current usage
-- Simplified subscription details layout with clean key-value pairs
-- Integrated real plan limits from auth-plans configuration
-
-## 2025-07-14 - NOW.TS Claude Migration
-
-### 🔧 **Prisma Configuration Migration**
-
-- Migrate from deprecated `package.json#prisma` property to `prisma.config.ts`
-
-### 🧪 **Playwright CI/CD Improvements**
-
-- **Migrated Playwright workflow from Vercel deployment testing to local CI testing**
-  - Changed trigger from `deployment_status` to `pull_request` and `push` events
-  - Added PostgreSQL service container for database testing
-  - Configured complete local environment with all required secrets
-- **Enhanced test reliability and debugging**
-  - Fixed delete account test case sensitivity issue (Delete vs delete)
-  - Added comprehensive logging throughout all E2E tests
-  - Improved button state validation and error handling
-  - Added step-by-step emoji logging for better CI debugging
-- **Build and deployment fixes**
-  - Added proper error catching for external API dependencies
-  - Updated Prisma migration strategy for CI environments
-
-### 🔧 **Technical Improvements**
-
-- **Environment configuration**
-  - Added all required GitHub secrets for CI testing
-  - Fixed DATABASE_URL_UNPOOLED configuration for Prisma
-  - Properly configured OAuth secrets (renamed GITHUB*\* to OAUTH_GITHUB*\*)
-- **Test infrastructure**
-  - Enhanced Playwright reporter configuration for CI visibility
-  - Improved test isolation and cleanup procedures
-  - Added better error context and retry mechanisms
-- Rename `RESEND_EMAIL_FROM` to `EMAIL_FROM`
+CHORE: Add all required GitHub secrets for CI testing
+CHORE: Enhance Playwright reporter configuration for CI visibility
 
 ## 2025-06-01
 
-- Add a "orgs-list" page to view the list
-- Fix the error of "API Error : No active organization"
-- Add a "adapter" system for e-mail and upload of images
-- Upgrade library to latest
+FEATURE: Orgs-list page to view organization list
+FEATURE: Adapter system for email and image upload
+
+FIX: API Error "No active organization"
+
+CHORE: Upgrade libraries to latest versions
 
 ## 2025-05-03
 
-- Add NOW.TS deployed app tracker (can be removed)
-- Add functional seed
+FEATURE: NOW.TS deployed app tracker
+FEATURE: Functional database seed
 
 ## 2025-04-17
 
-- Upgrade Prisma with output directory
-- Replace redirect method
-- Add resend contact support
-- Fix navigation styles
-- Fix hydratation error
-- Upgrade to next 15.3.0
-- Update `getOrg` logic to avoid any bugs
+FEATURE: Resend contact support
+
+REFACTOR: Prisma with output directory
+REFACTOR: Replace redirect method
+REFACTOR: Update getOrg logic to avoid bugs
+
+FIX: Navigation styles
+FIX: Hydration error
+
+CHORE: Upgrade to Next.js 15.3.0
 
 ## 2025-04-06
 
-- Replace `AuthJS` by `Better-Auth`
-- Upgrade to Tailwind V4
-- Use `Better-Auth` organization plugin
-- Use `Better-Auth` Stripe plugin
-- Upgrade layout and pages
-- Use `Better-Auth` permissions
-- Use middleware to handle authentification
+FEATURE: Better-Auth organization plugin
+FEATURE: Better-Auth Stripe plugin
+FEATURE: Better-Auth permissions
+FEATURE: Middleware authentication handling
+
+REFACTOR: Replace AuthJS with Better-Auth
+REFACTOR: Upgrade to Tailwind V4
+REFACTOR: Layout and pages upgrade
 
 ## 2024-09-12
 
-- Add `NEXT_PUBLIC_EMAIL_CONTACT` env variable
-- Add `RESEND_EMAIL_FROM` env variable
+FEATURE: NEXT_PUBLIC_EMAIL_CONTACT env variable
+FEATURE: RESEND_EMAIL_FROM env variable
 
 ## 2024-09-08
 
-- Add `slug` to organizations
-- Update URL with `slug` instead of `id`
+FEATURE: Add slug to organizations
+REFACTOR: Update URL with slug instead of id
 
 ## 2024-09-01
 
-- Update NOW.TS to version 2 with organizations
+FEATURE: NOW.TS version 2 with organizations

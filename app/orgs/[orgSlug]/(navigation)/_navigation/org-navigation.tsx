@@ -3,6 +3,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { getDismissedChangelogs } from "@/features/changelog/changelog.action";
+import { getChangelogs } from "@/features/changelog/changelog-manager";
 import { Layout } from "@/features/page/layout";
 import { getRequiredCurrentOrgCache } from "@/lib/react/cache";
 import { getUsersOrgs } from "@/query/org/get-users-orgs.query";
@@ -14,7 +16,15 @@ import { OrgSidebar } from "./org-sidebar";
 export async function OrgNavigation({ children }: PropsWithChildren) {
   const org = await getRequiredCurrentOrgCache();
 
-  const userOrganizations = await getUsersOrgs();
+  const [userOrganizations, allChangelogs, dismissedSlugs] = await Promise.all([
+    getUsersOrgs(),
+    getChangelogs(),
+    getDismissedChangelogs(),
+  ]);
+
+  const changelogs = allChangelogs.filter(
+    (c) => !dismissedSlugs.includes(c.slug),
+  );
 
   return (
     <SidebarProvider>
@@ -22,6 +32,7 @@ export async function OrgNavigation({ children }: PropsWithChildren) {
         slug={org.slug}
         roles={org.memberRoles}
         userOrgs={userOrganizations}
+        changelogs={changelogs.slice(0, 3)}
       />
       <SidebarInset className="border-border border">
         <header className="flex h-16 shrink-0 items-center gap-2">

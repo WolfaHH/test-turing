@@ -40,17 +40,17 @@ Pour afficher une boîte de confirmation avec des boutons Action/Annuler :
 
 ### Options Confirm Dialog
 
-| Option        | Type                              | Description                                    |
-| ------------- | --------------------------------- | ---------------------------------------------- |
-| `title`       | `string`                          | Titre du dialogue                              |
-| `description` | `ReactNode`                       | Description ou contenu personnalisé            |
-| `icon`        | `LucideIcon`                      | Icône affichée dans un cercle                  |
-| `variant`     | `"default" \| "destructive" \| "warning"` | Style visuel du dialogue              |
-| `size`        | `"sm" \| "md" \| "lg"`            | Taille du dialogue                             |
-| `style`       | `"default" \| "centered"`         | Alignement du contenu                          |
-| `confirmText` | `string`                          | Texte que l'utilisateur doit taper pour confirmer |
-| `action`      | `DialogAction`                    | Configuration du bouton d'action               |
-| `cancel`      | `DialogCancel`                    | Configuration du bouton d'annulation           |
+| Option        | Type                                      | Description                                       |
+| ------------- | ----------------------------------------- | ------------------------------------------------- |
+| `title`       | `string`                                  | Titre du dialogue                                 |
+| `description` | `ReactNode`                               | Description ou contenu personnalisé               |
+| `icon`        | `LucideIcon`                              | Icône affichée dans un cercle                     |
+| `variant`     | `"default" \| "destructive" \| "warning"` | Style visuel du dialogue                          |
+| `size`        | `"sm" \| "md" \| "lg"`                    | Taille du dialogue                                |
+| `style`       | `"default" \| "centered"`                 | Alignement du contenu                             |
+| `confirmText` | `string`                                  | Texte que l'utilisateur doit taper pour confirmer |
+| `action`      | `DialogAction`                            | Configuration du bouton d'action                  |
+| `cancel`      | `DialogCancel`                            | Configuration du bouton d'annulation              |
 
 ### Confirmation avec saisie de texte
 
@@ -98,17 +98,17 @@ dialogManager.input({
 
 ### Options Input Dialog
 
-| Option  | Type          | Description                     |
-| ------- | ------------- | ------------------------------- |
+| Option  | Type          | Description                      |
+| ------- | ------------- | -------------------------------- |
 | `input` | `InputConfig` | Configuration du champ de saisie |
 
 **InputConfig :**
 
-| Option         | Type     | Description                  |
-| -------------- | -------- | ---------------------------- |
-| `label`        | `string` | Label du champ               |
-| `defaultValue` | `string` | Valeur par défaut            |
-| `placeholder`  | `string` | Placeholder du champ         |
+| Option         | Type     | Description          |
+| -------------- | -------- | -------------------- |
+| `label`        | `string` | Label du champ       |
+| `defaultValue` | `string` | Valeur par défaut    |
+| `placeholder`  | `string` | Placeholder du champ |
 
 ## Custom Dialog
 

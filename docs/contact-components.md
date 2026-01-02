@@ -8,9 +8,9 @@ Ce composant affiche une modal avec un formulaire pour contacter le support.
 
 ### Champs du formulaire
 
-* **email** - Affiché uniquement si l'utilisateur n'est pas connecté
-* **subject** - Le sujet du message
-* **message** - Le contenu du message
+- **email** - Affiché uniquement si l'utilisateur n'est pas connecté
+- **subject** - Le sujet du message
+- **message** - Le contenu du message
 
 ### Utilisation basique
 
@@ -43,9 +43,9 @@ Ce composant affiche un bouton qui ouvre une popover permettant aux utilisateurs
 
 ### Champs du formulaire
 
-* **email** - Affiché uniquement si l'utilisateur n'est pas connecté
-* **message** - Le contenu du feedback
-* **review** - Un système de notation avec 4 émojis :
+- **email** - Affiché uniquement si l'utilisateur n'est pas connecté
+- **message** - Le contenu du feedback
+- **review** - Un système de notation avec 4 émojis :
   - 😠 (1) - Extrêmement insatisfait
   - 😞 (2) - Plutôt insatisfait
   - 😐 (3) - Neutre

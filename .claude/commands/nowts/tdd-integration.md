@@ -21,9 +21,10 @@ Build React components using TDD with Playwright integration tests. Write tests 
 5. **Run test**: `pnpm test:e2e:ci -g "test-name"`
 
 6. **Iterate**: Fix until test passes
-</process>
+   </process>
 
 <test_template>
+
 ```typescript
 import { test, expect } from "@playwright/test";
 import { createTestAccount } from "./utils/auth-test";
@@ -36,6 +37,7 @@ test.describe("Feature Name", () => {
   });
 });
 ```
+
 </test_template>
 
 <utilities>
@@ -53,10 +55,11 @@ test.describe("Feature Name", () => {
 </rules>
 
 <success_criteria>
+
 - Test written before component
 - Component follows existing patterns
 - Test passes
-</success_criteria>
+  </success_criteria>
 
 ---
 

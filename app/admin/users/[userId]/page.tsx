@@ -7,6 +7,7 @@ import {
   ItemDescription,
   ItemGroup,
   ItemMedia,
+  ItemSeparator,
   ItemTitle,
 } from "@/components/ui/item";
 import {
@@ -21,7 +22,7 @@ import { getRequiredAdmin } from "@/lib/auth/auth-user";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { Fragment, Suspense } from "react";
 import { UserDetailsCard } from "../../_components/user-details-card";
 import { UserActions } from "./_components/user-actions";
 import { UserProviders } from "./_components/user-providers";
@@ -89,31 +90,31 @@ async function RoutePage(props: PageProps<"/admin/users/[userId]">) {
                 No organizations found
               </div>
             ) : (
-              <ItemGroup>
-                {userData.members.map((memberRole) => (
-                  <Item key={memberRole.id} variant="outline" size="sm" asChild>
-                    <Link
-                      href={`/admin/organizations/${memberRole.organization.id}`}
-                    >
-                      <ItemMedia variant="image">
-                        <Avatar className="size-10">
-                          <AvatarImage
-                            src={memberRole.organization.logo ?? undefined}
-                            alt={memberRole.organization.name}
-                          />
-                          <AvatarFallback className="text-sm">
-                            {memberRole.organization.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                      </ItemMedia>
-                      <ItemContent>
-                        <ItemTitle>{memberRole.organization.name}</ItemTitle>
-                        <ItemDescription>
-                          {memberRole.organization.email} • Role:{" "}
-                          {memberRole.role}
-                          {memberRole.organization.subscription && (
-                            <>
-                              {" • "}
+              <ItemGroup className="rounded-md border">
+                {userData.members.map((memberRole, index) => (
+                  <Fragment key={memberRole.id}>
+                    <Item asChild>
+                      <Link
+                        href={`/admin/organizations/${memberRole.organization.id}`}
+                      >
+                        <ItemMedia>
+                          <Avatar className="size-10">
+                            <AvatarImage
+                              src={memberRole.organization.logo ?? undefined}
+                              alt={memberRole.organization.name}
+                            />
+                            <AvatarFallback className="text-sm">
+                              {memberRole.organization.name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                        </ItemMedia>
+                        <ItemContent>
+                          <ItemTitle className="gap-2">
+                            {memberRole.organization.name}
+                            <Badge variant="outline" className="text-xs">
+                              {memberRole.role}
+                            </Badge>
+                            {memberRole.organization.subscription && (
                               <Badge
                                 variant={
                                   memberRole.organization.subscription
@@ -127,15 +128,17 @@ async function RoutePage(props: PageProps<"/admin/users/[userId]">) {
                                 className="text-xs"
                               >
                                 {memberRole.organization.subscription.plan}
-                                {memberRole.organization.subscription.status &&
-                                  ` (${memberRole.organization.subscription.status})`}
                               </Badge>
-                            </>
-                          )}
-                        </ItemDescription>
-                      </ItemContent>
-                    </Link>
-                  </Item>
+                            )}
+                          </ItemTitle>
+                          <ItemDescription>
+                            {memberRole.organization.email}
+                          </ItemDescription>
+                        </ItemContent>
+                      </Link>
+                    </Item>
+                    {index !== userData.members.length - 1 && <ItemSeparator />}
+                  </Fragment>
                 ))}
               </ItemGroup>
             )}

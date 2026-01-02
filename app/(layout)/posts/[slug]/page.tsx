@@ -1,23 +1,15 @@
-import { Typography } from "@/components/nowts/typography";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ServerMdx } from "@/features/markdown/server-mdx";
-import {
-  Layout,
-  LayoutContent,
-  LayoutDescription,
-  LayoutHeader,
-  LayoutTitle,
-} from "@/features/page/layout";
 import { calculateReadingTime } from "@/features/posts/calculate-reading-time";
 import type { PostParams } from "@/features/posts/post-manager";
 import { getCurrentPost, getPosts } from "@/features/posts/post-manager";
 import { formatDate } from "@/lib/format/date";
 import { logger } from "@/lib/logger";
 import { SiteConfig } from "@/site-config";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -74,46 +66,72 @@ export default async function RoutePage(props: PostParams) {
     notFound();
   }
 
+  const readingTime = calculateReadingTime(post.content);
+
   return (
-    <Layout>
-      <LayoutContent>
-        <Link className={buttonVariants({ variant: "link" })} href="/posts">
-          <ArrowLeft size={16} /> Back
-        </Link>
-      </LayoutContent>
-      <LayoutHeader
-        style={{
-          backgroundImage: `url(${post.attributes.coverUrl})`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }}
-        className="overflow-hidden rounded-lg"
+    <article className="mx-auto max-w-2xl px-4 py-8">
+      <Link
+        className={buttonVariants({
+          variant: "ghost",
+          size: "sm",
+          className: "mb-6",
+        })}
+        href="/posts"
       >
-        <div className="flex w-full flex-col gap-2 bg-black/50 p-10 text-white backdrop-blur">
-          {post.attributes.status === "draft" ? (
-            <Badge className="w-fit" variant="secondary">
-              Draft
-            </Badge>
-          ) : null}
-          <LayoutTitle className="drop-shadow-sm">
-            {post.attributes.title}
-          </LayoutTitle>
-          <LayoutDescription className="drop-shadow-sm">
-            Published by {formatDate(new Date(post.attributes.date))} · Reading
-            time {calculateReadingTime(post.content)} minutes · Created by{" "}
-            <Typography variant="link" as={Link} href={SiteConfig.team.website}>
-              {SiteConfig.team.name}
-            </Typography>
-          </LayoutDescription>
-        </div>
-      </LayoutHeader>
-      <Separator />
-      <LayoutContent>
-        <ServerMdx
-          className="typography lg:prose-lg xl:prose-xl mb-8"
-          source={post.content}
+        <ArrowLeft size={16} /> Back to Blog
+      </Link>
+
+      <div className="relative mb-8 aspect-video w-full overflow-hidden rounded-xl">
+        <Image
+          src={post.attributes.coverUrl}
+          alt={post.attributes.title}
+          fill
+          className="object-cover"
+          priority
         />
-      </LayoutContent>
-    </Layout>
+      </div>
+
+      <header className="mb-8 border-b pb-8">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {post.attributes.status === "draft" && (
+            <Badge variant="secondary">Draft</Badge>
+          )}
+          <Badge variant="outline" className="gap-1">
+            <Calendar size={12} />
+            {formatDate(post.attributes.date)}
+          </Badge>
+          <Badge variant="outline" className="gap-1">
+            <Clock size={12} />
+            {readingTime} min read
+          </Badge>
+        </div>
+
+        <h1 className="text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+          {post.attributes.title}
+        </h1>
+
+        {post.attributes.description && (
+          <p className="text-muted-foreground mt-4 text-lg">
+            {post.attributes.description}
+          </p>
+        )}
+
+        {post.attributes.tags && post.attributes.tags.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {post.attributes.tags.map((tag) => (
+              <Link key={tag} href={`/posts/categories/${tag}`}>
+                <Badge variant="secondary" className="hover:bg-accent">
+                  {tag}
+                </Badge>
+              </Link>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <div className="prose prose-lg dark:prose-invert max-w-none">
+        <ServerMdx source={post.content} />
+      </div>
+    </article>
   );
 }

@@ -25,18 +25,23 @@ Create a pull request with a concise, meaningful description from current branch
 <pr_format>
 Title: One-line summary (max 72 chars)
 Body:
+
 ```markdown
 ## Summary
+
 - [Main change or feature]
 - [Secondary changes]
 
 ## Type
+
 [feat/fix/refactor/docs/chore]
 ```
+
 </pr_format>
 
 <success_criteria>
+
 - Branch pushed to remote
 - PR created with clear title and bullet-point summary
 - PR URL returned to user
-</success_criteria>
+  </success_criteria>

@@ -8,7 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form, useForm } from "@/features/form/tanstack-form";
-import { ImageFormItem } from "@/features/images/image-form-item";
+import { ImageDropzone } from "@/features/images/image-dropzone";
+import { uploadImageAction } from "@/features/images/upload-image.action";
+import { resolveActionResult } from "@/lib/actions/actions-utils";
 import { authClient } from "@/lib/auth-client";
 import { unwrapSafePromise } from "@/lib/promises";
 import { useMutation } from "@tanstack/react-query";
@@ -51,6 +53,20 @@ export const OrgDetailsForm = ({ defaultValues }: ProductFormProps) => {
     },
   });
 
+  const uploadImageMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.set("files", file);
+      return resolveActionResult(uploadImageAction({ formData }));
+    },
+    onSuccess: (data) => {
+      form.setFieldValue("logo", data);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   const form = useForm({
     schema: OrgDetailsFormSchema,
     defaultValues,
@@ -74,10 +90,13 @@ export const OrgDetailsForm = ({ defaultValues }: ProductFormProps) => {
               {(field) => (
                 <field.Field>
                   <field.Content>
-                    <ImageFormItem
-                      className="size-32 rounded-full"
-                      onChange={(url) => field.setValue(url)}
-                      imageUrl={field.state.value}
+                    <ImageDropzone
+                      variant="avatar"
+                      className="size-32"
+                      onChange={(file) => uploadImageMutation.mutate(file)}
+                      value={field.state.value}
+                      isUploading={uploadImageMutation.isPending}
+                      onRemove={() => field.setValue(null)}
                     />
                     <field.Message />
                   </field.Content>

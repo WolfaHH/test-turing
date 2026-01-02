@@ -135,9 +135,26 @@ export async function signOutAccount(options: { page: Page }) {
 
   // Navigate to account page
   await page.goto(`/account`);
+  await page.waitForLoadState("networkidle");
 
-  // Click the sign out button
-  await page.getByRole("button", { name: /sign out/i }).click();
+  // Check if we're already logged out (401 error or redirected to signin)
+  const currentUrl = page.url();
+  if (currentUrl.includes("/auth/signin")) {
+    return; // Already logged out
+  }
+
+  // Check for 401 error (user session was invalidated)
+  const unauthorizedText = page.getByText("Unauthorized");
+  if (await unauthorizedText.isVisible({ timeout: 1000 }).catch(() => false)) {
+    // Session was invalidated, navigate to signin
+    await page.goto("/auth/signin");
+    return;
+  }
+
+  // Wait for and click the sign out button
+  const signOutButton = page.getByRole("button", { name: /sign out/i });
+  await signOutButton.scrollIntoViewIfNeeded();
+  await signOutButton.click();
 
   await page.waitForURL(/\/auth\/signin/, { timeout: 10000 });
 }

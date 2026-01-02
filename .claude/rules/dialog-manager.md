@@ -19,7 +19,8 @@ For confirmation prompts with action/cancel buttons:
 ```tsx
 dialogManager.confirm({
   title: "Delete Item",
-  description: "Are you sure you want to delete this item? This action cannot be undone.",
+  description:
+    "Are you sure you want to delete this item? This action cannot be undone.",
   variant: "destructive", // "default" | "destructive" | "warning"
   action: {
     label: "Delete",

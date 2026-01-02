@@ -27,11 +27,7 @@ This is a paragraph
 `;
 
 export default function App() {
-  return (
-    <ClientMarkdown>
-      {markdown}
-    </ClientMarkdown>
-  );
+  return <ClientMarkdown>{markdown}</ClientMarkdown>;
 }
 ```
 
@@ -65,9 +61,7 @@ This is a paragraph
 `;
 
 export default async function Page() {
-  return (
-    <ServerMdx source={markdown} />
-  );
+  return <ServerMdx source={markdown} />;
 }
 ```
 
@@ -96,9 +90,7 @@ Complete example with an `Alert` component:
 
 This is a normal paragraph.
 
-<Alert type="info">
-  This is an information message
-</Alert>
+<Alert type="info">This is an information message</Alert>
 ```
 
 ## FAQ

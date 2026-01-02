@@ -1,13 +1,8 @@
 import { AutomaticPagination } from "@/components/nowts/automatic-pagination";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Typography } from "@/components/nowts/typography";
+import { ItemGroup } from "@/components/ui/item";
 import { getFeedbackList } from "@/query/feedback/get-feedback";
-import { FeedbackRow } from "./feedback-row";
+import { FeedbackItem } from "./feedback-row";
 
 type FeedbackTableProps = {
   searchParams: {
@@ -28,24 +23,21 @@ export const FeedbackTable = async ({ searchParams }: FeedbackTableProps) => {
 
   const { feedback, totalPages } = result;
 
+  if (feedback.length === 0) {
+    return (
+      <div className="flex min-h-[200px] items-center justify-center">
+        <Typography variant="muted">No feedback found</Typography>
+      </div>
+    );
+  }
+
   return (
-    <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>User</TableHead>
-            <TableHead>Review</TableHead>
-            <TableHead>Message</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {feedback.map((item) => (
-            <FeedbackRow key={item.id} feedback={item} />
-          ))}
-        </TableBody>
-      </Table>
+    <div className="flex flex-col gap-4">
+      <ItemGroup className="gap-2">
+        {feedback.map((item) => (
+          <FeedbackItem key={item.id} feedback={item} />
+        ))}
+      </ItemGroup>
 
       <AutomaticPagination
         currentPage={currentPage}
@@ -53,6 +45,6 @@ export const FeedbackTable = async ({ searchParams }: FeedbackTableProps) => {
         searchParam={searchParams.search}
         paramName="page"
       />
-    </>
+    </div>
   );
 };
