@@ -151,7 +151,7 @@ export default async function page(props: DocParams) {
         </div>
       </div>
       {hasApiExamples && (
-        <div className="w-full max-w-96 border-l">
+        <div className="w-full max-w-96 border-l max-2xl:hidden">
           <aside className="bg-background sticky top-14 h-fit max-h-[calc(100vh-3.5rem)] overflow-y-auto">
             <div className="p-6">
               <DocsApiExamples
@@ -166,7 +166,7 @@ export default async function page(props: DocParams) {
       )}
 
       {toc.length > 0 && (
-        <div className="w-full max-w-64 border-l">
+        <div className="w-full max-w-64 border-l max-2xl:hidden">
           <aside className="bg-background sticky top-14 h-fit max-h-[calc(100vh-3.5rem)] overflow-y-auto">
             <div className="p-6">
               <DocsTableOfContents toc={toc} />

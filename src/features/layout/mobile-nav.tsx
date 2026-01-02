@@ -76,7 +76,7 @@ export function MobileNav({ navItems }: { navItems: NavItem[] }) {
         </nav>
 
         <div className="mt-8 border-t pt-6">
-          <AuthButtonClient />
+          <AuthButtonClient variant="full" />
         </div>
       </SheetContent>
     </Sheet>

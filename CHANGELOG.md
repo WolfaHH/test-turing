@@ -2,6 +2,8 @@
 
 ## 2026-01-02
 
+REFACTOR: Improve mobile nav user button to show avatar + name/email with dropdown instead of just avatar
+FEATURE: Add responsive mobile navigation for documentation with sticky header and sheet sidebar
 FIX: Fix documentation page horizontal overflow when description text is too long
 FEATURE: Add /add-documentation slash command for creating and updating docs in content/docs/
 REFACTOR: Add useDebugPanelAction and useDebugPanelInfo hooks for cleaner debug panel registration with automatic cleanup
