@@ -185,7 +185,7 @@ export default function CreaDetailPage() {
         )}
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <MetricCard
           label="ROAS"
           value={formatRoas(ad.roas)}
@@ -266,6 +266,10 @@ export default function CreaDetailPage() {
               <div className="flex justify-between py-1">
                 <dt className="text-muted-foreground">Mois</dt>
                 <dd className="font-medium">{ad.month}</dd>
+              </div>
+              <div className="flex justify-between py-1">
+                <dt className="text-muted-foreground">Date de lancement</dt>
+                <dd className="font-medium">{ad.launchDate}</dd>
               </div>
               <div className="flex justify-between py-1">
                 <dt className="text-muted-foreground">Campagne</dt>

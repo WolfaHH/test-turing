@@ -290,6 +290,7 @@ export function CreasTable() {
                     );
                   })()}
                 </TableCell>
+                <TableCell>{ad.month}</TableCell>
                 <TableCell>{ad.creator}</TableCell>
                 <TableCell>{ad.contentType}</TableCell>
                 <TableCell className="text-right font-medium">
@@ -301,6 +302,9 @@ export function CreasTable() {
                 <TableCell className="text-right">
                   {formatNumber(ad.conversions)}
                 </TableCell>
+                <TableCell className="text-right">
+                  {formatCurrency(ad.costPerConversion)}
+                </TableCell>
                 <TableCell>
                   <Badge variant={getStatusVariant(ad.status)}>
                     {ad.status}
@@ -310,7 +314,7 @@ export function CreasTable() {
             ))}
             {paginatedAds.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} className="h-24 text-center">
+                <TableCell colSpan={10} className="h-24 text-center">
                   Aucune créa trouvée
                 </TableCell>
               </TableRow>

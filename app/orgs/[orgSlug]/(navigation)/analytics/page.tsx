@@ -29,7 +29,7 @@ function LoadingSkeleton() {
     <div className="space-y-6">
       <Skeleton className="h-8 w-32" />
       <Skeleton className="h-10 w-full max-w-2xl" />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="h-24" />
         ))}
@@ -63,7 +63,7 @@ export default function AnalyticsOverviewPage() {
 
       <DashboardFilters />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
         <KPICard
           title="Budget dépensé"
           value={formatCurrency(kpis.totalBudget)}
