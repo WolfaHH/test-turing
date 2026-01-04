@@ -111,12 +111,16 @@ export function CreasTable() {
             return ad.name;
           case "product":
             return ad.product;
+          case "month":
+            return ad.month;
           case "roas":
             return ad.roas;
           case "budget":
             return ad.budget;
           case "conversions":
             return ad.conversions;
+          case "costPerConversion":
+            return ad.costPerConversion;
           case "status":
             return ad.status;
           default:
@@ -183,6 +187,17 @@ export function CreasTable() {
                   sortDirection={sortDirection}
                 />
               </TableHead>
+              <TableHead
+                className="hover:bg-muted/50 cursor-pointer"
+                onClick={() => handleSort("month")}
+              >
+                Mois
+                <SortIcon
+                  field="month"
+                  sortField={sortField}
+                  sortDirection={sortDirection}
+                />
+              </TableHead>
               <TableHead>Créateur</TableHead>
               <TableHead>Type</TableHead>
               <TableHead
@@ -214,6 +229,17 @@ export function CreasTable() {
                 Conversions
                 <SortIcon
                   field="conversions"
+                  sortField={sortField}
+                  sortDirection={sortDirection}
+                />
+              </TableHead>
+              <TableHead
+                className="hover:bg-muted/50 cursor-pointer text-right"
+                onClick={() => handleSort("costPerConversion")}
+              >
+                Coût/conv.
+                <SortIcon
+                  field="costPerConversion"
                   sortField={sortField}
                   sortDirection={sortDirection}
                 />

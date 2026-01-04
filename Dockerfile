@@ -30,13 +30,13 @@ RUN corepack enable
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma client
+# Generate Prisma client (needs dummy DATABASE_URL for config loading)
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 RUN npx prisma generate
 
 # Build the application
 ENV NEXT_TELEMETRY_DISABLED=1
 # Set dummy env vars for build time only
-ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 ENV REDIS_URL="redis://localhost:6379"
 ENV RESEND_API_KEY="dummy"
 ENV EMAIL_FROM="dummy@example.com"
