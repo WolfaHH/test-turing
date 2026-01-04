@@ -28,6 +28,7 @@
     "prisma:generate": "pnpm prisma generate"
   },
   "prisma": {
+    "schema": "prisma/schema",
     "seed": "pnpm tsx prisma/seed.ts"
   },
   "dependencies": {
