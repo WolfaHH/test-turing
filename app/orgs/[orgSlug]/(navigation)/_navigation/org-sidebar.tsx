@@ -55,7 +55,7 @@ export function OrgSidebar({
     if (isSettingsPage) {
       return allLinks.filter((group) => group.title === "Organization");
     }
-    return allLinks.filter((group) => group.title === "Menu");
+    return allLinks.filter((group) => group.title !== "Organization");
   }, [allLinks, isSettingsPage]);
 
   return (

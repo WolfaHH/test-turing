@@ -199,9 +199,9 @@ export function getTopCreatorsByConversions(
 }
 
 /**
- * Format currency in EUR
+ * Format currency in EUR (full format)
  */
-export function formatCurrency(value: number): string {
+export function formatCurrencyFull(value: number): string {
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
@@ -210,9 +210,35 @@ export function formatCurrency(value: number): string {
 }
 
 /**
- * Format large numbers with French locale
+ * Format currency compact (3.4M €)
+ */
+export function formatCurrency(value: number): string {
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(1).replace(".", ",")}M €`;
+  }
+  if (value >= 1_000) {
+    return `${(value / 1_000).toFixed(1).replace(".", ",")}k €`;
+  }
+  return `${Math.round(value)} €`;
+}
+
+/**
+ * Format large numbers with French locale (full)
+ */
+export function formatNumberFull(value: number): string {
+  return new Intl.NumberFormat("fr-FR").format(Math.round(value));
+}
+
+/**
+ * Format large numbers compact (3.4M)
  */
 export function formatNumber(value: number): string {
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(1).replace(".", ",")}M`;
+  }
+  if (value >= 1_000) {
+    return `${(value / 1_000).toFixed(1).replace(".", ",")}k`;
+  }
   return new Intl.NumberFormat("fr-FR").format(Math.round(value));
 }
 
@@ -228,4 +254,17 @@ export function formatRoas(value: number): string {
  */
 export function formatPercent(value: number): string {
   return `${value.toFixed(2)}%`;
+}
+
+/**
+ * Get exact value for tooltip
+ */
+export function getExactValue(
+  value: number,
+  type: "currency" | "number",
+): string {
+  if (type === "currency") {
+    return formatCurrencyFull(value);
+  }
+  return formatNumberFull(value);
 }

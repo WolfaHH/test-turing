@@ -8,8 +8,9 @@ import { DashboardFilters } from "../_components/dashboard-filters";
 function LoadingSkeleton() {
   return (
     <div className="space-y-6">
-      <Skeleton className="h-10 w-full" />
-      <Skeleton className="h-[600px] w-full" />
+      <Skeleton className="h-8 w-40" />
+      <Skeleton className="h-10 w-full max-w-3xl" />
+      <Skeleton className="h-[500px] w-full" />
     </div>
   );
 }
@@ -32,9 +33,9 @@ export default function CreasPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Tableau des Créas</h2>
+        <h1 className="text-xl font-semibold">Tableau des Créas</h1>
         <span className="text-muted-foreground text-sm">
-          {filteredAds.length} créa{filteredAds.length > 1 ? "s" : ""}
+          {filteredAds.length} résultat{filteredAds.length > 1 ? "s" : ""}
         </span>
       </div>
 

@@ -16,7 +16,7 @@ export function parseCSV(csvContent: string): Advertisement[] {
       const values = parseCSVLine(line);
 
       return {
-        id: values[29] ?? `ad-${index}`, // ID Annonce
+        id: `ad-${index}`, // Unique ID based on row index
         name: values[0] || "",
         product: values[1] || "",
         creator: values[2] || "—",

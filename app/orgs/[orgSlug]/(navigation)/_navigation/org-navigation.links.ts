@@ -2,11 +2,11 @@ import type { NavigationGroup } from "@/features/navigation/navigation.type";
 import type { AuthRole } from "@/lib/auth/auth-permissions";
 import { isInRoles } from "@/lib/organizations/is-in-roles";
 import {
+  BarChart3,
   CreditCard,
-  Home,
+  FileText,
   Settings,
   TriangleAlert,
-  User,
   User2,
 } from "lucide-react";
 
@@ -43,17 +43,18 @@ const ORGANIZATION_PATH = `/orgs/:organizationSlug`;
 
 export const ORGANIZATION_LINKS: NavigationGroup[] = [
   {
-    title: "Menu",
+    title: "AG1 Analytics",
+    defaultOpenStartPath: `${ORGANIZATION_PATH}/analytics`,
     links: [
       {
-        href: ORGANIZATION_PATH,
-        Icon: Home,
-        label: "Dashboard",
+        href: `${ORGANIZATION_PATH}/analytics`,
+        Icon: BarChart3,
+        label: "Overview",
       },
       {
-        href: `${ORGANIZATION_PATH}/users`,
-        Icon: User,
-        label: "Users",
+        href: `${ORGANIZATION_PATH}/analytics/creas`,
+        Icon: FileText,
+        label: "Créas",
       },
     ],
   },

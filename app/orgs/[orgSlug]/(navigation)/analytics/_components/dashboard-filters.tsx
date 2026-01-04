@@ -1,6 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDashboard } from "@/features/dashboard/context/dashboard-context";
+import { getProductIcon } from "@/features/dashboard/utils/product-icons";
 
 type DashboardFiltersProps = {
   showSearch?: boolean;
@@ -47,11 +49,25 @@ export function DashboardFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Tous les produits</SelectItem>
-          {filterOptions.products.map((product) => (
-            <SelectItem key={product} value={product}>
-              {product}
-            </SelectItem>
-          ))}
+          {filterOptions.products.map((product) => {
+            const icon = getProductIcon(product);
+            return (
+              <SelectItem key={product} value={product}>
+                <span className="flex items-center gap-2">
+                  {icon && (
+                    <Image
+                      src={icon}
+                      alt=""
+                      width={16}
+                      height={16}
+                      className="size-4 object-contain"
+                    />
+                  )}
+                  {product}
+                </span>
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
 
