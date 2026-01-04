@@ -10,6 +10,11 @@ export const getServerUrl = () => {
     return process.env.PLAYWRIGHT_TEST_BASE_URL;
   }
 
+  // If BETTER_AUTH_URL is set (Railway, custom deployments), use it
+  if (process.env.BETTER_AUTH_URL) {
+    return process.env.BETTER_AUTH_URL;
+  }
+
   // If we are in production, we return the production URL.
   if (process.env.VERCEL_ENV === "production") {
     return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
