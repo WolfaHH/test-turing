@@ -42,9 +42,11 @@ const PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
 type SortField =
   | "name"
   | "product"
+  | "month"
   | "roas"
   | "budget"
   | "conversions"
+  | "costPerConversion"
   | "status";
 type SortDirection = "asc" | "desc";
 

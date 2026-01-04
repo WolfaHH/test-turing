@@ -15,8 +15,8 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma
 
-# Install dependencies (postinstall will run prisma generate)
-RUN pnpm install --frozen-lockfile --prefer-offline
+# Install dependencies (skip postinstall scripts, we'll run prisma generate later)
+RUN pnpm install --frozen-lockfile --prefer-offline --ignore-scripts
 
 # Rebuild the source code only when needed
 FROM base AS builder
