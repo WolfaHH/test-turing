@@ -1,6 +1,6 @@
 {
-  "name": "nowts",
-  "nowts-version": "2.1.0",
+  "name": "codhash-saas",
+  "codhash-version": "1.0.0",
   "version": "0.1.0",
   "private": true,
   "scripts": {

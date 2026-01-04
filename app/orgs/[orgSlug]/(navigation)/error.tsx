@@ -18,7 +18,7 @@ export default function RouteError({ error, reset }: ErrorParams) {
   }, [error]);
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>Error</LayoutTitle>
       </LayoutHeader>

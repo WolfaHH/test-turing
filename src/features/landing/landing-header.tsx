@@ -93,7 +93,6 @@ export function LandingHeader() {
         >
           <Link href="#features">Features</Link>
           <Link href="#pricing">Pricing</Link>
-          <Link href="/posts">Blog</Link>
           <AuthButtonClient />
         </motion.nav>
       </div>

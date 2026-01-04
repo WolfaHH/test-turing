@@ -1,0 +1,8 @@
+rm -rf /Users/wolfa/Desktop/code/codhash/templates/now.ts/src/features/landing/bento-section.tsx
+rm -rf /Users/wolfa/Desktop/code/codhash/templates/now.ts/src/features/landing/cta
+rm -rf /Users/wolfa/Desktop/code/codhash/templates/now.ts/src/features/landing/pain.tsx
+rm -rf /Users/wolfa/Desktop/code/codhash/templates/now.ts/src/features/landing/review
+rm -rf /Users/wolfa/Desktop/code/codhash/templates/now.ts/src/features/landing/section-divider.tsx
+rm -rf /Users/wolfa/Desktop/code/codhash/templates/now.ts/src/features/landing/stats-section.tsx
+rm -rf /Users/wolfa/Desktop/code/codhash/templates/now.ts/src/features/landing/feature-section.tsx
+rm -rf /Users/wolfa/Desktop/code/codhash/templates/now.ts/src/features/email/email-form-section.tsx

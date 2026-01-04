@@ -31,7 +31,7 @@ export default async function Page(props: PageProps<"/admin/organizations">) {
   });
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>Organization Management</LayoutTitle>
       </LayoutHeader>

@@ -36,7 +36,7 @@ export async function OrgNavigation({ children }: PropsWithChildren) {
       />
       <SidebarInset className="border-border border">
         <header className="flex h-16 shrink-0 items-center gap-2">
-          <Layout size="lg" className="flex items-center justify-between gap-2">
+          <Layout size="full" className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <SidebarTrigger
                 variant="outline"

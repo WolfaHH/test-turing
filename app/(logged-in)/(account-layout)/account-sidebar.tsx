@@ -22,7 +22,7 @@ export function AccountSidebar({ userOrgs }: { userOrgs: AuthOrganization[] }) {
   const links: NavigationGroup[] = getAccountNavigation();
 
   return (
-    <Sidebar variant="inset">
+    <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader>
         <OrgsSelect orgs={userOrgs} />
       </SidebarHeader>

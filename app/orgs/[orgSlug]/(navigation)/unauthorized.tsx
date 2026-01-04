@@ -3,7 +3,7 @@ import { Layout } from "@/features/page/layout";
 
 export default async function RoutePage() {
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <Error401 />
     </Layout>
   );

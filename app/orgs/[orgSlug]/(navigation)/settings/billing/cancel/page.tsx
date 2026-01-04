@@ -21,7 +21,7 @@ async function CancelSubscriptionPage() {
   const org = await getRequiredCurrentOrgCache();
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>Cancel Subscription</LayoutTitle>
         <LayoutDescription>

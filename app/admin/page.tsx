@@ -23,7 +23,7 @@ async function AdminPage() {
   await getRequiredAdmin();
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>Admin Dashboard</LayoutTitle>
       </LayoutHeader>

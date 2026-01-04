@@ -28,13 +28,15 @@ export function AdminSidebar() {
   const links: NavigationGroup[] = getAdminNavigation();
 
   return (
-    <Sidebar variant="inset">
+    <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader className="flex flex-col gap-2">
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg">
-            <span className="text-sm font-semibold">A</span>
+        <div className="flex items-center gap-2 px-2 py-1.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+          <div className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-lg">
+            <span className="text-xs font-bold">CH</span>
           </div>
-          <span className="font-semibold">Admin Panel</span>
+          <span className="font-semibold group-data-[collapsible=icon]:hidden">
+            Admin Panel
+          </span>
         </div>
       </SidebarHeader>
       <SidebarContent>

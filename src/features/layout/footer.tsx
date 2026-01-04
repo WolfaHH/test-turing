@@ -30,13 +30,6 @@ export function Footer() {
                       variant="link"
                       className="h-auto justify-start p-0"
                     >
-                      <Link href="/posts">Blog</Link>
-                    </Button>
-                    <Button
-                      asChild
-                      variant="link"
-                      className="h-auto justify-start p-0"
-                    >
                       <Link href="/docs">Documentation</Link>
                     </Button>
                     <Button

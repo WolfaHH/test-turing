@@ -25,7 +25,7 @@ export function BaseNavigation({ children }: PropsWithChildren) {
       <BaseSidebar />
       <SidebarInset className="border-border border">
         <header className="flex h-16 shrink-0 items-center gap-2">
-          <Layout size="lg">
+          <Layout size="full">
             <SidebarTrigger
               variant="outline"
               className="size-8 cursor-pointer"

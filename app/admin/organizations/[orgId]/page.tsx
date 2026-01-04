@@ -85,7 +85,7 @@ async function OrganizationDetailPage(
   }
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <OrganizationTitleForm
           organizationId={organization.id}

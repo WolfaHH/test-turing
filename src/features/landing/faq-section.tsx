@@ -21,7 +21,7 @@ type FeaturesPreviewProps = {
 
 export const FAQSection = (props: FeaturesPreviewProps) => {
   return (
-    <SectionLayout size="lg" className="flex max-lg:flex-col">
+    <SectionLayout size="full" className="flex max-lg:flex-col">
       <div className="flex-1 space-y-2">
         <Typography className="text-primary font-extrabold uppercase">
           FAQ

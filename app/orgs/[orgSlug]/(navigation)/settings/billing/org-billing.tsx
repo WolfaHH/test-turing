@@ -160,7 +160,7 @@ export function OrgBilling(props: {
   const hasPaidSubscription = !!subscription;
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>Billing</LayoutTitle>
       </LayoutHeader>

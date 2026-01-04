@@ -24,7 +24,7 @@ async function RoutePage(props: PageProps<"/orgs/[orgSlug]">) {
   const params = await props.params;
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>Dashboard</LayoutTitle>
       </LayoutHeader>

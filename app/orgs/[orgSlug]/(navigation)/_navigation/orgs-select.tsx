@@ -35,20 +35,24 @@ export const OrgsSelect = (props: OrganizationsSelectProps) => {
               data-testid="org-selector"
               variant="default"
               size="lg"
-              className="border-border bg-input dark:bg-input/30 rounded-md border"
+              className="border-border bg-input dark:bg-input/30 rounded-md border group-data-[collapsible=icon]:!p-0"
             >
               {org ? (
-                <span className="inline-flex w-full items-center gap-2">
-                  <Avatar className="size-6 object-contain">
+                <>
+                  <Avatar className="size-6 shrink-0 object-contain">
                     <AvatarFallback>
                       {org.name.slice(0, 1).toUpperCase()}
                     </AvatarFallback>
                     {org.logo ? <AvatarImage src={org.logo} /> : null}
                   </Avatar>
-                  <span className="line-clamp-1 text-left">{org.name}</span>
-                </span>
+                  <span className="line-clamp-1 text-left group-data-[collapsible=icon]:hidden">
+                    {org.name}
+                  </span>
+                </>
               ) : (
-                <span>Open organization</span>
+                <span className="group-data-[collapsible=icon]:hidden">
+                  Open organization
+                </span>
               )}
             </SidebarMenuButton>
           </DropdownMenuTrigger>

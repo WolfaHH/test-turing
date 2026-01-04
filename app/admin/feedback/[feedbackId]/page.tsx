@@ -75,7 +75,7 @@ async function FeedbackDetailPage(props: {
   const displayEmail = feedback.user?.email ?? feedback.email ?? "No email";
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>Feedback</LayoutTitle>
         <LayoutDescription>

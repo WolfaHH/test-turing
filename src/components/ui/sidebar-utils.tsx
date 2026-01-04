@@ -102,10 +102,13 @@ export const SidebarNavigationMenu = (props: { link: NavigationGroup }) => {
                 <SidebarMenuButtonLinkWithActive
                   href={item.href}
                   isActive={bestMatch === item.href}
+                  tooltip={item.label}
                 >
-                  <item.Icon />
-                  <span>{item.label}</span>
-                  <CollapsibleTrigger className="ml-auto">
+                  <item.Icon className="shrink-0" />
+                  <span className="group-data-[collapsible=icon]:hidden">
+                    {item.label}
+                  </span>
+                  <CollapsibleTrigger className="ml-auto group-data-[collapsible=icon]:hidden">
                     <ChevronRight className="text-muted-foreground ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </CollapsibleTrigger>
                 </SidebarMenuButtonLinkWithActive>
@@ -132,9 +135,12 @@ export const SidebarNavigationMenu = (props: { link: NavigationGroup }) => {
             <SidebarMenuButtonLinkWithActive
               href={item.href}
               isActive={bestMatch === item.href}
+              tooltip={item.label}
             >
-              <item.Icon />
-              <span>{item.label}</span>
+              <item.Icon className="shrink-0" />
+              <span className="group-data-[collapsible=icon]:hidden">
+                {item.label}
+              </span>
             </SidebarMenuButtonLinkWithActive>
           </SidebarMenuItem>
         );

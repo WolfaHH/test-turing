@@ -1,22 +1,22 @@
 export const SiteConfig = {
-  title: "NOW.TS",
-  description: "Collect and showcase powerful video and text testimonials",
-  prodUrl: "https://demo.nowts.app",
-  appId: "nowts",
-  domain: "demo.nowts.app",
-  appIcon: "/images/icon.png",
+  title: "Cod'Hash Saas",
+  description: "Modern SaaS template for building your next product",
+  prodUrl: "https://saas.codhash.com",
+  appId: "codhash-saas",
+  domain: "saas.codhash.com",
+  appIcon: "/images/logo.png",
   company: {
-    name: "NOW.TS LLC",
-    address: "421 Rue de Paris, France", // Remove if not needed
+    name: "Cod'Hash Studio",
+    address: "Paris, France",
   },
   brand: {
-    primary: "#007291", // You can adjust this to your brand color
+    primary: "#1a1a1a",
   },
   team: {
-    image: "https://melvynx.com/images/me/twitter-en.jpg",
-    website: "https://melvynx.com",
-    twitter: "https://twitter.com/melvyn_me",
-    name: "Melvynx",
+    image: "https://codhash.com/images/team.jpg",
+    website: "https://codhash.com",
+    twitter: "https://twitter.com/codhash",
+    name: "Cod'Hash",
   },
   features: {
     /**

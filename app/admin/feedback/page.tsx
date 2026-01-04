@@ -39,7 +39,7 @@ async function AdminFeedbackPage({
   const params = await searchParamsCache.parse(searchParams);
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>Feedback Management</LayoutTitle>
         <LayoutDescription>

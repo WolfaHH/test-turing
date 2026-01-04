@@ -10,7 +10,7 @@ export default async function RouteLayout(
   props: LayoutProps<"/orgs/[orgSlug]">,
 ) {
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutContent>{props.children}</LayoutContent>
     </Layout>
   );

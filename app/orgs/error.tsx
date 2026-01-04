@@ -14,7 +14,7 @@ export default function RouteError({ error }: ErrorParams) {
 
   return (
     <BaseNavigation>
-      <Layout size="lg">
+      <Layout size="full">
         <Error400 />
       </Layout>
     </BaseNavigation>

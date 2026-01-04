@@ -22,7 +22,7 @@ export default async function RoutePage(
   props: PageProps<"/orgs/[orgSlug]/users">,
 ) {
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>Videos</LayoutTitle>
       </LayoutHeader>

@@ -52,7 +52,7 @@ export default function AboutPage() {
       </SectionLayout>
 
       {/* Main Content */}
-      <SectionLayout size="lg" variant="transparent">
+      <SectionLayout size="full" variant="transparent">
         <section className="mt-20 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-16">
           <div className="lg:pr-8">
             <Typography

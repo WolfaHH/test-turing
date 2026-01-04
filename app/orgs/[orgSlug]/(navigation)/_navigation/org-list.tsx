@@ -25,7 +25,7 @@ export const OrgList = async () => {
 
   return (
     <AccountNavigation>
-      <Layout size="lg">
+      <Layout size="full">
         <LayoutHeader>
           <LayoutTitle>Your organizations</LayoutTitle>
           <LayoutDescription>

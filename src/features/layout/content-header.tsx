@@ -7,7 +7,6 @@ import { MobileNav } from "./mobile-nav";
 
 const navItems = [
   { href: "/docs", label: "Docs" },
-  { href: "/posts", label: "Blog" },
   { href: "/changelog", label: "Changelog" },
 ];
 

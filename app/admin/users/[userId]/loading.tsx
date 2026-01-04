@@ -9,7 +9,7 @@ import {
 
 export default function RouteLoading() {
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>User Details</LayoutTitle>
         <Skeleton className="h-4 w-64" />

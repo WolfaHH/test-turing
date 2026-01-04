@@ -28,6 +28,7 @@ import { getOrganizationNavigation } from "./org-navigation.links";
 
 import { OrgsSelect } from "./orgs-select";
 import { UpgradeCard } from "./upgrade-org-card";
+import { LogoSvg } from "@/components/svg/logo-svg";
 
 const OrgCommand = dynamic(
   async () => import("./org-command").then((mod) => mod.OrgCommand),
@@ -58,7 +59,7 @@ export function OrgSidebar({
   }, [allLinks, isSettingsPage]);
 
   return (
-    <Sidebar variant="inset">
+    <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader className="flex flex-col gap-2">
         {isSettingsPage ? (
           <Button variant="ghost" className="justify-start" asChild>
@@ -69,6 +70,12 @@ export function OrgSidebar({
           </Button>
         ) : (
           <>
+            <div className="flex items-center gap-2 px-2 py-1.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+              <LogoSvg size={28} className="shrink-0" />
+              <span className="font-semibold group-data-[collapsible=icon]:hidden">
+                Cod'Hash
+              </span>
+            </div>
             <OrgsSelect orgs={userOrgs} currentOrgSlug={slug} />
             <OrgCommand />
           </>
@@ -87,15 +94,24 @@ export function OrgSidebar({
       <SidebarFooter className="flex flex-col gap-2">
         {!isSettingsPage && (
           <>
-            {changelogs.length > 0 && (
-              <ChangelogSidebarStack changelogs={changelogs} />
-            )}
-            <ChangelogDebugActions />
-            <UpgradeCard />
-            <Button variant="outline" asChild size="sm">
+            <div className="group-data-[collapsible=icon]:hidden">
+              {changelogs.length > 0 && (
+                <ChangelogSidebarStack changelogs={changelogs} />
+              )}
+              <ChangelogDebugActions />
+              <UpgradeCard />
+            </div>
+            <Button
+              variant="outline"
+              asChild
+              size="sm"
+              className="w-full group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:p-0"
+            >
               <Link href={`/orgs/${slug}/settings`} prefetch={false}>
                 <Settings className="size-4" />
-                <span>Settings</span>
+                <span className="group-data-[collapsible=icon]:hidden">
+                  Settings
+                </span>
               </Link>
             </Button>
           </>

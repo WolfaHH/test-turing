@@ -67,7 +67,7 @@ async function RoutePage(props: PageProps<"/admin/users/[userId]">) {
   }
 
   return (
-    <Layout size="lg">
+    <Layout size="full">
       <LayoutHeader>
         <LayoutTitle>User Details</LayoutTitle>
         <LayoutDescription>

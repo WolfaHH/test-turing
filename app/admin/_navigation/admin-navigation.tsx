@@ -14,7 +14,7 @@ export async function AdminNavigation({ children }: PropsWithChildren) {
       <AdminSidebar />
       <SidebarInset className="border-border border">
         <header className="flex h-16 shrink-0 items-center gap-2">
-          <Layout size="lg" className="flex items-center gap-2">
+          <Layout size="full" className="flex items-center gap-2">
             <SidebarTrigger
               variant="outline"
               className="size-8 cursor-pointer"

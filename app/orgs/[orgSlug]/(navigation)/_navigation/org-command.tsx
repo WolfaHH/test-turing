@@ -81,26 +81,37 @@ export function OrgCommand() {
 
   return (
     <>
-      <InputGroup className="w-full">
-        <InputGroupAddon align="inline-start">
-          <Search className="size-4" />
-        </InputGroupAddon>
-        <InputGroupInput
-          type="search"
-          placeholder="Search..."
-          onClick={() => {
-            setOpen(true);
-          }}
-        />
-        <InputGroupAddon align="inline-end">
-          <KbdGroup>
-            <Kbd>
-              <CmdOrOption />
-            </Kbd>
-            <Kbd>K</Kbd>
-          </KbdGroup>
-        </InputGroupAddon>
-      </InputGroup>
+      {/* Full search input - hidden when sidebar is collapsed */}
+      <div className="group-data-[collapsible=icon]:hidden">
+        <InputGroup className="w-full">
+          <InputGroupAddon align="inline-start">
+            <Search className="size-4" />
+          </InputGroupAddon>
+          <InputGroupInput
+            type="search"
+            placeholder="Search..."
+            onClick={() => {
+              setOpen(true);
+            }}
+          />
+          <InputGroupAddon align="inline-end">
+            <KbdGroup>
+              <Kbd>
+                <CmdOrOption />
+              </Kbd>
+              <Kbd>K</Kbd>
+            </KbdGroup>
+          </InputGroupAddon>
+        </InputGroup>
+      </div>
+      {/* Icon-only button - shown when sidebar is collapsed */}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="bg-input hover:bg-accent hidden h-8 w-full items-center justify-center rounded-md border group-data-[collapsible=icon]:flex"
+      >
+        <Search className="size-4" />
+      </button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
           showCloseButton={false}
