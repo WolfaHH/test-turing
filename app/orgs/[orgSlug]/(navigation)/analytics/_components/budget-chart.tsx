@@ -57,17 +57,17 @@ export function BudgetChart() {
   }, [budgetByProduct]);
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col overflow-hidden">
       <CardHeader>
         <CardTitle>Budget par produit</CardTitle>
         <CardDescription>
           Répartition des dépenses publicitaires
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
+      <CardContent className="flex flex-col items-center gap-4 p-2 sm:p-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-square w-full max-w-[200px] sm:max-w-[180px]"
+          className="aspect-square w-full max-w-[180px] sm:max-w-[220px]"
         >
           <PieChart>
             <ChartTooltip
@@ -108,13 +108,13 @@ export function BudgetChart() {
             />
           </PieChart>
         </ChartContainer>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-col sm:gap-2">
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
           {chartData.map((item) => {
             const icon = getProductIcon(item.product);
             return (
-              <div key={item.product} className="flex items-center gap-2">
+              <div key={item.product} className="flex items-center gap-1.5">
                 <div
-                  className="size-3 shrink-0 rounded-sm"
+                  className="size-2.5 shrink-0 rounded-sm"
                   style={{ backgroundColor: item.fill }}
                 />
                 {icon && (
@@ -126,7 +126,7 @@ export function BudgetChart() {
                     className="size-3.5 shrink-0 object-contain"
                   />
                 )}
-                <span className="text-muted-foreground truncate text-xs">
+                <span className="text-muted-foreground text-xs">
                   {item.product}
                 </span>
               </div>

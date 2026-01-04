@@ -36,16 +36,16 @@ export function RoasChart() {
   }, [roasByMonth]);
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader>
         <CardTitle>ROAS par mois</CardTitle>
         <CardDescription>
           Évolution de la rentabilité publicitaire
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-2 sm:p-6">
         <ChartContainer
-          className="h-[250px] w-full sm:h-[280px]"
+          className="h-[200px] w-full sm:h-[280px]"
           config={chartConfig}
         >
           <BarChart

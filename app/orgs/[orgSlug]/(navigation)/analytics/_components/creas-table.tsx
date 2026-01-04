@@ -321,22 +321,20 @@ export function CreasTable() {
                 variant="outline"
                 size="icon"
                 className="size-8"
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(effectivePage - 1)}
+                disabled={effectivePage <= 1}
               >
                 <ChevronLeft className="size-4" />
               </Button>
               <span className="text-muted-foreground min-w-[80px] text-center text-sm">
-                Page {currentPage} / {totalPages}
+                Page {effectivePage} / {totalPages}
               </span>
               <Button
                 variant="outline"
                 size="icon"
                 className="size-8"
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(effectivePage + 1)}
+                disabled={effectivePage >= totalPages}
               >
                 <ChevronRight className="size-4" />
               </Button>
